@@ -1,6 +1,6 @@
 {
   "name": "@dreamer/utils",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-beta.2",
   "license": "MIT",
   "exports": {
     "./array": "./src/array.ts",
@@ -39,6 +39,6 @@
     }
   },
   "imports": {
-    "@dreamer/test": "jsr:@dreamer/test@^1.0.0-alpha.1"
+    "@dreamer/test": "jsr:@dreamer/test@^1.0.0-beta.4"
   }
 }

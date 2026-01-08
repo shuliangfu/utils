@@ -2,7 +2,7 @@
  * @fileoverview 字符串工具函数测试
  */
 
-import { describe, expect, it } from "jsr:@dreamer/test@^1.0.0-alpha.1";
+import { describe, expect, it } from "@dreamer/test";
 import {
   camelCase,
   format,

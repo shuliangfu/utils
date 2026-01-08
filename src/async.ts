@@ -115,13 +115,29 @@ export function withTimeout<T>(
   promise: Promise<T>,
   timeout: number,
 ): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  const timeoutPromise = new Promise<T>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      reject(new Error(`操作超时（${timeout}ms）`));
+    }, timeout);
+  });
+
   return Promise.race([
-    promise,
-    new Promise<T>((_, reject) => {
-      setTimeout(() => {
-        reject(new Error(`操作超时（${timeout}ms）`));
-      }, timeout);
+    promise.then((result) => {
+      // 如果 promise 先完成，清理定时器
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+      return result;
+    }).catch((error) => {
+      // 如果 promise 失败，也清理定时器
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+      throw error;
     }),
+    timeoutPromise,
   ]);
 }
 

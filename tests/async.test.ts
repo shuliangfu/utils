@@ -2,7 +2,7 @@
  * @fileoverview 异步工具函数测试
  */
 
-import { describe, expect, it } from "jsr:@dreamer/test@^1.0.0-alpha.1";
+import { describe, expect, it } from "@dreamer/test";
 import {
   debounce,
   delay,
@@ -47,6 +47,9 @@ describe("异步工具函数", () => {
 
       await sleep(10);
       expect(count).toBeGreaterThanOrEqual(2); // 至少执行2次
+
+      // 等待 throttle 内部的定时器完全清理
+      await new Promise((resolve) => setTimeout(resolve, 10));
     });
   });
 
@@ -93,6 +96,12 @@ describe("异步工具函数", () => {
       }
       expect(error).toBeTruthy();
       expect(error?.message).toContain("超时");
+      // 等待 promise 完成，确保定时器被清理
+      try {
+        await promise;
+      } catch {
+        // 忽略错误
+      }
     });
 
     it("应该在超时前完成", async () => {
@@ -130,6 +139,12 @@ describe("异步工具函数", () => {
       // 至少应该完成所有任务（即使顺序不确定）
       // 注意：parallel 函数的实现可能有 bug，这里只做基本验证
       expect(results.length).toBeGreaterThanOrEqual(1);
+
+      // 等待所有定时器完成，确保资源被清理（Deno 严格检查）
+      // parallel 函数中的 sleep 定时器需要时间完成
+      await sleep(50);
+      // 额外等待，确保所有定时器完全清理
+      await new Promise((resolve) => setTimeout(resolve, 20));
     });
   });
 
@@ -157,6 +172,11 @@ describe("异步工具函数", () => {
       const output = await series(tasks);
       expect(output).toEqual([1, 2, 3]);
       expect(results).toEqual([1, 2, 3]);
+
+      // 等待所有定时器完成，确保资源被清理
+      await sleep(50);
+      // 额外等待，确保所有定时器完全清理（Deno 严格检查）
+      await new Promise((resolve) => setTimeout(resolve, 20));
     });
   });
 
@@ -167,6 +187,9 @@ describe("异步工具函数", () => {
       const duration = Date.now() - start;
       expect(duration).toBeGreaterThanOrEqual(45);
       expect(duration).toBeLessThan(100);
+      // sleep 函数内部使用的定时器会在 Promise resolve 后自动清理
+      // 但 Deno 严格检查可能需要额外等待，确保定时器完全清理
+      await new Promise((resolve) => setTimeout(resolve, 10));
     });
   });
 
@@ -176,6 +199,9 @@ describe("异步工具函数", () => {
       await delay(50);
       const duration = Date.now() - start;
       expect(duration).toBeGreaterThanOrEqual(45);
+      // delay 函数内部使用的定时器会在 Promise resolve 后自动清理
+      // 但 Deno 严格检查可能需要额外等待，确保定时器完全清理
+      await new Promise((resolve) => setTimeout(resolve, 10));
     });
   });
 });
