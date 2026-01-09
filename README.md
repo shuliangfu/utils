@@ -1,8 +1,13 @@
 # @dreamer/utils
 
-一个跨运行时的工具函数库，提供通用工具函数，按功能模块化组织。
+> 一个兼容 Deno 和 Bun 的工具函数库，提供通用工具函数，按功能模块化组织
 
-## 功能
+[![JSR](https://jsr.io/badges/@dreamer/utils)](https://jsr.io/@dreamer/utils)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+## 🎯 功能
 
 工具函数库，提供常用的工具函数和辅助方法，支持服务端（Deno/Bun）和客户端（浏览器）。
 
@@ -173,10 +178,6 @@
 - 文件操作（服务端和客户端）
 - 辅助方法
 
-## 优先级
-
-⭐⭐⭐⭐
-
 ## 安装
 
 ```bash
@@ -185,7 +186,7 @@ deno add jsr:@dreamer/utils
 
 ## 环境兼容性
 
-- **Deno 版本**：要求 Deno 2.5 或更高版本
+- **运行时要求**：Deno 2.5+ 或 Bun 1.0+
 - **Bun 版本**：要求 Bun 1.0 或更高版本
 - **服务端**：✅ 支持（Deno/Bun 运行时）
 - **客户端**：✅ 支持（浏览器环境，部分功能受限）
@@ -219,7 +220,7 @@ import { formatDuration } from "jsr:@dreamer/utils/format";
 import { unique, truncate, deepClone } from "jsr:@dreamer/utils";
 ```
 
-## 示例用法
+## 📚 API 文档
 
 ### 字符串处理
 
@@ -698,15 +699,18 @@ src/
     └── README.md   # 客户端文档
 ```
 
-## 性能优化
+---
+
+## ⚡ 性能优化
 
 - **按需导入**：支持按模块导入，只导入需要的功能，减少打包体积
 - **Tree-shaking**：支持 Tree-shaking，未使用的代码会被自动移除
 - **类型安全**：完整的 TypeScript 类型支持，编译时类型检查
 - **无副作用**：所有工具函数都是纯函数，无副作用，易于测试和优化
 
+---
 
-## 备注
+## 📝 备注
 
 - **工具函数按功能模块化组织**：每个功能一个文件，支持按需导入
 - **支持按需导入**：减少打包体积，支持 Tree-shaking
@@ -715,3 +719,23 @@ src/
 - **服务端和客户端分离**：通过 `/client` 子路径明确区分服务端和客户端代码
 - **代码复用**：大部分客户端模块直接导出服务端版本（纯 JavaScript 函数）
 - **跨运行时兼容**：使用 `@dreamer/runtime-adapter` 实现 Deno 和 Bun 兼容性
+
+---
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+---
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE.md](./LICENSE.md)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by Dreamer Team**
+
+</div>

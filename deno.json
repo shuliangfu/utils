@@ -1,6 +1,6 @@
 {
   "name": "@dreamer/utils",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "license": "MIT",
   "compilerOptions": {
     "lib": [
@@ -20,6 +20,14 @@
     "./url": "./src/url.ts",
     "./format": "./src/format.ts",
     "./file": "./src/file.ts",
+    "./client/array": "./src/client/array.ts",
+    "./client/string": "./src/client/string.ts",
+    "./client/object": "./src/client/object.ts",
+    "./client/date": "./src/client/date.ts",
+    "./client/number": "./src/client/number.ts",
+    "./client/async": "./src/client/async.ts",
+    "./client/url": "./src/client/url.ts",
+    "./client/format": "./src/client/format.ts",
     "./client/file": "./src/client/file.ts"
   },
   "publish": {
@@ -50,6 +58,6 @@
   },
   "imports": {
     "@dreamer/test": "jsr:@dreamer/test@^1.0.0-beta.6",
-    "@dreamer/runtime-adapter": "jsr:@dreamer/runtime-adapter@^1.0.0-beta.2"
+    "@dreamer/runtime-adapter": "jsr:@dreamer/runtime-adapter@^1.0.0-beta.4"
   }
 }
