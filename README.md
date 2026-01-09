@@ -4,7 +4,7 @@
 
 ## 功能
 
-工具函数库，提供常用的工具函数和辅助方法，支持服务端和客户端。
+工具函数库，提供常用的工具函数和辅助方法，支持服务端（Deno/Bun）和客户端（浏览器）。
 
 ## 文件组织
 
@@ -12,18 +12,34 @@
 
 ```
 @dreamer/utils/
-├── array.ts        # 数组操作
-├── string.ts       # 字符串处理
-├── object.ts       # 对象操作
-├── date.ts         # 日期时间处理
-├── number.ts       # 数字格式化
-├── async.ts        # 异步工具
-├── lock.ts         # 分布式锁
-├── system.ts       # 系统状态
-├── url.ts          # URL 处理
-├── format.ts       # 格式化工具
-└── mod.ts          # 主入口（可选，导出所有工具）
+├── array.ts        # 数组操作（服务端/客户端共享）
+├── string.ts       # 字符串处理（服务端/客户端共享）
+├── object.ts       # 对象操作（服务端/客户端共享）
+├── date.ts         # 日期时间处理（服务端/客户端共享）
+├── number.ts       # 数字格式化（服务端/客户端共享）
+├── async.ts        # 异步工具（服务端/客户端共享）
+├── lock.ts         # 分布式锁（仅服务端）
+├── system.ts       # 系统状态（仅服务端）
+├── url.ts          # URL 处理（服务端/客户端共享）
+├── format.ts       # 格式化工具（服务端/客户端共享）
+├── file.ts         # 文件操作（服务端：文件系统 API）
+└── client/
+    ├── array.ts    # 数组操作（导出服务端版本）
+    ├── string.ts   # 字符串处理（导出服务端版本）
+    ├── object.ts   # 对象操作（导出服务端版本）
+    ├── date.ts     # 日期时间处理（导出服务端版本）
+    ├── number.ts   # 数字格式化（导出服务端版本）
+    ├── async.ts    # 异步工具（导出服务端版本）
+    ├── url.ts      # URL 处理（导出服务端版本）
+    ├── format.ts   # 格式化工具（导出服务端版本）
+    ├── file.ts     # 文件操作（客户端：浏览器 File API）
+    └── README.md   # 客户端文档
 ```
+
+**注意**：
+- **共享模块**（`array`、`string`、`object`、`date`、`number`、`async`、`url`、`format`）：客户端直接导出服务端版本（纯 JavaScript，不依赖运行时 API）
+- **服务端专用模块**（`lock`、`system`、`file`）：客户端不支持，仅服务端可用
+- **客户端专用模块**（`client/file`）：独立的客户端实现（使用浏览器 File API）
 
 ## 特性
 
@@ -119,6 +135,34 @@
 - 数字格式化（`formatNumber`）
 - 百分比格式化（`formatPercent`）
 
+### 文件操作（`file.ts` - 服务端）
+
+- 文件读写（`FileManager`）
+  - 读取文本文件（`readText`）
+  - 读取二进制文件（`readBinary`）
+  - 写入文本文件（`writeText`）
+  - 写入二进制文件（`writeBinary`）
+  - 追加写入文本文件（`appendText`）
+- 文件管理（`FileManager`）
+  - 复制文件（`copy`）
+  - 移动文件（`move`）
+  - 删除文件（`delete`）
+  - 检查文件是否存在（`exists`）
+  - 获取文件信息（`stat`）
+- 文件监控（`FileWatcher`）
+  - 监控文件/目录变化
+  - 支持递归监控
+  - 防抖处理
+- 文件类型检测（`FileTypeDetector`）
+  - MIME 类型检测
+  - 文件扩展名检测
+  - 文件签名检测（Magic Number）
+- 文件流处理（`FileStream`）
+  - 流式读取大文件
+  - 流式写入大文件
+
+**注意**：客户端文件操作请查看 [client/README.md](./src/client/README.md)
+
 ## 使用场景
 
 - 通用工具函数（字符串、数组、对象操作）
@@ -126,6 +170,7 @@
 - 日期时间处理
 - 异步操作控制（防抖、节流、重试）
 - URL 处理和解析
+- 文件操作（服务端和客户端）
 - 辅助方法
 
 ## 优先级
@@ -494,8 +539,81 @@ console.log(`使用率: ${disk.usagePercent}%`);
 // 格式化工具
 console.log(formatBytes(1024)); // "1.00 KB"
 console.log(formatBytes(1048576)); // "1.00 MB"
-console.log(formatUptime(3661)); // "1 小时 1 分钟 1 秒"
 ```
+
+### 文件操作（服务端）
+
+```typescript
+import {
+  FileManager,
+  FileWatcher,
+  FileTypeDetector,
+  FileStream,
+} from "jsr:@dreamer/utils/file";
+
+// 文件读写
+const fileManager = new FileManager();
+
+// 读取文本文件
+const text = await fileManager.readText("./data.txt");
+
+// 写入文本文件
+await fileManager.writeText("./output.txt", "Hello, World!");
+
+// 读取二进制文件
+const binary = await fileManager.readBinary("./image.png");
+
+// 写入二进制文件
+await fileManager.writeBinary("./output.png", binaryData);
+
+// 追加写入
+await fileManager.appendText("./log.txt", "New log entry\n");
+
+// 复制文件
+await fileManager.copy("./source.txt", "./dest.txt");
+
+// 移动文件
+await fileManager.move("./old.txt", "./new.txt");
+
+// 删除文件
+await fileManager.delete("./temp.txt");
+
+// 检查文件是否存在
+const exists = await fileManager.exists("./file.txt");
+
+// 获取文件信息
+const info = await fileManager.stat("./file.txt");
+console.log(`文件大小: ${info.size} bytes`);
+
+// 文件监控
+const watcher = new FileWatcher({
+  path: "./config",
+  recursive: true, // 递归监控
+  debounce: 300, // 防抖 300ms
+});
+
+watcher.on("change", (event) => {
+  console.log("文件变化:", event.path, event.type);
+});
+
+await watcher.start();
+// ... 使用后停止监控
+await watcher.stop();
+
+// 文件类型检测
+const detector = new FileTypeDetector();
+const type = await detector.detect("./image.png");
+console.log(type); // { mime: "image/png", ext: "png", signature: "PNG" }
+
+// 流式处理大文件
+const stream = new FileStream();
+const reader = await stream.createReader("./large-file.txt");
+for await (const chunk of reader) {
+  // 处理每个块
+  console.log("读取块:", chunk.length, "bytes");
+}
+```
+
 
 ### URL 处理
 
@@ -556,15 +674,28 @@ const num = formatNumber(1234567.89); // "1,234,567.89"
 
 ```
 src/
-├── array.ts        # 数组操作工具
-├── string.ts       # 字符串处理工具
-├── object.ts       # 对象操作工具
-├── date.ts         # 日期时间处理工具
-├── number.ts       # 数字格式化工具
-├── async.ts        # 异步工具
-├── url.ts          # URL 处理工具
-├── format.ts       # 格式化工具
-└── mod.ts          # 主入口（可选，重新导出所有工具）
+├── array.ts        # 数组操作工具（服务端/客户端共享）
+├── string.ts       # 字符串处理工具（服务端/客户端共享）
+├── object.ts       # 对象操作工具（服务端/客户端共享）
+├── date.ts         # 日期时间处理工具（服务端/客户端共享）
+├── number.ts       # 数字格式化工具（服务端/客户端共享）
+├── async.ts        # 异步工具（服务端/客户端共享）
+├── lock.ts         # 分布式锁（仅服务端）
+├── system.ts       # 系统状态（仅服务端）
+├── url.ts          # URL 处理工具（服务端/客户端共享）
+├── format.ts       # 格式化工具（服务端/客户端共享）
+├── file.ts         # 文件操作（服务端：文件系统 API）
+└── client/
+    ├── array.ts    # 数组操作（导出服务端版本）
+    ├── string.ts   # 字符串处理（导出服务端版本）
+    ├── object.ts   # 对象操作（导出服务端版本）
+    ├── date.ts     # 日期时间处理（导出服务端版本）
+    ├── number.ts   # 数字格式化（导出服务端版本）
+    ├── async.ts    # 异步工具（导出服务端版本）
+    ├── url.ts      # URL 处理（导出服务端版本）
+    ├── format.ts   # 格式化工具（导出服务端版本）
+    ├── file.ts     # 文件操作（客户端：浏览器 File API）
+    └── README.md   # 客户端文档
 ```
 
 ## 性能优化
@@ -577,8 +708,10 @@ src/
 
 ## 备注
 
-- 工具函数按功能模块化组织，每个功能一个文件
-- 支持按需导入，减少打包体积
-- 所有工具函数都是纯函数，无副作用
-- 完整的 TypeScript 类型支持
-- 支持服务端和客户端，API 完全一致
+- **工具函数按功能模块化组织**：每个功能一个文件，支持按需导入
+- **支持按需导入**：减少打包体积，支持 Tree-shaking
+- **所有工具函数都是纯函数**：无副作用，易于测试和优化
+- **完整的 TypeScript 类型支持**：编译时类型检查
+- **服务端和客户端分离**：通过 `/client` 子路径明确区分服务端和客户端代码
+- **代码复用**：大部分客户端模块直接导出服务端版本（纯 JavaScript 函数）
+- **跨运行时兼容**：使用 `@dreamer/runtime-adapter` 实现 Deno 和 Bun 兼容性

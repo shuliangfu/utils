@@ -2,31 +2,62 @@
   "version": "5",
   "specifiers": {
     "jsr:@dreamer/runtime-adapter@^1.0.0-beta.2": "1.0.0-beta.2",
-    "jsr:@dreamer/test@^1.0.0-beta.4": "1.0.0-beta.4",
-    "npm:@jsr/dreamer__test@^1.0.0-beta.4": "1.0.0-beta.4"
+    "jsr:@dreamer/test@^1.0.0-beta.6": "1.0.0-beta.6",
+    "jsr:@std/internal@^1.0.12": "1.0.12",
+    "jsr:@std/path@1": "1.1.4",
+    "npm:node-cron@3.0.3": "3.0.3"
   },
   "jsr": {
     "@dreamer/runtime-adapter@1.0.0-beta.2": {
-      "integrity": "39316741b6e76c6ff7f776ffcb0af9a617e65c0896441b7562c2f6c85ad4ecd1"
+      "integrity": "39316741b6e76c6ff7f776ffcb0af9a617e65c0896441b7562c2f6c85ad4ecd1",
+      "dependencies": [
+        "npm:node-cron"
+      ]
     },
-    "@dreamer/test@1.0.0-beta.4": {
-      "integrity": "da11bba0bac8f825e93249ef7a660fed932f8ae4440dffae7d1fb2f45fa1631a"
+    "@dreamer/test@1.0.0-beta.6": {
+      "integrity": "44db3d0671e6c425631a62520b42a037acfd7c82587572ad2e0ff3413170c480"
+    },
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/path@1.1.4": {
+      "integrity": "1d2d43f39efb1b42f0b1882a25486647cb851481862dc7313390b2bb044314b5",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
     }
   },
   "npm": {
+    "@jsr/dreamer__runtime-adapter@1.0.0-beta.2": {
+      "integrity": "sha512-9JzHDp1Yze4wBpQ5gnBVLr7gsRg7teYLAOd+HGdBseSqiuuwsl9BtTlEMjM74+8RfJwRPY6XsN+spqvKao3DmQ==",
+      "dependencies": [
+        "node-cron"
+      ],
+      "tarball": "https://npm.jsr.io/~/11/@jsr/dreamer__runtime-adapter/1.0.0-beta.2.tgz"
+    },
     "@jsr/dreamer__test@1.0.0-beta.4": {
       "integrity": "sha512-GQEi8LeC28OQF5j3cv/Rs3fTLStXftTF/jHDfCIBW6iX1XEw7zKcP0sJSBFrciTHbG8IEHt9N8Yka2YNO01LLw==",
       "tarball": "https://npm.jsr.io/~/11/@jsr/dreamer__test/1.0.0-beta.4.tgz"
+    },
+    "node-cron@3.0.3": {
+      "integrity": "sha512-dOal67//nohNgYWb+nWmg5dkFdIwDm8EpeGYMekPMrngV3637lqnX0lbUcCtgibHTz6SEz7DAIjKvKDFYCnO1A==",
+      "dependencies": [
+        "uuid"
+      ]
+    },
+    "uuid@8.3.2": {
+      "integrity": "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==",
+      "bin": true
     }
   },
   "workspace": {
     "dependencies": [
       "jsr:@dreamer/runtime-adapter@^1.0.0-beta.2",
-      "jsr:@dreamer/test@^1.0.0-beta.4"
+      "jsr:@dreamer/test@^1.0.0-beta.6"
     ],
     "packageJson": {
       "dependencies": [
-        "npm:@jsr/dreamer__runtime-adapter@^1.0.0-beta.2",
+        "npm:@jsr/dreamer__runtime-adapter@^1.0.0-beta.4",
         "npm:@jsr/dreamer__test@^1.0.0-beta.4"
       ]
     }
