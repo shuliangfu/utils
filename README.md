@@ -1,6 +1,6 @@
 # @dreamer/utils
 
-一个用于 Deno 的工具函数库，提供通用工具函数，按功能模块化组织。
+一个跨运行时的工具函数库，提供通用工具函数，按功能模块化组织。
 
 ## 功能
 
@@ -18,6 +18,8 @@
 ├── date.ts         # 日期时间处理
 ├── number.ts       # 数字格式化
 ├── async.ts        # 异步工具
+├── lock.ts         # 分布式锁
+├── system.ts       # 系统状态
 ├── url.ts          # URL 处理
 ├── format.ts       # 格式化工具
 └── mod.ts          # 主入口（可选，导出所有工具）
@@ -85,6 +87,23 @@
 - 并发控制（`parallel`、`series`、`limit`）
 - Promise 工具（`sleep`、`delay`）
 
+### 分布式锁（`lock.ts`）
+
+- 获取锁（`acquireLock`）
+- 使用锁执行函数（`withLock`）
+- 锁键名生成（`lockKey`）
+- 分布式锁类（`DistributedLock`）
+
+### 系统状态（`system.ts`）
+
+- 内存信息（`getMemoryInfo`）
+- CPU 使用率（`getCpuUsage`）
+- 系统负载（`getLoadAverage`）
+- 系统信息（`getSystemInfo`）
+- 磁盘使用（`getDiskUsage`）
+- 完整系统状态（`getSystemStatus`）
+- 格式化工具（`formatBytes`、`formatUptime`）
+
 ### URL 处理（`url.ts`）
 
 - URL 解析（`parse`、`parseQuery`）
@@ -122,9 +141,17 @@ deno add jsr:@dreamer/utils
 ## 环境兼容性
 
 - **Deno 版本**：要求 Deno 2.5 或更高版本
-- **服务端**：✅ 支持（Deno 运行时）
-- **客户端**：✅ 支持（浏览器环境）
-- **依赖**：无外部依赖（纯 TypeScript 实现）
+- **Bun 版本**：要求 Bun 1.0 或更高版本
+- **服务端**：✅ 支持（Deno/Bun 运行时）
+- **客户端**：✅ 支持（浏览器环境，部分功能受限）
+- **依赖**：
+  - 核心模块：无外部依赖（纯 TypeScript 实现）
+  - `system.ts` 模块：依赖 `@dreamer/runtime-adapter`（用于跨运行时兼容）
+  - `lock.ts` 模块：需要 Redis 客户端（如 `ioredis`）
+
+**注意**：
+- `system.ts` 模块需要运行时权限（执行系统命令），在浏览器环境中不可用
+- `lock.ts` 模块需要 Redis 连接，仅适用于服务端环境
 
 ## 导入方式
 
@@ -138,8 +165,10 @@ import { deepClone, merge, get } from "jsr:@dreamer/utils/object";
 import { format, addDays, diffDays } from "jsr:@dreamer/utils/date";
 import { format, clamp, round } from "jsr:@dreamer/utils/number";
 import { debounce, throttle, retry } from "jsr:@dreamer/utils/async";
+import { acquireLock, withLock, lockKey } from "jsr:@dreamer/utils/lock";
+import { getSystemStatus, getMemoryInfo, getCpuUsage, formatBytes, formatUptime } from "jsr:@dreamer/utils/system";
 import { parse, build, parseQuery } from "jsr:@dreamer/utils/url";
-import { formatBytes, formatDuration } from "jsr:@dreamer/utils/format";
+import { formatDuration } from "jsr:@dreamer/utils/format";
 
 // 或从主入口导入（可选，不推荐，会增加打包体积）
 import { unique, truncate, deepClone } from "jsr:@dreamer/utils";
@@ -344,6 +373,128 @@ const results = await parallel(
 
 // 延迟
 await sleep(1000); // 延迟 1 秒
+```
+
+### 分布式锁
+
+```typescript
+import { acquireLock, withLock, lockKey } from "jsr:@dreamer/utils/lock";
+import { Redis } from "npm:ioredis";
+
+const redis = new Redis("redis://localhost:6379");
+
+// 方式1：手动获取和释放锁
+const lock = await acquireLock(redis, "lock:user:123", {
+  ttl: 10, // 10秒过期
+  errorMessage: "操作正在进行中，请稍后重试",
+});
+
+if (lock) {
+  try {
+    // 执行需要互斥的操作
+    await doSomething();
+  } finally {
+    // 释放锁
+    await lock.release();
+  }
+}
+
+// 方式2：使用 withLock 自动管理锁（推荐）
+const result = await withLock(
+  redis,
+  lockKey("withdraw", "user123"), // 生成锁键名: "lock:withdraw:user123"
+  async () => {
+    // 执行需要互斥的操作
+    return await processWithdrawal("user123", 1000);
+  },
+  {
+    ttl: 10, // 10秒过期
+    errorMessage: "提现操作正在进行中，请稍后重试",
+  }
+);
+
+// 方式3：获取锁失败时不抛出错误
+const lock2 = await acquireLock(redis, "lock:user:456", {
+  ttl: 10,
+  throwOnFail: false, // 失败时不抛出错误，返回 null
+});
+
+if (lock2) {
+  // 成功获取锁
+  try {
+    await doSomething();
+  } finally {
+    await lock2.release();
+  }
+} else {
+  // 锁已被占用
+  console.log("操作正在进行中");
+}
+```
+
+### 系统状态
+
+```typescript
+import {
+  getSystemStatus,
+  getMemoryInfo,
+  getCpuUsage,
+  getLoadAverage,
+  getSystemInfo,
+  getDiskUsage,
+  formatBytes,
+  formatUptime,
+} from "jsr:@dreamer/utils/system";
+
+// 获取完整系统状态
+const status = await getSystemStatus();
+console.log("系统信息:", status.system);
+console.log("内存使用率:", status.memory.usagePercent + "%");
+console.log("CPU 使用率:", status.cpu.usagePercent + "%");
+if (status.loadAverage) {
+  console.log("系统负载:", status.loadAverage.load1);
+}
+
+// 获取内存信息
+const memory = await getMemoryInfo();
+console.log(`总内存: ${formatBytes(memory.total)}`);
+console.log(`已使用: ${formatBytes(memory.used)}`);
+console.log(`可用内存: ${formatBytes(memory.available)}`);
+console.log(`内存使用率: ${memory.usagePercent}%`);
+
+// 获取 CPU 使用率
+const cpu = await getCpuUsage(200); // 采样间隔 200ms
+console.log(`CPU 使用率: ${cpu.usagePercent}%`);
+console.log(`用户态: ${cpu.userPercent}%`);
+console.log(`内核态: ${cpu.systemPercent}%`);
+
+// 获取系统负载（Linux/macOS）
+const load = await getLoadAverage();
+if (load) {
+  console.log(`1分钟负载: ${load.load1}`);
+  console.log(`5分钟负载: ${load.load5}`);
+  console.log(`15分钟负载: ${load.load15}`);
+}
+
+// 获取系统信息
+const system = await getSystemInfo();
+console.log(`操作系统: ${system.os}`);
+console.log(`系统版本: ${system.osRelease}`);
+console.log(`主机名: ${system.hostname}`);
+console.log(`架构: ${system.arch}`);
+console.log(`运行时间: ${formatUptime(system.uptime)}`);
+
+// 获取磁盘使用信息
+const disk = await getDiskUsage("/");
+console.log(`总空间: ${formatBytes(disk.total)}`);
+console.log(`已使用: ${formatBytes(disk.used)}`);
+console.log(`可用空间: ${formatBytes(disk.available)}`);
+console.log(`使用率: ${disk.usagePercent}%`);
+
+// 格式化工具
+console.log(formatBytes(1024)); // "1.00 KB"
+console.log(formatBytes(1048576)); // "1.00 MB"
+console.log(formatUptime(3661)); // "1 小时 1 分钟 1 秒"
 ```
 
 ### URL 处理

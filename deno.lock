@@ -1,19 +1,32 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@dreamer/test@^1.0.0-beta.4": "1.0.0-beta.4"
+    "jsr:@dreamer/runtime-adapter@^1.0.0-beta.2": "1.0.0-beta.2",
+    "jsr:@dreamer/test@^1.0.0-beta.4": "1.0.0-beta.4",
+    "npm:@jsr/dreamer__test@^1.0.0-beta.4": "1.0.0-beta.4"
   },
   "jsr": {
+    "@dreamer/runtime-adapter@1.0.0-beta.2": {
+      "integrity": "39316741b6e76c6ff7f776ffcb0af9a617e65c0896441b7562c2f6c85ad4ecd1"
+    },
     "@dreamer/test@1.0.0-beta.4": {
       "integrity": "da11bba0bac8f825e93249ef7a660fed932f8ae4440dffae7d1fb2f45fa1631a"
     }
   },
+  "npm": {
+    "@jsr/dreamer__test@1.0.0-beta.4": {
+      "integrity": "sha512-GQEi8LeC28OQF5j3cv/Rs3fTLStXftTF/jHDfCIBW6iX1XEw7zKcP0sJSBFrciTHbG8IEHt9N8Yka2YNO01LLw==",
+      "tarball": "https://npm.jsr.io/~/11/@jsr/dreamer__test/1.0.0-beta.4.tgz"
+    }
+  },
   "workspace": {
     "dependencies": [
+      "jsr:@dreamer/runtime-adapter@^1.0.0-beta.2",
       "jsr:@dreamer/test@^1.0.0-beta.4"
     ],
     "packageJson": {
       "dependencies": [
+        "npm:@jsr/dreamer__runtime-adapter@^1.0.0-beta.2",
         "npm:@jsr/dreamer__test@^1.0.0-beta.4"
       ]
     }
