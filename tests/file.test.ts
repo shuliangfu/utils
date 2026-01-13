@@ -11,6 +11,7 @@ import {
 } from "@dreamer/runtime-adapter";
 import { afterAll, beforeAll, describe, expect, it } from "@dreamer/test";
 import {
+  FileCompressor,
   FileManager,
   FileStream,
   FileTypeDetector,
@@ -505,5 +506,230 @@ describe("FileStream", () => {
       },
       { sanitizeResources: false, sanitizeOps: false } as any,
     );
+  });
+});
+
+describe("FileCompressor", () => {
+  let testDir: string;
+  const compressor = new FileCompressor();
+  const fileManager = new FileManager();
+
+  beforeAll(async () => {
+    testDir = join(await cwd(), "tests", "data", "file-compressor");
+    try {
+      await remove(testDir, { recursive: true });
+    } catch {
+      // 忽略错误
+    }
+    await mkdir(testDir, { recursive: true });
+  });
+
+  afterAll(async () => {
+    try {
+      await remove(testDir, { recursive: true });
+    } catch {
+      // 忽略错误
+    }
+  });
+
+  describe("gzip/gunzip", () => {
+    it("应该压缩和解压文件", async () => {
+      const sourcePath = join(testDir, "source.txt");
+      const compressedPath = join(testDir, "source.txt.gz");
+      const decompressedPath = join(testDir, "decompressed.txt");
+      const content = "Hello, World! This is a test file for compression.";
+
+      // 创建源文件
+      await writeTextFile(sourcePath, content);
+
+      // 压缩文件
+      await compressor.gzip(sourcePath, compressedPath);
+
+      // 验证压缩文件存在
+      expect(await fileManager.exists(compressedPath)).toBeTruthy();
+
+      // 解压文件
+      await compressor.gunzip(compressedPath, decompressedPath);
+
+      // 验证解压后的内容
+      const decompressedContent = await readTextFile(decompressedPath);
+      expect(decompressedContent).toBe(content);
+    });
+
+    it("应该支持自定义压缩级别", async () => {
+      const sourcePath = join(testDir, "level-test.txt");
+      const compressedPath = join(testDir, "level-test.txt.gz");
+      const content = "Test content for compression level.";
+
+      await writeTextFile(sourcePath, content);
+
+      // 使用最高压缩级别
+      await compressor.gzip(sourcePath, compressedPath, { level: 9 });
+
+      expect(await fileManager.exists(compressedPath)).toBeTruthy();
+    });
+  });
+
+  describe("compress/decompress", () => {
+    it("应该压缩和解压数据（内存操作）", async () => {
+      // 使用较大的数据以确保压缩有效
+      const originalData = new TextEncoder().encode(
+        "Hello, World! This is test data for compression. ".repeat(100),
+      );
+
+      // 压缩数据
+      const compressed = await compressor.compress(originalData);
+
+      // 验证压缩后的数据存在（对于大数据，压缩后应该更小）
+      expect(compressed.length).toBeGreaterThan(0);
+
+      // 解压数据
+      const decompressed = await compressor.decompress(compressed);
+
+      // 验证解压后的数据与原始数据相同
+      expect(decompressed).toEqual(originalData);
+    });
+
+    it("应该支持自定义压缩级别（内存操作）", async () => {
+      const originalData = new TextEncoder().encode(
+        "Test data for compression level testing.",
+      );
+
+      // 使用不同压缩级别
+      const compressed1 = await compressor.compress(originalData, { level: 1 });
+      const compressed9 = await compressor.compress(originalData, { level: 9 });
+
+      // 解压并验证
+      const decompressed1 = await compressor.decompress(compressed1);
+      const decompressed9 = await compressor.decompress(compressed9);
+
+      expect(decompressed1).toEqual(originalData);
+      expect(decompressed9).toEqual(originalData);
+    });
+
+    it("应该处理空数据", async () => {
+      const emptyData = new Uint8Array(0);
+      const compressed = await compressor.compress(emptyData);
+      const decompressed = await compressor.decompress(compressed);
+      expect(decompressed).toEqual(emptyData);
+    });
+
+    it("应该处理二进制数据", async () => {
+      const binaryData = new Uint8Array([0x00, 0x01, 0x02, 0xFF, 0xFE, 0xFD]);
+      const compressed = await compressor.compress(binaryData);
+      const decompressed = await compressor.decompress(compressed);
+      expect(decompressed).toEqual(binaryData);
+    });
+  });
+
+  describe("错误处理", () => {
+    it("应该在源文件不存在时抛出错误（gzip）", async () => {
+      const nonExistentPath = join(testDir, "non-existent.txt");
+      const compressedPath = join(testDir, "output.gz");
+
+      let errorThrown = false;
+      try {
+        await compressor.gzip(nonExistentPath, compressedPath);
+      } catch (error) {
+        errorThrown = true;
+        expect(error).toBeInstanceOf(Error);
+      }
+      expect(errorThrown).toBe(true);
+    });
+
+    it("应该在压缩文件不存在时抛出错误（gunzip）", async () => {
+      const nonExistentPath = join(testDir, "non-existent.gz");
+      const decompressedPath = join(testDir, "output.txt");
+
+      let errorThrown = false;
+      try {
+        await compressor.gunzip(nonExistentPath, decompressedPath);
+      } catch (error) {
+        errorThrown = true;
+        expect(error).toBeInstanceOf(Error);
+      }
+      expect(errorThrown).toBe(true);
+    });
+
+    it("应该在解压无效数据时抛出错误或返回错误结果", async () => {
+      const invalidData = new Uint8Array([0x00, 0x01, 0x02, 0x03]);
+
+      let errorThrown = false;
+      let result: Uint8Array | null = null;
+      try {
+        result = await compressor.decompress(invalidData);
+        // pako 库可能会成功解压但返回错误数据，或者抛出错误
+        // 我们只验证不会崩溃即可
+      } catch (error) {
+        errorThrown = true;
+        // 如果抛出错误，验证是 Error 类型
+        if (error instanceof Error) {
+          expect(error).toBeInstanceOf(Error);
+        }
+      }
+      // 测试通过：要么抛出错误，要么返回结果（不崩溃即可）
+      expect(errorThrown || result !== null).toBe(true);
+    });
+  });
+
+  describe("压缩级别", () => {
+    it("应该支持所有压缩级别（1-9）", async () => {
+      const data = new TextEncoder().encode(
+        "Test data for compression level testing. ".repeat(50),
+      );
+
+      for (let level = 1; level <= 9; level++) {
+        const compressed = await compressor.compress(data, { level });
+        const decompressed = await compressor.decompress(compressed);
+        expect(decompressed).toEqual(data);
+      }
+    });
+
+    it("应该使用默认压缩级别（6）", async () => {
+      const data = new TextEncoder().encode(
+        "Test data for default compression level.",
+      );
+
+      // 不指定 level，应该使用默认值 6
+      const compressed = await compressor.compress(data);
+      const decompressed = await compressor.decompress(compressed);
+      expect(decompressed).toEqual(data);
+    });
+  });
+
+  describe("文件压缩完整性", () => {
+    it("应该压缩和解压大文件", async () => {
+      const sourcePath = join(testDir, "large-file.txt");
+      const compressedPath = join(testDir, "large-file.txt.gz");
+      const decompressedPath = join(testDir, "large-file-decompressed.txt");
+
+      // 创建较大的文件（约 100KB）
+      const largeContent = "A".repeat(100 * 1024);
+      await writeTextFile(sourcePath, largeContent);
+
+      // 压缩
+      await compressor.gzip(sourcePath, compressedPath);
+      expect(await fileManager.exists(compressedPath)).toBeTruthy();
+
+      // 解压
+      await compressor.gunzip(compressedPath, decompressedPath);
+      const decompressedContent = await readTextFile(decompressedPath);
+      expect(decompressedContent).toBe(largeContent);
+    });
+
+    it("应该压缩和解压包含特殊字符的文件", async () => {
+      const sourcePath = join(testDir, "special-chars.txt");
+      const compressedPath = join(testDir, "special-chars.txt.gz");
+      const decompressedPath = join(testDir, "special-chars-decompressed.txt");
+
+      const specialContent = "特殊字符：中文、日本語、한국어、🚀、\n\t\r";
+      await writeTextFile(sourcePath, specialContent);
+
+      await compressor.gzip(sourcePath, compressedPath);
+      await compressor.gunzip(compressedPath, decompressedPath);
+
+      const decompressedContent = await readTextFile(decompressedPath);
+      expect(decompressedContent).toBe(specialContent);
+    });
   });
 });

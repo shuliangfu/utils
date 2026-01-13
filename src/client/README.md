@@ -25,12 +25,20 @@
 ├── async.ts        # 异步工具
 ├── url.ts          # URL 处理
 ├── format.ts       # 格式化工具
-└── file.ts         # 文件操作（浏览器 File API）
+├── file.ts         # 文件操作（浏览器 File API）
+├── validator.ts    # 数据验证
+└── http/           # HTTP 客户端
+    ├── mod.ts      # 主入口
+    ├── client.ts   # HttpClient 类
+    ├── cookies.ts  # Cookie 管理
+    ├── interceptors.ts # 拦截器
+    ├── retry.ts    # 重试逻辑
+    └── types.ts    # 类型定义
 ```
 
 ## 特性
 
-### 数组操作（`array.ts`）
+### 数组操作（`array.ts`） - [📖 详细文档](../../docs/client/array.md)
 
 - 数组去重（`unique`、`uniqueBy`）
 - 数组分组（`groupBy`、`groupByKey`）
@@ -40,7 +48,7 @@
 - 数组差集/交集/并集（`difference`、`intersection`、`union`）
 - 数组统计（`count`、`countBy`）
 
-### 字符串处理（`string.ts`）
+### 字符串处理（`string.ts`） - [📖 详细文档](../../docs/client/string.md)
 
 - 字符串截断（`truncate`）
 - 字符串格式化（`format`、`template`）
@@ -48,7 +56,7 @@
 - 字符串填充（`padStart`、`padEnd`）
 - 字符串清理（`trim`、`trimStart`、`trimEnd`）
 
-### 对象操作（`object.ts`）
+### 对象操作（`object.ts`） - [📖 详细文档](../../docs/client/object.md)
 
 - 深度克隆（`deepClone`）
 - 对象合并（`merge`、`deepMerge`）
@@ -56,7 +64,7 @@
 - 对象过滤（`pick`、`omit`）
 - 对象比较（`isEqual`、`isDeepEqual`）
 
-### 日期时间处理（`date.ts`）
+### 日期时间处理（`date.ts`） - [📖 详细文档](../../docs/client/date.md)
 
 - 日期格式化（`format`、`formatDate`、`formatTime`）
 - 日期计算（`addDays`、`addMonths`、`addYears`）
@@ -64,14 +72,14 @@
 - 日期差值（`diffDays`、`diffHours`）
 - 相对时间（`fromNow`、`toNow`）
 
-### 数字格式化（`number.ts`）
+### 数字格式化（`number.ts`） - [📖 详细文档](../../docs/client/number.md)
 
 - 数字格式化（`format`、`formatCurrency`、`formatPercent`）
 - 数字转换（`toFixed`、`toPrecision`）
 - 数字范围（`clamp`、`inRange`）
 - 数字舍入（`round`、`floor`、`ceil`）
 
-### 异步工具（`async.ts`）
+### 异步工具（`async.ts`） - [📖 详细文档](../../docs/client/async.md)
 
 - 防抖（`debounce`）
 - 节流（`throttle`）
@@ -80,7 +88,7 @@
 - 并发控制（`parallel`、`series`）
 - Promise 工具（`sleep`、`delay`）
 
-### URL 处理（`url.ts`）
+### URL 处理（`url.ts`） - [📖 详细文档](../../docs/client/url.md)
 
 - URL 解析（`parse`、`parseQuery`）
 - URL 构建（`build`、`buildQuery`）
@@ -88,14 +96,14 @@
 - URL 合并（`join`）
 - URL 验证（`isValid`）
 
-### 格式化工具（`format.ts`）
+### 格式化工具（`format.ts`） - [📖 详细文档](../../docs/client/format.md)
 
 - 文件大小格式化（`formatBytes`）
 - 时间格式化（`formatDuration`）
 - 数字格式化（`formatNumber`）
 - 百分比格式化（`formatPercent`）
 
-### 文件操作（`file.ts` - 客户端）
+### 文件操作（`file.ts` - 客户端） - [📖 详细文档](../../docs/client/file.md)
 
 - 文件读取（`FileReader`）
   - 读取文本文件（`readAsText`）
@@ -119,6 +127,44 @@
   - 预览文本
   - 预览 PDF
 
+### 数据验证（`validator.ts`） - [📖 详细文档](../../docs/client/validator.md)
+
+- 基础类型验证（`string`、`number`、`boolean`、`email`、`url`）
+- 对象结构验证（`object`）
+- 数组验证（`array`）
+- 自定义验证规则（`custom`）
+- 验证转换（`transform`）
+- 默认值（`default`）
+- 条件验证（`when`）
+- 错误消息定制（`message`）
+- 异步验证支持
+
+**注意**：客户端验证与服务端完全兼容，所有功能都可以在浏览器环境中使用。
+
+### HTTP 客户端（`http/`） - [📖 详细文档](../../docs/client/http.md)
+
+- **智能请求方式选择**：
+  - 普通请求：自动使用 Fetch API（更现代，性能更好）
+  - 需要上传/下载进度：自动使用 XMLHttpRequest（支持进度追踪）
+- **请求/响应拦截器**：
+  - 请求拦截器（修改请求配置、添加认证信息等）
+  - 响应拦截器（处理响应数据、错误处理等）
+- **自动重试和超时控制**：
+  - 自动重试失败请求
+  - 请求超时控制
+  - 可配置重试次数、延迟和条件
+  - 支持指数退避策略
+- **文件上传/下载**：
+  - 文件上传支持（FormData、File）
+  - 文件下载支持（Blob）
+  - 上传/下载进度追踪
+- **Cookie 管理**：
+  - 自动处理 Cookie（发送和接收）
+  - Cookie 设置和获取
+  - Cookie 过期处理
+- **完整的 HTTP 方法支持**：
+  - GET、POST、PUT、DELETE、PATCH、HEAD、OPTIONS
+
 ## 使用场景
 
 - 通用工具函数（字符串、数组、对象操作）
@@ -127,6 +173,8 @@
 - 异步操作控制（防抖、节流、重试）
 - URL 处理和解析
 - 浏览器文件操作（File API）
+- 数据验证（表单验证、API 数据验证）
+- HTTP 客户端（API 请求、文件上传/下载）
 - 辅助方法
 
 ## 安装
@@ -378,6 +426,146 @@ const textContent = await preview.text(textFile);
 const pdfURL = await preview.pdf(pdfFile);
 ```
 
+### 数据验证
+
+```typescript
+import { validate, string, number, object, email, url } from "jsr:@dreamer/utils/client/validator";
+
+// 基础验证
+const nameSchema = string().min(2).max(50).required();
+const result = validate("Alice", nameSchema);
+if (result.success) {
+  console.log("验证通过:", result.data);
+} else {
+  console.log("验证失败:", result.errors);
+}
+
+// 对象验证（表单验证）
+const formSchema = object({
+  name: string().min(2).required(),
+  age: number().min(18).max(100).required(),
+  email: email().required(),
+  website: url().optional(),
+});
+
+const formData = {
+  name: "Alice",
+  age: 25,
+  email: "alice@example.com",
+  website: "https://example.com",
+};
+
+const formResult = validate(formData, formSchema);
+if (formResult.success) {
+  console.log("表单验证通过:", formResult.data);
+} else {
+  formResult.errors.forEach((error) => {
+    console.log(`${error.path}: ${error.message}`);
+  });
+}
+
+// 自定义验证规则
+const passwordSchema = string()
+  .min(8)
+  .custom((value) => {
+    if (!/[A-Z]/.test(value)) {
+      return "密码必须包含至少一个大写字母";
+    }
+    if (!/[a-z]/.test(value)) {
+      return "密码必须包含至少一个小写字母";
+    }
+    if (!/[0-9]/.test(value)) {
+      return "密码必须包含至少一个数字";
+    }
+    return true;
+  })
+  .required();
+```
+
+### HTTP 客户端
+
+```typescript
+import { HttpClient } from "jsr:@dreamer/utils/client/http";
+
+// 创建 HTTP 客户端
+const client = new HttpClient({
+  baseURL: "https://api.example.com",
+  timeout: 5000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// 配置拦截器
+client.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.set("Authorization", `Bearer ${token}`);
+  }
+  return config;
+});
+
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error instanceof Response && error.status === 401) {
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
+// 发送请求
+const response = await client.get("/users");
+const users = await response.json();
+
+// POST 请求
+const newUser = await client.post("/users", {
+  name: "Alice",
+  email: "alice@example.com",
+});
+
+// 文件上传（支持进度）
+const formData = new FormData();
+formData.append("file", fileInput.files[0]);
+
+await client.upload("/upload", formData, {
+  onStart: () => console.log("开始上传"),
+  onProgress: (progress) => {
+    console.log(`上传进度: ${progress.percent}%`);
+  },
+  onComplete: () => console.log("上传完成"),
+});
+
+// 文件下载（支持进度）
+const blob = await client.download("/files/document.pdf", {
+  onStart: () => console.log("开始下载"),
+  onProgress: (progress) => {
+    console.log(`下载进度: ${progress.percent}%`);
+  },
+  onComplete: () => console.log("下载完成"),
+});
+
+// 自动重试
+const response = await client.get("/api/data", {
+  retry: true,
+  retryOptions: {
+    retries: 3,
+    retryDelay: 1000,
+    exponentialBackoff: true,
+  },
+});
+
+// Cookie 管理
+client.cookies.set("session", "abc123", {
+  expires: 7 * 24 * 60 * 60, // 7 天
+  path: "/",
+  secure: true,
+});
+
+const session = client.cookies.get("session");
+```
+
 ## 与服务端的区别
 
 客户端版本和服务端版本的主要区别：
@@ -414,6 +602,7 @@ const pdfURL = await preview.pdf(pdfFile);
 - `async.ts` - 异步工具
 - `url.ts` - URL 处理
 - `format.ts` - 格式化工具
+- `validator.ts` - 数据验证
 
 这些模块都是纯 JavaScript 函数，不依赖任何运行时 API，可以在浏览器和服务端环境使用。
 
@@ -428,6 +617,7 @@ const pdfURL = await preview.pdf(pdfFile);
 
 以下模块仅在客户端可用：
 - `client/file.ts` - 浏览器文件操作（使用 File API、Blob API）
+- `client/http/` - HTTP 客户端（使用 Fetch API 和 XMLHttpRequest）
 
 ### 设计优势
 

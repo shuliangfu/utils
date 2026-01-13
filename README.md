@@ -28,6 +28,7 @@
 ├── url.ts          # URL 处理（服务端/客户端共享）
 ├── format.ts       # 格式化工具（服务端/客户端共享）
 ├── file.ts         # 文件操作（服务端：文件系统 API）
+├── validator.ts    # 数据验证（服务端/客户端共享）
 └── client/
     ├── array.ts    # 数组操作（导出服务端版本）
     ├── string.ts   # 字符串处理（导出服务端版本）
@@ -38,17 +39,25 @@
     ├── url.ts      # URL 处理（导出服务端版本）
     ├── format.ts   # 格式化工具（导出服务端版本）
     ├── file.ts     # 文件操作（客户端：浏览器 File API）
+    ├── validator.ts # 数据验证（导出服务端版本）
+    ├── http/       # HTTP 客户端（仅客户端）
+    │   ├── mod.ts  # 主入口
+    │   ├── client.ts # HttpClient 类
+    │   ├── cookies.ts # Cookie 管理
+    │   ├── interceptors.ts # 拦截器
+    │   ├── retry.ts # 重试逻辑
+    │   └── types.ts # 类型定义
     └── README.md   # 客户端文档
 ```
 
 **注意**：
-- **共享模块**（`array`、`string`、`object`、`date`、`number`、`async`、`url`、`format`）：客户端直接导出服务端版本（纯 JavaScript，不依赖运行时 API）
+- **共享模块**（`array`、`string`、`object`、`date`、`number`、`async`、`url`、`format`、`validator`）：客户端直接导出服务端版本（纯 JavaScript，不依赖运行时 API）
 - **服务端专用模块**（`lock`、`system`、`file`）：客户端不支持，仅服务端可用
-- **客户端专用模块**（`client/file`）：独立的客户端实现（使用浏览器 File API）
+- **客户端专用模块**（`client/file`、`client/http`）：独立的客户端实现（使用浏览器 File API 和 Fetch/XHR API）
 
 ## 特性
 
-### 字符串处理（`string.ts`）
+### 字符串处理（`string.ts`） - [📖 详细文档](./docs/string.md)
 
 - 字符串截断（`truncate`）
 - 字符串格式化（`format`、`template`）
@@ -58,7 +67,7 @@
 - 字符串匹配（`match`、`matchAll`）
 - 字符串替换（`replace`、`replaceAll`）
 
-### 数组操作（`array.ts`）
+### 数组操作（`array.ts`） - [📖 详细文档](./docs/array.md)
 
 - 数组去重（`unique`、`uniqueBy`）
 - 数组分组（`groupBy`、`groupByKey`）
@@ -71,7 +80,7 @@
 - 数组查找（`find`、`findIndex`、`findLast`）
 - 数组统计（`count`、`countBy`）
 
-### 对象操作（`object.ts`）
+### 对象操作（`object.ts`） - [📖 详细文档](./docs/object.md)
 
 - 深度克隆（`deepClone`）
 - 对象合并（`merge`、`deepMerge`）
@@ -81,7 +90,7 @@
 - 对象转换（`mapKeys`、`mapValues`）
 - 对象比较（`isEqual`、`isDeepEqual`）
 
-### 日期时间处理（`date.ts`）
+### 日期时间处理（`date.ts`） - [📖 详细文档](./docs/date.md)
 
 - 日期格式化（`format`、`formatDate`、`formatTime`）
 - 日期解析（`parse`、`parseDate`）
@@ -91,7 +100,7 @@
 - 日期范围（`startOf`、`endOf`）
 - 相对时间（`fromNow`、`toNow`）
 
-### 数字格式化（`number.ts`）
+### 数字格式化（`number.ts`） - [📖 详细文档](./docs/number.md)
 
 - 数字格式化（`format`、`formatCurrency`、`formatPercent`）
 - 数字转换（`toFixed`、`toPrecision`）
@@ -99,7 +108,7 @@
 - 数字舍入（`round`、`floor`、`ceil`）
 - 数字验证（`isNumber`、`isInteger`、`isFloat`）
 
-### 异步工具（`async.ts`）
+### 异步工具（`async.ts`） - [📖 详细文档](./docs/async.md)
 
 - 防抖（`debounce`）
 - 节流（`throttle`）
@@ -108,14 +117,14 @@
 - 并发控制（`parallel`、`series`、`limit`）
 - Promise 工具（`sleep`、`delay`）
 
-### 分布式锁（`lock.ts`）
+### 分布式锁（`lock.ts`） - [📖 详细文档](./docs/lock.md)
 
 - 获取锁（`acquireLock`）
 - 使用锁执行函数（`withLock`）
 - 锁键名生成（`lockKey`）
 - 分布式锁类（`DistributedLock`）
 
-### 系统状态（`system.ts`）
+### 系统状态（`system.ts`） - [📖 详细文档](./docs/system.md)
 
 - 内存信息（`getMemoryInfo`）
 - CPU 使用率（`getCpuUsage`）
@@ -125,7 +134,7 @@
 - 完整系统状态（`getSystemStatus`）
 - 格式化工具（`formatBytes`、`formatUptime`）
 
-### URL 处理（`url.ts`）
+### URL 处理（`url.ts`） - [📖 详细文档](./docs/url.md)
 
 - URL 解析（`parse`、`parseQuery`）
 - URL 构建（`build`、`buildQuery`）
@@ -133,14 +142,26 @@
 - URL 合并（`join`）
 - URL 验证（`isValid`）
 
-### 格式化工具（`format.ts`）
+### 格式化工具（`format.ts`） - [📖 详细文档](./docs/format.md)
 
 - 文件大小格式化（`formatBytes`）
 - 时间格式化（`formatDuration`）
 - 数字格式化（`formatNumber`）
 - 百分比格式化（`formatPercent`）
 
-### 文件操作（`file.ts` - 服务端）
+### 数据验证（`validator.ts`） - [📖 详细文档](./docs/validator.md)
+
+- 基础类型验证（`string`、`number`、`boolean`、`email`、`url`）
+- 对象结构验证（`object`）
+- 数组验证（`array`）
+- 自定义验证规则（`custom`）
+- 验证转换（`transform`）
+- 默认值（`default`）
+- 条件验证（`when`）
+- 错误消息定制（`message`）
+- 异步验证支持
+
+### 文件操作（`file.ts` - 服务端） - [📖 详细文档](./docs/file.md)
 
 - 文件读写（`FileManager`）
   - 读取文本文件（`readText`）
@@ -165,8 +186,12 @@
 - 文件流处理（`FileStream`）
   - 流式读取大文件
   - 流式写入大文件
+- 文件压缩/解压（`FileCompressor`）
+  - gzip 压缩（`gzip`）
+  - gunzip 解压（`gunzip`）
+  - 内存压缩/解压（`compress`/`decompress`）
 
-**注意**：客户端文件操作请查看 [client/README.md](./src/client/README.md)
+**注意**：客户端文件操作请查看 [client/README.md](./src/client/README.md) 和 [📖 客户端文件文档](./docs/client/file.md)
 
 ## 使用场景
 
@@ -176,6 +201,8 @@
 - 异步操作控制（防抖、节流、重试）
 - URL 处理和解析
 - 文件操作（服务端和客户端）
+- 数据验证（服务端和客户端）
+- HTTP 客户端（仅客户端）
 - 辅助方法
 
 ## 安装
@@ -198,6 +225,8 @@ deno add jsr:@dreamer/utils
 **注意**：
 - `system.ts` 模块需要运行时权限（执行系统命令），在浏览器环境中不可用
 - `lock.ts` 模块需要 Redis 连接，仅适用于服务端环境
+- `file.ts` 模块的压缩功能：
+  - Deno 和 Bun：都使用 `npm:pako@2.1.0`（自动安装）
 
 ## 导入方式
 
@@ -215,6 +244,7 @@ import { acquireLock, withLock, lockKey } from "jsr:@dreamer/utils/lock";
 import { getSystemStatus, getMemoryInfo, getCpuUsage, formatBytes, formatUptime } from "jsr:@dreamer/utils/system";
 import { parse, build, parseQuery } from "jsr:@dreamer/utils/url";
 import { formatDuration } from "jsr:@dreamer/utils/format";
+import { validate, string, number, object } from "jsr:@dreamer/utils/validator";
 
 // 或从主入口导入（可选，不推荐，会增加打包体积）
 import { unique, truncate, deepClone } from "jsr:@dreamer/utils";
@@ -546,6 +576,7 @@ console.log(formatBytes(1048576)); // "1.00 MB"
 
 ```typescript
 import {
+  FileCompressor,
   FileManager,
   FileWatcher,
   FileTypeDetector,
@@ -613,6 +644,21 @@ for await (const chunk of reader) {
   // 处理每个块
   console.log("读取块:", chunk.length, "bytes");
 }
+
+// 文件压缩/解压
+const compressor = new FileCompressor();
+
+// gzip 压缩文件
+await compressor.gzip("./data.txt", "./data.txt.gz");
+
+// gunzip 解压文件
+await compressor.gunzip("./data.txt.gz", "./data.txt");
+
+// 内存压缩/解压
+const data = new TextEncoder().encode("Hello, World!");
+const compressed = await compressor.compress(data);
+const decompressed = await compressor.decompress(compressed);
+console.log(new TextDecoder().decode(decompressed)); // "Hello, World!"
 ```
 
 
@@ -671,6 +717,169 @@ const duration2 = formatDuration(3661, { format: "HH:mm:ss" }); // "01:01:01"
 const num = formatNumber(1234567.89); // "1,234,567.89"
 ```
 
+### 数据验证
+
+```typescript
+import { validate, string, number, object, array, email, url } from "jsr:@dreamer/utils/validator";
+
+// 基础验证
+const nameSchema = string().min(2).max(50).required();
+const result = validate("Alice", nameSchema);
+if (result.success) {
+  console.log("验证通过:", result.data);
+} else {
+  console.log("验证失败:", result.errors);
+}
+
+// 对象验证
+const userSchema = object({
+  name: string().min(2).required(),
+  age: number().min(18).max(100).required(),
+  email: email().required(),
+  website: url().optional(),
+  tags: array(string()).min(1).optional(),
+});
+
+const userData = {
+  name: "Alice",
+  age: 25,
+  email: "alice@example.com",
+  website: "https://example.com",
+  tags: ["developer", "designer"],
+};
+
+const userResult = validate(userData, userSchema);
+if (userResult.success) {
+  console.log("用户数据验证通过:", userResult.data);
+} else {
+  userResult.errors.forEach((error) => {
+    console.log(`${error.path}: ${error.message}`);
+  });
+}
+
+// 自定义验证规则
+const passwordSchema = string()
+  .min(8)
+  .custom((value) => {
+    if (!/[A-Z]/.test(value)) {
+      return "密码必须包含至少一个大写字母";
+    }
+    if (!/[a-z]/.test(value)) {
+      return "密码必须包含至少一个小写字母";
+    }
+    if (!/[0-9]/.test(value)) {
+      return "密码必须包含至少一个数字";
+    }
+    return true;
+  })
+  .required();
+
+// 类型转换和默认值
+const configSchema = object({
+  port: number().default(3000).transform((v) => Number(v)),
+  debug: boolean().default(false),
+  timeout: number().min(0).default(5000),
+});
+
+// 条件验证
+const conditionalSchema = object({
+  type: string().required(),
+  email: string().when("type", {
+    is: "email",
+    then: (schema) => schema.email().required(),
+    otherwise: (schema) => schema.optional(),
+  }),
+});
+```
+
+### 客户端 HTTP 客户端 - [📖 详细文档](./docs/client/http.md)
+
+```typescript
+import { HttpClient } from "jsr:@dreamer/utils/client/http";
+
+// 创建 HTTP 客户端
+const client = new HttpClient({
+  baseURL: "https://api.example.com",
+  timeout: 5000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// 配置拦截器
+client.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.set("Authorization", `Bearer ${token}`);
+  }
+  return config;
+});
+
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error instanceof Response && error.status === 401) {
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
+// 发送请求
+const response = await client.get("/users");
+const users = await response.json();
+
+// POST 请求
+const newUser = await client.post("/users", {
+  name: "Alice",
+  email: "alice@example.com",
+});
+
+// 文件上传（支持进度）
+const formData = new FormData();
+formData.append("file", fileInput.files[0]);
+
+await client.upload("/upload", formData, {
+  onProgress: (progress) => {
+    console.log(`上传进度: ${progress.percent}%`);
+  },
+});
+
+// 文件下载（支持进度）
+const blob = await client.download("/files/document.pdf", {
+  onProgress: (progress) => {
+    console.log(`下载进度: ${progress.percent}%`);
+  },
+});
+
+// 自动重试
+const response = await client.get("/api/data", {
+  retry: true,
+  retryOptions: {
+    retries: 3,
+    retryDelay: 1000,
+    exponentialBackoff: true,
+  },
+});
+```
+
+### 客户端数据验证 - [📖 详细文档](./docs/client/validator.md)
+
+```typescript
+import { validate, string, number, object } from "jsr:@dreamer/utils/client/validator";
+
+// 客户端验证与服务端完全兼容
+const schema = object({
+  name: string().min(2).required(),
+  age: number().min(18).required(),
+});
+
+const result = validate({ name: "Alice", age: 25 }, schema);
+if (result.success) {
+  console.log("验证通过:", result.data);
+}
+```
+
 ## 文件结构
 
 ```
@@ -686,6 +895,7 @@ src/
 ├── url.ts          # URL 处理工具（服务端/客户端共享）
 ├── format.ts       # 格式化工具（服务端/客户端共享）
 ├── file.ts         # 文件操作（服务端：文件系统 API）
+├── validator.ts    # 数据验证（服务端/客户端共享）
 └── client/
     ├── array.ts    # 数组操作（导出服务端版本）
     ├── string.ts   # 字符串处理（导出服务端版本）
@@ -696,6 +906,14 @@ src/
     ├── url.ts      # URL 处理（导出服务端版本）
     ├── format.ts   # 格式化工具（导出服务端版本）
     ├── file.ts     # 文件操作（客户端：浏览器 File API）
+    ├── validator.ts # 数据验证（导出服务端版本）
+    ├── http/       # HTTP 客户端（仅客户端）
+    │   ├── mod.ts  # 主入口
+    │   ├── client.ts # HttpClient 类
+    │   ├── cookies.ts # Cookie 管理
+    │   ├── interceptors.ts # 拦截器
+    │   ├── retry.ts # 重试逻辑
+    │   └── types.ts # 类型定义
     └── README.md   # 客户端文档
 ```
 
@@ -719,6 +937,8 @@ src/
 - **服务端和客户端分离**：通过 `/client` 子路径明确区分服务端和客户端代码
 - **代码复用**：大部分客户端模块直接导出服务端版本（纯 JavaScript 函数）
 - **跨运行时兼容**：使用 `@dreamer/runtime-adapter` 实现 Deno 和 Bun 兼容性
+- **数据验证**：提供类似 Joi/Yup 的验证功能，支持服务端和客户端
+- **HTTP 客户端**：智能结合 Fetch 和 XHR，支持拦截器、重试、进度追踪等功能
 
 ---
 

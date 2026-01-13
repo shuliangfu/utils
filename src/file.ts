@@ -8,10 +8,11 @@
  * - 文件监控：文件/目录变化监听，支持递归监控和防抖
  * - 文件类型检测：MIME 类型检测，文件扩展名检测，文件签名检测
  * - 大文件处理：流式读取和写入，分块处理，内存优化
+ * - 文件压缩/解压：gzip/gunzip 压缩和解压（Deno 和 Bun 都支持）
  *
  * @example
  * ```typescript
- * import { FileManager } from "jsr:@dreamer/utils/file";
+ * import { FileManager, FileCompressor } from "jsr:@dreamer/utils/file";
  *
  * const fileManager = new FileManager();
  *
@@ -20,6 +21,13 @@
  *
  * // 写入文本文件
  * await fileManager.writeText("./output.txt", "Hello, World!");
+ *
+ * // 压缩文件
+ * const compressor = new FileCompressor();
+ * await compressor.gzip("./data.txt", "./data.txt.gz");
+ *
+ * // 解压文件
+ * await compressor.gunzip("./data.txt.gz", "./data.txt");
  * ```
  */
 
@@ -765,5 +773,114 @@ export class FileStream {
         }`,
       );
     }
+  }
+}
+
+/**
+ * 压缩选项
+ */
+export interface CompressionOptions {
+  /** 压缩级别（1-9，默认：6，仅适用于 gzip） */
+  level?: number;
+}
+
+/**
+ * 文件压缩器类
+ * 提供文件压缩和解压功能，支持 gzip/gunzip
+ */
+export class FileCompressor {
+  /**
+   * 使用 gzip 压缩文件
+   * @param sourcePath 源文件路径
+   * @param destPath 目标文件路径（压缩后的文件）
+   * @param options 压缩选项
+   */
+  async gzip(
+    sourcePath: string,
+    destPath: string,
+    options?: CompressionOptions,
+  ): Promise<void> {
+    try {
+      const data = await readFile(sourcePath);
+      const compressed = await this.compressGzip(data, options);
+      await writeFile(destPath, compressed);
+    } catch (error) {
+      throw new Error(
+        `gzip 压缩失败: ${sourcePath} -> ${destPath}, ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
+  }
+
+  /**
+   * 使用 gunzip 解压文件
+   * @param sourcePath 源文件路径（压缩文件）
+   * @param destPath 目标文件路径（解压后的文件）
+   */
+  async gunzip(sourcePath: string, destPath: string): Promise<void> {
+    try {
+      const compressed = await readFile(sourcePath);
+      const decompressed = await this.decompressGzip(compressed);
+      await writeFile(destPath, decompressed);
+    } catch (error) {
+      throw new Error(
+        `gunzip 解压失败: ${sourcePath} -> ${destPath}, ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
+  }
+
+  /**
+   * 压缩数据（gzip）
+   * @param data 要压缩的数据
+   * @param options 压缩选项
+   * @returns 压缩后的数据
+   */
+  private async compressGzip(
+    data: Uint8Array,
+    options?: CompressionOptions,
+  ): Promise<Uint8Array> {
+    // Deno 和 Bun 都使用 pako 库进行 gzip 压缩
+    const { gzip } = await import("pako");
+    return gzip(data, {
+      level: options?.level ?? 6,
+    });
+  }
+
+  /**
+   * 解压数据（gunzip）
+   * @param compressed 压缩的数据
+   * @returns 解压后的数据
+   */
+  private async decompressGzip(
+    compressed: Uint8Array,
+  ): Promise<Uint8Array> {
+    // Deno 和 Bun 都使用 pako 库进行 gunzip 解压
+    const { ungzip } = await import("pako");
+    return ungzip(compressed);
+  }
+
+  /**
+   * 压缩数据（gzip，内存操作）
+   * @param data 要压缩的数据
+   * @param options 压缩选项
+   * @returns 压缩后的数据
+   */
+  async compress(
+    data: Uint8Array,
+    options?: CompressionOptions,
+  ): Promise<Uint8Array> {
+    return await this.compressGzip(data, options);
+  }
+
+  /**
+   * 解压数据（gunzip，内存操作）
+   * @param compressed 压缩的数据
+   * @returns 解压后的数据
+   */
+  async decompress(compressed: Uint8Array): Promise<Uint8Array> {
+    return await this.decompressGzip(compressed);
   }
 }
