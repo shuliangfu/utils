@@ -40,6 +40,7 @@
     ├── format.ts   # 格式化工具（导出服务端版本）
     ├── file.ts     # 文件操作（客户端：浏览器 File API）
     ├── validator.ts # 数据验证（导出服务端版本）
+    ├── clipboard.ts # 剪贴板操作（仅客户端）
     ├── http/       # HTTP 客户端（仅客户端）
     │   ├── mod.ts  # 主入口
     │   ├── client.ts # HttpClient 类
@@ -53,7 +54,7 @@
 **注意**：
 - **共享模块**（`array`、`string`、`object`、`date`、`number`、`async`、`url`、`format`、`validator`）：客户端直接导出服务端版本（纯 JavaScript，不依赖运行时 API）
 - **服务端专用模块**（`lock`、`system`、`file`）：客户端不支持，仅服务端可用
-- **客户端专用模块**（`client/file`、`client/http`）：独立的客户端实现（使用浏览器 File API 和 Fetch/XHR API）
+- **客户端专用模块**（`client/file`、`client/http`、`client/clipboard`）：独立的客户端实现（使用浏览器 File API、Fetch/XHR API 和 Clipboard API）
 
 ## 特性
 
@@ -193,6 +194,13 @@
 
 **注意**：客户端文件操作请查看 [client/README.md](./src/client/README.md) 和 [📖 客户端文件文档](./docs/client/file.md)
 
+### 剪贴板操作（`client/clipboard.ts`） - [📖 详细文档](./docs/client/clipboard.md)
+
+- 复制文本到剪贴板（`copyToClipboard`）
+- 从剪贴板读取文本（`readFromClipboard`）
+- 检查是否支持剪贴板操作（`isClipboardSupported`）
+- 检查是否支持读取剪贴板（`isClipboardReadSupported`）
+
 ## 使用场景
 
 - 通用工具函数（字符串、数组、对象操作）
@@ -203,6 +211,7 @@
 - 文件操作（服务端和客户端）
 - 数据验证（服务端和客户端）
 - HTTP 客户端（仅客户端）
+- 剪贴板操作（仅客户端）
 - 辅助方法
 
 ## 安装
@@ -213,7 +222,7 @@ deno add jsr:@dreamer/utils
 
 ## 环境兼容性
 
-- **运行时要求**：Deno 2.5+ 或 Bun 1.0+
+- **运行时要求**：Deno 2.6+ 或 Bun 1.3.5
 - **Bun 版本**：要求 Bun 1.0 或更高版本
 - **服务端**：✅ 支持（Deno/Bun 运行时）
 - **客户端**：✅ 支持（浏览器环境，部分功能受限）
@@ -880,6 +889,56 @@ if (result.success) {
 }
 ```
 
+### 剪贴板操作 - [📖 详细文档](./docs/client/clipboard.md)
+
+```typescript
+import {
+  copyToClipboard,
+  readFromClipboard,
+  isClipboardSupported,
+  isClipboardReadSupported,
+} from "jsr:@dreamer/utils/client/clipboard";
+
+// 复制文本到剪贴板
+await copyToClipboard("Hello, World!");
+
+// 带错误处理
+try {
+  await copyToClipboard("Hello, World!");
+  console.log("复制成功");
+} catch (error) {
+  console.error("复制失败:", error);
+}
+
+// 从剪贴板读取文本
+const text = await readFromClipboard();
+console.log("剪贴板内容:", text);
+
+// 检查是否支持剪贴板操作
+if (isClipboardSupported()) {
+  await copyToClipboard("Hello");
+} else {
+  console.warn("浏览器不支持剪贴板操作");
+}
+
+// 检查是否支持读取剪贴板
+if (isClipboardReadSupported()) {
+  const text = await readFromClipboard();
+} else {
+  console.warn("浏览器不支持读取剪贴板");
+}
+
+// 在点击事件中使用（必须由用户交互触发）
+button.addEventListener("click", async () => {
+  try {
+    await copyToClipboard("要复制的文本");
+    alert("复制成功！");
+  } catch (error) {
+    alert("复制失败，请手动复制");
+  }
+});
+```
+
 ## 文件结构
 
 ```
@@ -907,6 +966,7 @@ src/
     ├── format.ts   # 格式化工具（导出服务端版本）
     ├── file.ts     # 文件操作（客户端：浏览器 File API）
     ├── validator.ts # 数据验证（导出服务端版本）
+    ├── clipboard.ts # 剪贴板操作（仅客户端）
     ├── http/       # HTTP 客户端（仅客户端）
     │   ├── mod.ts  # 主入口
     │   ├── client.ts # HttpClient 类

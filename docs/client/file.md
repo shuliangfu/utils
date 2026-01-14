@@ -50,7 +50,7 @@ deno add jsr:@dreamer/utils
 
 ## 🌍 环境兼容性
 
-- **运行时要求**：Deno 2.5+ 或 Bun 1.0+
+- **运行时要求**：Deno 2.6+ 或 Bun 1.3.5
 - **服务端**：❌ 不支持（使用 `jsr:@dreamer/utils/file`）
 - **客户端**：✅ 支持（浏览器环境）
 - **依赖**：无外部依赖（基于浏览器标准 API）
