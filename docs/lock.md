@@ -54,7 +54,7 @@ deno add jsr:@dreamer/utils
 ## 🚀 快速开始
 
 ```typescript
-import { acquireLock, withLock, lockKey } from "jsr:@dreamer/utils/lock";
+import { acquireLock, lockKey, withLock } from "jsr:@dreamer/utils/lock";
 import { Redis } from "npm:ioredis";
 
 const redis = new Redis("redis://localhost:6379");
@@ -86,7 +86,7 @@ const result = await withLock(
   {
     ttl: 10, // 10秒过期
     errorMessage: "提现操作正在进行中，请稍后重试",
-  }
+  },
 );
 
 // 方式3：获取锁失败时不抛出错误
@@ -121,15 +121,17 @@ function acquireLock(
   redis: RedisClient,
   key: string,
   options?: DistributedLockOptions,
-): Promise<DistributedLock | null>
+): Promise<DistributedLock | null>;
 ```
 
 **参数**：
+
 - `redis: RedisClient` - Redis 客户端（兼容 ioredis 和 node-redis）
 - `key: string` - 锁的键名
 - `options: DistributedLockOptions` - 选项
 
 **DistributedLockOptions**：
+
 - `ttl?: number` - 锁的过期时间（秒，默认 30）
 - `throwOnFail?: boolean` - 获取锁失败时是否抛出错误（默认 true）
 - `errorMessage?: string` - 获取锁失败时的错误消息
@@ -137,6 +139,7 @@ function acquireLock(
 **返回**：分布式锁实例，如果获取失败且 `throwOnFail` 为 false，返回 null
 
 **示例**：
+
 ```typescript
 const lock = await acquireLock(redis, "lock:user:123", {
   ttl: 10,
@@ -156,10 +159,11 @@ function withLock<T>(
   key: string,
   fn: () => Promise<T>,
   options?: DistributedLockOptions,
-): Promise<T>
+): Promise<T>;
 ```
 
 **参数**：
+
 - `redis: RedisClient` - Redis 客户端
 - `key: string` - 锁的键名
 - `fn: () => Promise<T>` - 要执行的函数
@@ -168,6 +172,7 @@ function withLock<T>(
 **返回**：函数执行结果
 
 **示例**：
+
 ```typescript
 const result = await withLock(
   redis,
@@ -178,7 +183,7 @@ const result = await withLock(
   {
     ttl: 10,
     errorMessage: "提现操作正在进行中，请稍后重试",
-  }
+  },
 );
 ```
 
@@ -189,16 +194,18 @@ const result = await withLock(
 生成锁键名，统一锁键名格式。
 
 ```typescript
-function lockKey(prefix: string, ...parts: (string | number)[]): string
+function lockKey(prefix: string, ...parts: (string | number)[]): string;
 ```
 
 **参数**：
+
 - `prefix: string` - 前缀
 - `...parts: (string | number)[]` - 键名部分
 
 **返回**：格式化的锁键名（格式：`lock:{prefix}:{parts.join(":")}`）
 
 **示例**：
+
 ```typescript
 const key = lockKey("withdraw", "user123"); // "lock:withdraw:user123"
 const key2 = lockKey("order", "user123", "order456"); // "lock:order:user123:order456"

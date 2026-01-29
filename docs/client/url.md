@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **URL 解析**：
   - 解析 URL 获取各个部分（`parse`）
   - 返回 protocol、host、pathname、search 等
@@ -59,14 +60,14 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  parse,
-  parseQuery,
   build,
   buildQuery,
-  encode,
   decode,
-  join,
+  encode,
   isValid,
+  join,
+  parse,
+  parseQuery,
 } from "jsr:@dreamer/utils/client/url";
 
 // 使用方式与服务端版本完全相同

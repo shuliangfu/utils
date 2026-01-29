@@ -14,7 +14,11 @@
  * @param suffix 省略符（默认 "..."）
  * @returns 截断后的字符串
  */
-export function truncate(str: string, length: number, suffix: string = "..."): string {
+export function truncate(
+  str: string,
+  length: number,
+  suffix: string = "...",
+): string {
   if (str.length <= length) {
     return str;
   }
@@ -28,7 +32,10 @@ export function truncate(str: string, length: number, suffix: string = "..."): s
  * @param data 数据对象
  * @returns 格式化后的字符串
  */
-export function format(template: string, data: Record<string, unknown>): string {
+export function format(
+  template: string,
+  data: Record<string, unknown>,
+): string {
   return template.replace(/\{(\w+)\}/g, (match, key) => {
     return String(data[key] ?? match);
   });
@@ -93,7 +100,11 @@ export function pascalCase(str: string): string {
  * @param padString 填充字符（默认空格）
  * @returns 填充后的字符串
  */
-export function padStart(str: string, length: number, padString: string = " "): string {
+export function padStart(
+  str: string,
+  length: number,
+  padString: string = " ",
+): string {
   return str.padStart(length, padString);
 }
 
@@ -105,7 +116,11 @@ export function padStart(str: string, length: number, padString: string = " "): 
  * @param padString 填充字符（默认空格）
  * @returns 填充后的字符串
  */
-export function padEnd(str: string, length: number, padString: string = " "): string {
+export function padEnd(
+  str: string,
+  length: number,
+  padString: string = " ",
+): string {
   return str.padEnd(length, padString);
 }
 

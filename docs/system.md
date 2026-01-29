@@ -1,6 +1,7 @@
 # System 系统状态
 
-> 系统状态工具函数模块，提供获取系统状态参数的工具方法，包括 CPU、内存、磁盘、网络等信息
+> 系统状态工具函数模块，提供获取系统状态参数的工具方法，包括
+> CPU、内存、磁盘、网络等信息
 
 [![JSR](https://jsr.io/badges/@dreamer/utils)](https://jsr.io/@dreamer/utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +10,8 @@
 
 ## 🎯 功能
 
-系统状态工具，提供获取系统状态参数的方法，包括 CPU、内存、磁盘、网络等信息，仅支持服务端。
+系统状态工具，提供获取系统状态参数的方法，包括
+CPU、内存、磁盘、网络等信息，仅支持服务端。
 
 ---
 
@@ -60,6 +62,7 @@ deno add jsr:@dreamer/utils
 - **依赖**：依赖 `@dreamer/runtime-adapter`（用于跨运行时兼容）
 
 **权限要求**：
+
 - Deno：需要 `--allow-sys` 和 `--allow-run` 权限
 - Bun：需要系统权限
 
@@ -69,14 +72,14 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  getSystemStatus,
-  getMemoryInfo,
-  getCpuUsage,
-  getLoadAverage,
-  getSystemInfo,
-  getDiskUsage,
   formatBytes,
   formatUptime,
+  getCpuUsage,
+  getDiskUsage,
+  getLoadAverage,
+  getMemoryInfo,
+  getSystemInfo,
+  getSystemStatus,
 } from "jsr:@dreamer/utils/system";
 
 // 获取完整系统状态
@@ -139,22 +142,24 @@ console.log(formatUptime(3661)); // "1 小时 1 分钟 1 秒"
 获取完整系统状态。
 
 ```typescript
-function getSystemStatus(): Promise<SystemStatus>
+function getSystemStatus(): Promise<SystemStatus>;
 ```
 
 **返回**：完整的系统状态
 
 **SystemStatus**：
+
 ```typescript
 interface SystemStatus {
-  system: SystemInfo;        // 系统信息
-  memory: MemoryInfo;        // 内存信息
-  cpu: CpuUsagePercent;      // CPU 使用率
+  system: SystemInfo; // 系统信息
+  memory: MemoryInfo; // 内存信息
+  cpu: CpuUsagePercent; // CPU 使用率
   loadAverage?: LoadAverage; // 系统负载（Linux/macOS）
 }
 ```
 
 **示例**：
+
 ```typescript
 const status = await getSystemStatus();
 console.log("系统信息:", status.system);
@@ -169,23 +174,25 @@ console.log("CPU 使用率:", status.cpu.usagePercent + "%");
 获取内存信息。
 
 ```typescript
-function getMemoryInfo(): Promise<MemoryInfo>
+function getMemoryInfo(): Promise<MemoryInfo>;
 ```
 
 **返回**：内存信息
 
 **MemoryInfo**：
+
 ```typescript
 interface MemoryInfo {
-  total: number;        // 总内存（字节）
-  available: number;    // 可用内存（字节）
-  used: number;         // 已使用内存（字节）
+  total: number; // 总内存（字节）
+  available: number; // 可用内存（字节）
+  used: number; // 已使用内存（字节）
   usagePercent: number; // 内存使用率（百分比，0-100）
-  free: number;         // 空闲内存（字节）
+  free: number; // 空闲内存（字节）
 }
 ```
 
 **示例**：
+
 ```typescript
 const memory = await getMemoryInfo();
 console.log(`总内存: ${formatBytes(memory.total)}`);
@@ -200,24 +207,27 @@ console.log(`内存使用率: ${memory.usagePercent}%`);
 获取 CPU 使用率。
 
 ```typescript
-function getCpuUsage(sampleInterval?: number): Promise<CpuUsagePercent>
+function getCpuUsage(sampleInterval?: number): Promise<CpuUsagePercent>;
 ```
 
 **参数**：
+
 - `sampleInterval?: number` - 采样间隔（毫秒，默认 200）
 
 **返回**：CPU 使用率信息
 
 **CpuUsagePercent**：
+
 ```typescript
 interface CpuUsagePercent {
-  usagePercent: number;  // CPU 使用率（百分比，0-100）
-  userPercent: number;   // 用户态使用率（百分比，0-100）
+  usagePercent: number; // CPU 使用率（百分比，0-100）
+  userPercent: number; // 用户态使用率（百分比，0-100）
   systemPercent: number; // 内核态使用率（百分比，0-100）
 }
 ```
 
 **示例**：
+
 ```typescript
 const cpu = await getCpuUsage(200); // 采样间隔 200ms
 console.log(`CPU 使用率: ${cpu.usagePercent}%`);
@@ -232,21 +242,23 @@ console.log(`内核态: ${cpu.systemPercent}%`);
 获取系统负载（Linux/macOS）。
 
 ```typescript
-function getLoadAverage(): Promise<LoadAverage | null>
+function getLoadAverage(): Promise<LoadAverage | null>;
 ```
 
 **返回**：系统负载信息，如果系统不支持则返回 null
 
 **LoadAverage**：
+
 ```typescript
 interface LoadAverage {
-  load1: number;  // 1 分钟平均负载
-  load5: number;  // 5 分钟平均负载
+  load1: number; // 1 分钟平均负载
+  load5: number; // 5 分钟平均负载
   load15: number; // 15 分钟平均负载
 }
 ```
 
 **示例**：
+
 ```typescript
 const load = await getLoadAverage();
 if (load) {
@@ -263,23 +275,25 @@ if (load) {
 获取系统信息。
 
 ```typescript
-function getSystemInfo(): Promise<SystemInfo>
+function getSystemInfo(): Promise<SystemInfo>;
 ```
 
 **返回**：系统信息
 
 **SystemInfo**：
+
 ```typescript
 interface SystemInfo {
   os: "darwin" | "linux" | "windows" | "unknown"; // 操作系统类型
-  osRelease: string;  // 操作系统版本
-  hostname: string;    // 主机名
+  osRelease: string; // 操作系统版本
+  hostname: string; // 主机名
   arch: "x86_64" | "aarch64" | "unknown"; // 架构
-  uptime: number;      // 系统运行时间（秒）
+  uptime: number; // 系统运行时间（秒）
 }
 ```
 
 **示例**：
+
 ```typescript
 const system = await getSystemInfo();
 console.log(`操作系统: ${system.os}`);
@@ -296,25 +310,28 @@ console.log(`运行时间: ${formatUptime(system.uptime)}`);
 获取磁盘使用信息。
 
 ```typescript
-function getDiskUsage(path?: string): Promise<DiskUsage>
+function getDiskUsage(path?: string): Promise<DiskUsage>;
 ```
 
 **参数**：
+
 - `path?: string` - 路径（默认 "/"）
 
 **返回**：磁盘使用信息
 
 **DiskUsage**：
+
 ```typescript
 interface DiskUsage {
-  total: number;        // 总空间（字节）
-  used: number;         // 已使用空间（字节）
-  available: number;    // 可用空间（字节）
+  total: number; // 总空间（字节）
+  used: number; // 已使用空间（字节）
+  available: number; // 可用空间（字节）
   usagePercent: number; // 使用率（百分比，0-100）
 }
 ```
 
 **示例**：
+
 ```typescript
 const disk = await getDiskUsage("/");
 console.log(`总空间: ${formatBytes(disk.total)}`);
@@ -330,16 +347,18 @@ console.log(`使用率: ${disk.usagePercent}%`);
 格式化字节数。
 
 ```typescript
-function formatBytes(bytes: number, decimals?: number): string
+function formatBytes(bytes: number, decimals?: number): string;
 ```
 
 **参数**：
+
 - `bytes: number` - 字节数
 - `decimals?: number` - 小数位数（默认 2）
 
 **返回**：格式化后的字符串（如 "1.00 KB"）
 
 **示例**：
+
 ```typescript
 formatBytes(1024); // "1.00 KB"
 formatBytes(1048576); // "1.00 MB"
@@ -353,15 +372,17 @@ formatBytes(1073741824); // "1.00 GB"
 格式化运行时间。
 
 ```typescript
-function formatUptime(seconds: number): string
+function formatUptime(seconds: number): string;
 ```
 
 **参数**：
+
 - `seconds: number` - 秒数
 
 **返回**：格式化后的字符串（如 "1 小时 1 分钟 1 秒"）
 
 **示例**：
+
 ```typescript
 formatUptime(3661); // "1 小时 1 分钟 1 秒"
 formatUptime(60); // "1 分钟"

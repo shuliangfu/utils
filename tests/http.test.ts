@@ -2,17 +2,17 @@
  * @fileoverview HTTP 客户端测试
  */
 
-import { describe, expect, it, beforeEach, afterEach } from "@dreamer/test";
+import { afterEach, beforeEach, describe, expect, it } from "@dreamer/test";
 import {
-  HttpClient,
   ClientCookieManager,
+  HttpClient,
   InterceptorManager,
 } from "../src/client/http/mod.ts";
 import type {
+  DownloadOptions,
   HttpClientOptions,
   RequestConfig,
   UploadOptions,
-  DownloadOptions,
 } from "../src/client/http/types.ts";
 
 /**
@@ -743,9 +743,12 @@ describe("HttpClient", () => {
       const client = new HttpClient();
 
       globalThis.fetch = async () => {
-        return new Response(new Blob(["test content"], { type: "text/plain" }), {
-          status: 200,
-        });
+        return new Response(
+          new Blob(["test content"], { type: "text/plain" }),
+          {
+            status: 200,
+          },
+        );
       };
 
       const blob = await client.download("https://api.example.com/file");
@@ -988,7 +991,9 @@ describe("InterceptorManager", () => {
         return config;
       });
 
-      await interceptorManager.executeRequest({ url: "https://api.example.com" });
+      await interceptorManager.executeRequest({
+        url: "https://api.example.com",
+      });
       expect(executed).toBe(true);
     });
 
@@ -1003,7 +1008,9 @@ describe("InterceptorManager", () => {
         return config;
       });
 
-      await interceptorManager.executeRequest({ url: "https://api.example.com" });
+      await interceptorManager.executeRequest({
+        url: "https://api.example.com",
+      });
       expect(order).toEqual([1, 2]);
     });
 
@@ -1015,7 +1022,9 @@ describe("InterceptorManager", () => {
       });
 
       interceptorManager.ejectRequest(id);
-      await interceptorManager.executeRequest({ url: "https://api.example.com" });
+      await interceptorManager.executeRequest({
+        url: "https://api.example.com",
+      });
       expect(executed).toBe(false);
     });
   });
@@ -1110,7 +1119,9 @@ describe("InterceptorManager", () => {
       });
 
       interceptorManager.clear();
-      await interceptorManager.executeRequest({ url: "https://api.example.com" });
+      await interceptorManager.executeRequest({
+        url: "https://api.example.com",
+      });
       expect(executed).toBe(false);
     });
   });

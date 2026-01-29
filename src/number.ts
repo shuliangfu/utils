@@ -24,8 +24,13 @@ export function format(num: number, formatStr: string = "0,0.00"): string {
 
   if (formatStr.includes(".")) {
     const decimalPlaces = formatStr.split(".")[1]?.length || 0;
-    const formattedDecimal = decimalPart.padEnd(decimalPlaces, "0").slice(0, decimalPlaces);
-    return formattedDecimal ? `${formattedInteger}.${formattedDecimal}` : formattedInteger;
+    const formattedDecimal = decimalPart.padEnd(decimalPlaces, "0").slice(
+      0,
+      decimalPlaces,
+    );
+    return formattedDecimal
+      ? `${formattedInteger}.${formattedDecimal}`
+      : formattedInteger;
   }
 
   return formattedInteger;

@@ -56,13 +56,13 @@ deno add jsr:@dreamer/utils
 ```typescript
 import {
   debounce,
-  throttle,
-  retry,
-  withTimeout,
+  delay,
   parallel,
+  retry,
   series,
   sleep,
-  delay,
+  throttle,
+  withTimeout,
 } from "jsr:@dreamer/utils/async";
 
 // 防抖
@@ -90,13 +90,13 @@ const result = await retry(
     if (!response.ok) throw new Error("请求失败");
     return response.json();
   },
-  { maxAttempts: 3, delay: 1000 }
+  { maxAttempts: 3, delay: 1000 },
 );
 
 // 超时控制
 const result = await withTimeout(
   fetch("/api/data"),
-  5000 // 5 秒超时
+  5000, // 5 秒超时
 );
 
 // 并发控制
@@ -106,7 +106,7 @@ const results = await parallel(
     () => fetch("/api/user/2"),
     () => fetch("/api/user/3"),
   ],
-  { concurrency: 2 } // 最多 2 个并发
+  { concurrency: 2 }, // 最多 2 个并发
 );
 
 // 顺序执行
@@ -133,16 +133,18 @@ await delay(1000); // 延迟 1 秒（sleep 的别名）
 function debounce<T extends (...args: unknown[]) => unknown>(
   fn: T,
   delay: number,
-): (...args: Parameters<T>) => void
+): (...args: Parameters<T>) => void;
 ```
 
 **参数**：
+
 - `fn: T` - 要防抖的函数
 - `delay: number` - 延迟时间（毫秒）
 
 **返回**：防抖后的函数
 
 **示例**：
+
 ```typescript
 const debouncedSearch = debounce((query: string) => {
   console.log("搜索:", query);
@@ -164,16 +166,18 @@ debouncedSearch("abc"); // 只有这次会执行
 function throttle<T extends (...args: unknown[]) => unknown>(
   fn: T,
   delay: number,
-): (...args: Parameters<T>) => void
+): (...args: Parameters<T>) => void;
 ```
 
 **参数**：
+
 - `fn: T` - 要节流的函数
 - `delay: number` - 延迟时间（毫秒）
 
 **返回**：节流后的函数
 
 **示例**：
+
 ```typescript
 const throttledScroll = throttle(() => {
   console.log("滚动事件");
@@ -193,14 +197,16 @@ window.addEventListener("scroll", throttledScroll);
 function retry<T>(
   fn: () => Promise<T>,
   options?: RetryOptions,
-): Promise<T>
+): Promise<T>;
 ```
 
 **参数**：
+
 - `fn: () => Promise<T>` - 要重试的异步函数
 - `options: RetryOptions` - 重试选项
 
 **RetryOptions**：
+
 - `maxAttempts?: number` - 最大尝试次数（默认 3）
 - `delay?: number` - 延迟时间（毫秒，默认 1000）
 - `backoff?: number` - 延迟增长因子（默认 1）
@@ -209,6 +215,7 @@ function retry<T>(
 **返回**：Promise，成功时返回结果，失败时抛出错误
 
 **示例**：
+
 ```typescript
 const result = await retry(
   async () => {
@@ -224,7 +231,7 @@ const result = await retry(
       // 只在网络错误时重试
       return error.message.includes("网络");
     },
-  }
+  },
 );
 ```
 
@@ -238,21 +245,23 @@ const result = await retry(
 function withTimeout<T>(
   promise: Promise<T>,
   timeout: number,
-): Promise<T>
+): Promise<T>;
 ```
 
 **参数**：
+
 - `promise: Promise<T>` - 要控制的 Promise
 - `timeout: number` - 超时时间（毫秒）
 
 **返回**：Promise，超时时抛出错误
 
 **示例**：
+
 ```typescript
 try {
   const result = await withTimeout(
     fetch("/api/data"),
-    5000 // 5 秒超时
+    5000, // 5 秒超时
   );
 } catch (error) {
   if (error.message.includes("超时")) {
@@ -271,27 +280,30 @@ try {
 function parallel<T>(
   tasks: (() => Promise<T>)[],
   options?: ConcurrencyOptions,
-): Promise<T[]>
+): Promise<T[]>;
 ```
 
 **参数**：
+
 - `tasks: (() => Promise<T>)[]` - 异步函数数组
 - `options: ConcurrencyOptions` - 并发选项
 
 **ConcurrencyOptions**：
+
 - `concurrency?: number` - 并发数（默认不限制）
 
 **返回**：Promise，返回所有任务的结果数组
 
 **示例**：
+
 ```typescript
 const results = await parallel(
   [
-    () => fetch("/api/user/1").then(r => r.json()),
-    () => fetch("/api/user/2").then(r => r.json()),
-    () => fetch("/api/user/3").then(r => r.json()),
+    () => fetch("/api/user/1").then((r) => r.json()),
+    () => fetch("/api/user/2").then((r) => r.json()),
+    () => fetch("/api/user/3").then((r) => r.json()),
   ],
-  { concurrency: 2 } // 最多 2 个并发
+  { concurrency: 2 }, // 最多 2 个并发
 );
 ```
 
@@ -304,20 +316,22 @@ const results = await parallel(
 ```typescript
 function series<T>(
   tasks: (() => Promise<T>)[],
-): Promise<T[]>
+): Promise<T[]>;
 ```
 
 **参数**：
+
 - `tasks: (() => Promise<T>)[]` - 异步函数数组
 
 **返回**：Promise，返回所有任务的结果数组
 
 **示例**：
+
 ```typescript
 const results = await series([
-  () => fetch("/api/step1").then(r => r.json()),
-  () => fetch("/api/step2").then(r => r.json()),
-  () => fetch("/api/step3").then(r => r.json()),
+  () => fetch("/api/step1").then((r) => r.json()),
+  () => fetch("/api/step2").then((r) => r.json()),
+  () => fetch("/api/step3").then((r) => r.json()),
 ]);
 // 按顺序执行，前一个完成后才执行下一个
 ```
@@ -329,15 +343,17 @@ const results = await series([
 延迟指定时间。
 
 ```typescript
-function sleep(ms: number): Promise<void>
+function sleep(ms: number): Promise<void>;
 ```
 
 **参数**：
+
 - `ms: number` - 延迟时间（毫秒）
 
 **返回**：Promise，延迟完成后 resolve
 
 **示例**：
+
 ```typescript
 await sleep(1000); // 延迟 1 秒
 console.log("1 秒后");
@@ -350,15 +366,17 @@ console.log("1 秒后");
 延迟指定时间（sleep 的别名）。
 
 ```typescript
-function delay(ms: number): Promise<void>
+function delay(ms: number): Promise<void>;
 ```
 
 **参数**：
+
 - `ms: number` - 延迟时间（毫秒）
 
 **返回**：Promise，延迟完成后 resolve
 
 **示例**：
+
 ```typescript
 await delay(1000); // 延迟 1 秒
 ```

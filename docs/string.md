@@ -56,17 +56,17 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  truncate,
-  format,
   camelCase,
-  snakeCase,
+  format,
   kebabCase,
-  pascalCase,
-  padStart,
   padEnd,
+  padStart,
+  pascalCase,
+  snakeCase,
   trim,
-  trimStart,
   trimEnd,
+  trimStart,
+  truncate,
 } from "jsr:@dreamer/utils/string";
 
 // 字符串截断
@@ -102,10 +102,11 @@ const cleaned3 = trimEnd("  hello world  "); // "  hello world"
 截断字符串，超过指定长度时添加省略符。
 
 ```typescript
-function truncate(str: string, length: number, suffix?: string): string
+function truncate(str: string, length: number, suffix?: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要截断的字符串
 - `length: number` - 最大长度
 - `suffix: string` - 省略符（默认 "..."）
@@ -113,6 +114,7 @@ function truncate(str: string, length: number, suffix?: string): string
 **返回**：截断后的字符串
 
 **示例**：
+
 ```typescript
 const text = "这是一段很长的文本";
 const truncated = truncate(text, 10); // "这是一段很长的..."
@@ -125,16 +127,18 @@ const truncated = truncate(text, 10); // "这是一段很长的..."
 字符串格式化，使用占位符替换。
 
 ```typescript
-function format(template: string, data: Record<string, unknown>): string
+function format(template: string, data: Record<string, unknown>): string;
 ```
 
 **参数**：
+
 - `template: string` - 模板字符串（如 "Hello, {name}!"）
 - `data: Record<string, unknown>` - 数据对象
 
 **返回**：格式化后的字符串
 
 **示例**：
+
 ```typescript
 const formatted = format("Hello, {name}!", { name: "Alice" }); // "Hello, Alice!"
 ```
@@ -146,15 +150,17 @@ const formatted = format("Hello, {name}!", { name: "Alice" }); // "Hello, Alice!
 转换为驼峰命名（camelCase）。
 
 ```typescript
-function camelCase(str: string): string
+function camelCase(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要转换的字符串
 
 **返回**：驼峰命名
 
 **示例**：
+
 ```typescript
 const camel = camelCase("hello_world"); // "helloWorld"
 const camel2 = camelCase("hello-world"); // "helloWorld"
@@ -168,15 +174,17 @@ const camel3 = camelCase("hello world"); // "helloWorld"
 转换为蛇形命名（snake_case）。
 
 ```typescript
-function snakeCase(str: string): string
+function snakeCase(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要转换的字符串
 
 **返回**：蛇形命名
 
 **示例**：
+
 ```typescript
 const snake = snakeCase("helloWorld"); // "hello_world"
 const snake2 = snakeCase("hello-world"); // "hello_world"
@@ -189,15 +197,17 @@ const snake2 = snakeCase("hello-world"); // "hello_world"
 转换为短横线命名（kebab-case）。
 
 ```typescript
-function kebabCase(str: string): string
+function kebabCase(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要转换的字符串
 
 **返回**：短横线命名
 
 **示例**：
+
 ```typescript
 const kebab = kebabCase("helloWorld"); // "hello-world"
 const kebab2 = kebabCase("hello_world"); // "hello-world"
@@ -210,15 +220,17 @@ const kebab2 = kebabCase("hello_world"); // "hello-world"
 转换为帕斯卡命名（PascalCase）。
 
 ```typescript
-function pascalCase(str: string): string
+function pascalCase(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要转换的字符串
 
 **返回**：帕斯卡命名
 
 **示例**：
+
 ```typescript
 const pascal = pascalCase("hello_world"); // "HelloWorld"
 const pascal2 = pascalCase("hello-world"); // "HelloWorld"
@@ -231,10 +243,11 @@ const pascal2 = pascalCase("hello-world"); // "HelloWorld"
 字符串左侧填充。
 
 ```typescript
-function padStart(str: string, length: number, padString?: string): string
+function padStart(str: string, length: number, padString?: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要填充的字符串
 - `length: number` - 目标长度
 - `padString: string` - 填充字符（默认空格）
@@ -242,6 +255,7 @@ function padStart(str: string, length: number, padString?: string): string
 **返回**：填充后的字符串
 
 **示例**：
+
 ```typescript
 const padded = padStart("5", 3, "0"); // "005"
 const padded2 = padStart("hello", 10); // "     hello"
@@ -254,10 +268,11 @@ const padded2 = padStart("hello", 10); // "     hello"
 字符串右侧填充。
 
 ```typescript
-function padEnd(str: string, length: number, padString?: string): string
+function padEnd(str: string, length: number, padString?: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要填充的字符串
 - `length: number` - 目标长度
 - `padString: string` - 填充字符（默认空格）
@@ -265,6 +280,7 @@ function padEnd(str: string, length: number, padString?: string): string
 **返回**：填充后的字符串
 
 **示例**：
+
 ```typescript
 const padded = padEnd("5", 3, "0"); // "500"
 const padded2 = padEnd("hello", 10); // "hello     "
@@ -277,15 +293,17 @@ const padded2 = padEnd("hello", 10); // "hello     "
 去除首尾空白字符。
 
 ```typescript
-function trim(str: string): string
+function trim(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要处理的字符串
 
 **返回**：处理后的字符串
 
 **示例**：
+
 ```typescript
 const cleaned = trim("  hello world  "); // "hello world"
 ```
@@ -297,15 +315,17 @@ const cleaned = trim("  hello world  "); // "hello world"
 去除左侧空白字符。
 
 ```typescript
-function trimStart(str: string): string
+function trimStart(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要处理的字符串
 
 **返回**：处理后的字符串
 
 **示例**：
+
 ```typescript
 const cleaned = trimStart("  hello world  "); // "hello world  "
 ```
@@ -317,15 +337,17 @@ const cleaned = trimStart("  hello world  "); // "hello world  "
 去除右侧空白字符。
 
 ```typescript
-function trimEnd(str: string): string
+function trimEnd(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要处理的字符串
 
 **返回**：处理后的字符串
 
 **示例**：
+
 ```typescript
 const cleaned = trimEnd("  hello world  "); // "  hello world"
 ```

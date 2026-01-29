@@ -68,11 +68,11 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  FileManager,
-  FileWatcher,
-  FileTypeDetector,
-  FileStream,
   FileCompressor,
+  FileManager,
+  FileStream,
+  FileTypeDetector,
+  FileWatcher,
 } from "jsr:@dreamer/utils/file";
 
 // 文件读写
@@ -170,12 +170,14 @@ async readText(path: string, encoding?: string): Promise<string>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 - `encoding: string` - 编码格式（默认 "utf-8"）
 
 **返回**：文件内容
 
 **示例**：
+
 ```typescript
 const text = await fileManager.readText("./data.txt");
 ```
@@ -189,11 +191,13 @@ async readBinary(path: string): Promise<Uint8Array>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 
 **返回**：文件内容（Uint8Array）
 
 **示例**：
+
 ```typescript
 const binary = await fileManager.readBinary("./image.png");
 ```
@@ -207,11 +211,13 @@ async writeText(path: string, content: string, encoding?: string): Promise<void>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 - `content: string` - 文件内容
 - `encoding: string` - 编码格式（默认 "utf-8"）
 
 **示例**：
+
 ```typescript
 await fileManager.writeText("./output.txt", "Hello, World!");
 ```
@@ -225,10 +231,12 @@ async writeBinary(path: string, data: Uint8Array): Promise<void>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 - `data: Uint8Array` - 文件内容
 
 **示例**：
+
 ```typescript
 await fileManager.writeBinary("./output.png", binaryData);
 ```
@@ -242,11 +250,13 @@ async appendText(path: string, content: string, encoding?: string): Promise<void
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 - `content: string` - 要追加的内容
 - `encoding: string` - 编码格式（默认 "utf-8"）
 
 **示例**：
+
 ```typescript
 await fileManager.appendText("./log.txt", "New log entry\n");
 ```
@@ -260,10 +270,12 @@ async copy(source: string, dest: string): Promise<void>
 ```
 
 **参数**：
+
 - `source: string` - 源文件路径
 - `dest: string` - 目标文件路径
 
 **示例**：
+
 ```typescript
 await fileManager.copy("./source.txt", "./dest.txt");
 ```
@@ -277,10 +289,12 @@ async move(source: string, dest: string): Promise<void>
 ```
 
 **参数**：
+
 - `source: string` - 源文件路径
 - `dest: string` - 目标文件路径
 
 **示例**：
+
 ```typescript
 await fileManager.move("./old.txt", "./new.txt");
 ```
@@ -294,9 +308,11 @@ async delete(path: string): Promise<void>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 
 **示例**：
+
 ```typescript
 await fileManager.delete("./temp.txt");
 ```
@@ -310,11 +326,13 @@ async exists(path: string): Promise<boolean>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 
 **返回**：是否存在
 
 **示例**：
+
 ```typescript
 const exists = await fileManager.exists("./file.txt");
 ```
@@ -328,11 +346,13 @@ async stat(path: string): Promise<FileInfo>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 
 **返回**：文件信息（FileInfo）
 
 **示例**：
+
 ```typescript
 const info = await fileManager.stat("./file.txt");
 console.log(`文件大小: ${info.size} bytes`);
@@ -351,6 +371,7 @@ new FileWatcher(options: FileWatcherOptions)
 ```
 
 **FileWatcherOptions**：
+
 - `path: string` - 要监控的路径
 - `recursive?: boolean` - 是否递归监控（默认 false）
 - `debounce?: number` - 防抖时间（毫秒，默认 300）
@@ -364,14 +385,17 @@ on(event: "change", handler: (event: FileChangeEvent) => void): void
 ```
 
 **事件类型**：
+
 - `change` - 文件变化事件
 
 **FileChangeEvent**：
+
 - `path: string` - 文件路径
 - `type: "create" | "modify" | "delete"` - 变化类型
 - `timestamp: number` - 时间戳
 
 **示例**：
+
 ```typescript
 watcher.on("change", (event) => {
   console.log("文件变化:", event.path, event.type);
@@ -409,16 +433,19 @@ async detect(path: string): Promise<FileTypeInfo>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 
 **返回**：文件类型信息（FileTypeInfo）
 
 **FileTypeInfo**：
+
 - `mime: string` - MIME 类型
 - `ext: string` - 文件扩展名
 - `signature?: string` - 文件签名（Magic Number）
 
 **示例**：
+
 ```typescript
 const type = await detector.detect("./image.png");
 // { mime: "image/png", ext: "png", signature: "PNG" }
@@ -439,12 +466,14 @@ async createReader(path: string, chunkSize?: number): Promise<ReadableStream<Uin
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 - `chunkSize?: number` - 块大小（字节，默认 64KB）
 
 **返回**：可读流
 
 **示例**：
+
 ```typescript
 const reader = await stream.createReader("./large-file.txt");
 for await (const chunk of reader) {
@@ -461,11 +490,13 @@ async createWriter(path: string): Promise<WritableStream<Uint8Array>>
 ```
 
 **参数**：
+
 - `path: string` - 文件路径
 
 **返回**：可写流
 
 **示例**：
+
 ```typescript
 const writer = await stream.createWriter("./output.txt");
 await writer.write(new TextEncoder().encode("Hello"));
@@ -487,11 +518,13 @@ async gzip(source: string, dest: string, level?: number): Promise<void>
 ```
 
 **参数**：
+
 - `source: string` - 源文件路径
 - `dest: string` - 目标文件路径
 - `level?: number` - 压缩级别（1-9，默认 6）
 
 **示例**：
+
 ```typescript
 await compressor.gzip("./data.txt", "./data.txt.gz");
 ```
@@ -505,10 +538,12 @@ async gunzip(source: string, dest: string): Promise<void>
 ```
 
 **参数**：
+
 - `source: string` - 压缩文件路径
 - `dest: string` - 目标文件路径
 
 **示例**：
+
 ```typescript
 await compressor.gunzip("./data.txt.gz", "./data.txt");
 ```
@@ -522,12 +557,14 @@ async compress(data: Uint8Array, level?: number): Promise<Uint8Array>
 ```
 
 **参数**：
+
 - `data: Uint8Array` - 要压缩的数据
 - `level?: number` - 压缩级别（1-9，默认 6）
 
 **返回**：压缩后的数据
 
 **示例**：
+
 ```typescript
 const data = new TextEncoder().encode("Hello, World!");
 const compressed = await compressor.compress(data);
@@ -542,11 +579,13 @@ async decompress(data: Uint8Array): Promise<Uint8Array>
 ```
 
 **参数**：
+
 - `data: Uint8Array` - 要解压的数据
 
 **返回**：解压后的数据
 
 **示例**：
+
 ```typescript
 const decompressed = await compressor.decompress(compressed);
 ```
@@ -574,7 +613,8 @@ const decompressed = await compressor.decompress(compressed);
 
 ## 📝 备注
 
-- **仅服务端**：此模块仅支持服务端，客户端请使用 `jsr:@dreamer/utils/client/file`
+- **仅服务端**：此模块仅支持服务端，客户端请使用
+  `jsr:@dreamer/utils/client/file`
 - **文件权限**：需要文件系统读写权限
 - **压缩依赖**：压缩功能使用 `npm:pako@2.1.0`，Deno 和 Bun 都支持
 - **类型安全**：完整的 TypeScript 类型支持

@@ -63,7 +63,14 @@ deno add jsr:@dreamer/utils
 ## 🚀 快速开始
 
 ```typescript
-import { validate, string, number, object, email, url } from "jsr:@dreamer/utils/validator";
+import {
+  email,
+  number,
+  object,
+  string,
+  url,
+  validate,
+} from "jsr:@dreamer/utils/validator";
 
 // 基础验证
 const nameSchema = string().min(2).max(50).required();
@@ -137,35 +144,39 @@ const configSchema = object({
 function validate<T = unknown>(
   value: unknown,
   validator: Validator<T>,
-): ValidationResult<T>
+): ValidationResult<T>;
 ```
 
 **参数**：
+
 - `value: unknown` - 要验证的值
 - `validator: Validator<T>` - 验证器
 
 **返回**：验证结果（ValidationResult）
 
 **ValidationResult**：
+
 ```typescript
 interface ValidationResult<T> {
-  success: boolean;      // 是否验证通过
-  data?: T;             // 验证后的数据（转换后的值）
+  success: boolean; // 是否验证通过
+  data?: T; // 验证后的数据（转换后的值）
   errors: ValidationError[]; // 错误列表
 }
 ```
 
 **ValidationError**：
+
 ```typescript
 interface ValidationError {
-  path: string;         // 字段路径（支持嵌套，如 "user.address.city"）
-  message: string;      // 错误消息
-  value: unknown;       // 字段值
-  rule?: string;        // 验证规则名称
+  path: string; // 字段路径（支持嵌套，如 "user.address.city"）
+  message: string; // 错误消息
+  value: unknown; // 字段值
+  rule?: string; // 验证规则名称
 }
 ```
 
 **示例**：
+
 ```typescript
 const result = validate("Alice", string().min(2).required());
 if (result.success) {
@@ -184,10 +195,11 @@ if (result.success) {
 创建字符串验证器。
 
 ```typescript
-function string(): StringValidator
+function string(): StringValidator;
 ```
 
 **StringValidator 方法**：
+
 - `required()` - 设置必填
 - `optional()` - 设置可选
 - `default(value: string)` - 设置默认值
@@ -201,6 +213,7 @@ function string(): StringValidator
 - `message(rule: string, message: string)` - 自定义错误消息
 
 **示例**：
+
 ```typescript
 const schema = string()
   .min(2)
@@ -218,10 +231,11 @@ const result = validate("Alice", schema);
 创建数字验证器。
 
 ```typescript
-function number(): NumberValidator
+function number(): NumberValidator;
 ```
 
 **NumberValidator 方法**：
+
 - `required()` - 设置必填
 - `optional()` - 设置可选
 - `default(value: number)` - 设置默认值
@@ -233,6 +247,7 @@ function number(): NumberValidator
 - `message(rule: string, message: string)` - 自定义错误消息
 
 **示例**：
+
 ```typescript
 const schema = number()
   .min(18)
@@ -250,10 +265,11 @@ const result = validate(25, schema);
 创建布尔值验证器。
 
 ```typescript
-function boolean(): BooleanValidator
+function boolean(): BooleanValidator;
 ```
 
 **BooleanValidator 方法**：
+
 - `required()` - 设置必填
 - `optional()` - 设置可选
 - `default(value: boolean)` - 设置默认值
@@ -262,6 +278,7 @@ function boolean(): BooleanValidator
 - `message(rule: string, message: string)` - 自定义错误消息
 
 **示例**：
+
 ```typescript
 const schema = boolean().default(false);
 
@@ -275,10 +292,11 @@ const result = validate(true, schema);
 创建邮箱验证器（继承自 StringValidator）。
 
 ```typescript
-function email(): EmailValidator
+function email(): EmailValidator;
 ```
 
 **示例**：
+
 ```typescript
 const schema = email().required();
 
@@ -292,10 +310,11 @@ const result = validate("alice@example.com", schema);
 创建 URL 验证器（继承自 StringValidator）。
 
 ```typescript
-function url(): UrlValidator
+function url(): UrlValidator;
 ```
 
 **示例**：
+
 ```typescript
 const schema = url().required();
 
@@ -311,10 +330,11 @@ const result = validate("https://example.com", schema);
 ```typescript
 function object<T extends Record<string, unknown>>(
   schema: ObjectSchema<T>,
-): ObjectValidator<T>
+): ObjectValidator<T>;
 ```
 
 **ObjectSchema**：
+
 ```typescript
 type ObjectSchema<T> = {
   [K in keyof T]: Validator<T[K]>;
@@ -322,6 +342,7 @@ type ObjectSchema<T> = {
 ```
 
 **ObjectValidator 方法**：
+
 - `required()` - 设置必填
 - `optional()` - 设置可选
 - `when(path: string, condition: WhenCondition)` - 条件验证
@@ -330,6 +351,7 @@ type ObjectSchema<T> = {
 - `message(rule: string, message: string)` - 自定义错误消息
 
 **示例**：
+
 ```typescript
 const schema = object({
   name: string().min(2).required(),
@@ -353,10 +375,11 @@ const result = validate({
 ```typescript
 function array<T = unknown>(
   itemValidator: Validator<T>,
-): ArrayValidator<T>
+): ArrayValidator<T>;
 ```
 
 **ArrayValidator 方法**：
+
 - `required()` - 设置必填
 - `optional()` - 设置可选
 - `min(length: number)` - 设置最小长度
@@ -366,6 +389,7 @@ function array<T = unknown>(
 - `message(rule: string, message: string)` - 自定义错误消息
 
 **示例**：
+
 ```typescript
 const schema = array(string()).min(1).required();
 
@@ -382,16 +406,18 @@ const result = validate(["item1", "item2"], schema);
 function validateAsync<T = unknown>(
   value: unknown,
   validator: Validator<T>,
-): Promise<ValidationResult<T>>
+): Promise<ValidationResult<T>>;
 ```
 
 **参数**：
+
 - `value: unknown` - 要验证的值
 - `validator: Validator<T>` - 验证器（必须支持异步验证）
 
 **返回**：Promise，验证结果
 
 **示例**：
+
 ```typescript
 const result = await validateAsync(value, validator);
 ```
@@ -406,16 +432,18 @@ const result = await validateAsync(value, validator);
 function validateAll<T = unknown>(
   value: unknown,
   validator: Validator<T>,
-): ValidationResult<T>
+): ValidationResult<T>;
 ```
 
 **参数**：
+
 - `value: unknown` - 要验证的值
 - `validator: Validator<T>` - 验证器
 
 **返回**：验证结果（包含所有错误）
 
 **示例**：
+
 ```typescript
 // 普通验证：遇到第一个错误就停止
 const result1 = validate(value, schema);

@@ -57,17 +57,17 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  unique,
-  uniqueBy,
-  groupBy,
   chunk,
-  flatten,
-  flattenDeep,
-  difference,
-  intersection,
-  union,
   count,
   countBy,
+  difference,
+  flatten,
+  flattenDeep,
+  groupBy,
+  intersection,
+  union,
+  unique,
+  uniqueBy,
 } from "jsr:@dreamer/utils/array";
 
 // 数组去重
@@ -130,15 +130,17 @@ const countByCategory = countBy(items, "category");
 数组去重，去除重复元素。
 
 ```typescript
-function unique<T>(arr: T[]): T[]
+function unique<T>(arr: T[]): T[];
 ```
 
 **参数**：
+
 - `arr: T[]` - 要去重的数组
 
 **返回**：去重后的数组
 
 **示例**：
+
 ```typescript
 const arr = [1, 2, 2, 3, 3, 3];
 const uniqueArr = unique(arr); // [1, 2, 3]
@@ -154,16 +156,18 @@ const uniqueArr = unique(arr); // [1, 2, 3]
 function uniqueBy<T extends Record<string, unknown>>(
   arr: T[],
   key: keyof T,
-): T[]
+): T[];
 ```
 
 **参数**：
+
 - `arr: T[]` - 对象数组
 - `key: keyof T` - 用于去重的属性键
 
 **返回**：去重后的数组
 
 **示例**：
+
 ```typescript
 const users = [
   { id: 1, name: "Alice" },
@@ -184,16 +188,18 @@ const uniqueUsers = uniqueBy(users, "id");
 function groupBy<T>(
   arr: T[],
   key: string | ((item: T) => string),
-): Record<string, T[]>
+): Record<string, T[]>;
 ```
 
 **参数**：
+
 - `arr: T[]` - 要分组的数组
 - `key: string | ((item: T) => string)` - 分组键（字符串或函数）
 
 **返回**：分组后的对象，键为分组值，值为该组的数组
 
 **示例**：
+
 ```typescript
 const items = [
   { category: "fruit", name: "apple" },
@@ -219,16 +225,18 @@ const groupedByLength = groupBy(items, (item) => item.name.length.toString());
 数组分块，将数组分割成指定大小的块。
 
 ```typescript
-function chunk<T>(arr: T[], size: number): T[][]
+function chunk<T>(arr: T[], size: number): T[][];
 ```
 
 **参数**：
+
 - `arr: T[]` - 要分块的数组
 - `size: number` - 块大小
 
 **返回**：分块后的二维数组
 
 **示例**：
+
 ```typescript
 const arr = [1, 2, 3, 4, 5];
 const chunked = chunk(arr, 2); // [[1, 2], [3, 4], [5]]
@@ -241,15 +249,17 @@ const chunked = chunk(arr, 2); // [[1, 2], [3, 4], [5]]
 数组扁平化（一层），将嵌套数组扁平化一层。
 
 ```typescript
-function flatten<T>(arr: (T | T[])[]): T[]
+function flatten<T>(arr: (T | T[])[]): T[];
 ```
 
 **参数**：
+
 - `arr: (T | T[])[]` - 要扁平化的数组
 
 **返回**：扁平化后的数组
 
 **示例**：
+
 ```typescript
 const nested = [1, [2, 3], [4, 5]];
 const flattened = flatten(nested); // [1, 2, 3, 4, 5]
@@ -262,15 +272,17 @@ const flattened = flatten(nested); // [1, 2, 3, 4, 5]
 数组深度扁平化，递归扁平化所有层级。
 
 ```typescript
-function flattenDeep<T>(arr: unknown[]): T[]
+function flattenDeep<T>(arr: unknown[]): T[];
 ```
 
 **参数**：
+
 - `arr: unknown[]` - 要扁平化的数组
 
 **返回**：完全扁平化后的数组
 
 **示例**：
+
 ```typescript
 const nested = [1, [2, [3, 4]]];
 const flattened = flattenDeep(nested); // [1, 2, 3, 4]
@@ -283,16 +295,18 @@ const flattened = flattenDeep(nested); // [1, 2, 3, 4]
 数组差集，返回在第一个数组中但不在第二个数组中的元素。
 
 ```typescript
-function difference<T>(arr1: T[], arr2: T[]): T[]
+function difference<T>(arr1: T[], arr2: T[]): T[];
 ```
 
 **参数**：
+
 - `arr1: T[]` - 第一个数组
 - `arr2: T[]` - 第二个数组
 
 **返回**：差集数组
 
 **示例**：
+
 ```typescript
 const arr1 = [1, 2, 3, 4];
 const arr2 = [3, 4, 5, 6];
@@ -306,16 +320,18 @@ const diff = difference(arr1, arr2); // [1, 2]
 数组交集，返回同时在两个数组中的元素。
 
 ```typescript
-function intersection<T>(arr1: T[], arr2: T[]): T[]
+function intersection<T>(arr1: T[], arr2: T[]): T[];
 ```
 
 **参数**：
+
 - `arr1: T[]` - 第一个数组
 - `arr2: T[]` - 第二个数组
 
 **返回**：交集数组
 
 **示例**：
+
 ```typescript
 const arr1 = [1, 2, 3, 4];
 const arr2 = [3, 4, 5, 6];
@@ -329,16 +345,18 @@ const inter = intersection(arr1, arr2); // [3, 4]
 数组并集，返回两个数组的所有唯一元素。
 
 ```typescript
-function union<T>(arr1: T[], arr2: T[]): T[]
+function union<T>(arr1: T[], arr2: T[]): T[];
 ```
 
 **参数**：
+
 - `arr1: T[]` - 第一个数组
 - `arr2: T[]` - 第二个数组
 
 **返回**：并集数组
 
 **示例**：
+
 ```typescript
 const arr1 = [1, 2, 3];
 const arr2 = [3, 4, 5];
@@ -352,15 +370,17 @@ const uni = union(arr1, arr2); // [1, 2, 3, 4, 5]
 数组统计，统计数组中每个元素出现的次数。
 
 ```typescript
-function count<T>(arr: T[]): Record<string, number>
+function count<T>(arr: T[]): Record<string, number>;
 ```
 
 **参数**：
+
 - `arr: T[]` - 要统计的数组
 
 **返回**：统计结果对象，键为元素值（字符串），值为出现次数
 
 **示例**：
+
 ```typescript
 const arr = [1, 2, 2, 3, 3, 3];
 const counts = count(arr); // { "1": 1, "2": 2, "3": 3 }
@@ -376,16 +396,18 @@ const counts = count(arr); // { "1": 1, "2": 2, "3": 3 }
 function countBy<T extends Record<string, unknown>>(
   arr: T[],
   key: keyof T,
-): Record<string, number>
+): Record<string, number>;
 ```
 
 **参数**：
+
 - `arr: T[]` - 对象数组
 - `key: keyof T` - 用于统计的属性键
 
 **返回**：统计结果对象，键为属性值（字符串），值为出现次数
 
 **示例**：
+
 ```typescript
 const items = [
   { category: "fruit", name: "apple" },

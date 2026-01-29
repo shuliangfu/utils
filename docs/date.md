@@ -56,16 +56,16 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  format,
   addDays,
   addMonths,
   addYears,
-  isBefore,
-  isAfter,
-  isSame,
   diffDays,
   diffHours,
+  format,
   fromNow,
+  isAfter,
+  isBefore,
+  isSame,
   toNow,
 } from "jsr:@dreamer/utils/date";
 
@@ -106,16 +106,18 @@ const relative2 = toNow(futureDate); // "5 分钟后"
 日期格式化，将日期格式化为指定格式的字符串。
 
 ```typescript
-function format(date: Date, formatStr: string): string
+function format(date: Date, formatStr: string): string;
 ```
 
 **参数**：
+
 - `date: Date` - 日期对象
 - `formatStr: string` - 格式字符串（支持 YYYY、MM、DD、HH、mm、ss）
 
 **返回**：格式化后的字符串
 
 **格式说明**：
+
 - `YYYY` - 年份（4位）
 - `MM` - 月份（2位，补零）
 - `DD` - 日期（2位，补零）
@@ -124,6 +126,7 @@ function format(date: Date, formatStr: string): string
 - `ss` - 秒（2位，补零）
 
 **示例**：
+
 ```typescript
 const date = new Date("2024-01-01T12:30:45");
 format(date, "YYYY-MM-DD"); // "2024-01-01"
@@ -138,16 +141,18 @@ format(date, "YYYY年MM月DD日"); // "2024年01月01日"
 添加天数到日期。
 
 ```typescript
-function addDays(date: Date, days: number): Date
+function addDays(date: Date, days: number): Date;
 ```
 
 **参数**：
+
 - `date: Date` - 日期对象
 - `days: number` - 要添加的天数（可为负数）
 
 **返回**：新的日期对象
 
 **示例**：
+
 ```typescript
 const date = new Date("2024-01-01");
 const tomorrow = addDays(date, 1); // 2024-01-02
@@ -161,16 +166,18 @@ const yesterday = addDays(date, -1); // 2023-12-31
 添加月数到日期。
 
 ```typescript
-function addMonths(date: Date, months: number): Date
+function addMonths(date: Date, months: number): Date;
 ```
 
 **参数**：
+
 - `date: Date` - 日期对象
 - `months: number` - 要添加的月数（可为负数）
 
 **返回**：新的日期对象
 
 **示例**：
+
 ```typescript
 const date = new Date("2024-01-01");
 const nextMonth = addMonths(date, 1); // 2024-02-01
@@ -184,16 +191,18 @@ const lastMonth = addMonths(date, -1); // 2023-12-01
 添加年数到日期。
 
 ```typescript
-function addYears(date: Date, years: number): Date
+function addYears(date: Date, years: number): Date;
 ```
 
 **参数**：
+
 - `date: Date` - 日期对象
 - `years: number` - 要添加的年数（可为负数）
 
 **返回**：新的日期对象
 
 **示例**：
+
 ```typescript
 const date = new Date("2024-01-01");
 const nextYear = addYears(date, 1); // 2025-01-01
@@ -207,16 +216,18 @@ const lastYear = addYears(date, -1); // 2023-01-01
 判断日期是否在另一个日期之前。
 
 ```typescript
-function isBefore(date1: Date, date2: Date): boolean
+function isBefore(date1: Date, date2: Date): boolean;
 ```
 
 **参数**：
+
 - `date1: Date` - 第一个日期
 - `date2: Date` - 第二个日期
 
 **返回**：date1 是否在 date2 之前
 
 **示例**：
+
 ```typescript
 const date1 = new Date("2024-01-01");
 const date2 = new Date("2024-01-02");
@@ -230,16 +241,18 @@ const before = isBefore(date1, date2); // true
 判断日期是否在另一个日期之后。
 
 ```typescript
-function isAfter(date1: Date, date2: Date): boolean
+function isAfter(date1: Date, date2: Date): boolean;
 ```
 
 **参数**：
+
 - `date1: Date` - 第一个日期
 - `date2: Date` - 第二个日期
 
 **返回**：date1 是否在 date2 之后
 
 **示例**：
+
 ```typescript
 const date1 = new Date("2024-01-02");
 const date2 = new Date("2024-01-01");
@@ -253,16 +266,18 @@ const after = isAfter(date1, date2); // true
 判断两个日期是否相同。
 
 ```typescript
-function isSame(date1: Date, date2: Date): boolean
+function isSame(date1: Date, date2: Date): boolean;
 ```
 
 **参数**：
+
 - `date1: Date` - 第一个日期
 - `date2: Date` - 第二个日期
 
 **返回**：两个日期是否相同
 
 **示例**：
+
 ```typescript
 const date1 = new Date("2024-01-01");
 const date2 = new Date("2024-01-01");
@@ -276,16 +291,18 @@ const same = isSame(date1, date2); // true
 计算两个日期之间的天数差值。
 
 ```typescript
-function diffDays(date1: Date, date2: Date): number
+function diffDays(date1: Date, date2: Date): number;
 ```
 
 **参数**：
+
 - `date1: Date` - 第一个日期
 - `date2: Date` - 第二个日期
 
 **返回**：天数差值（date2 - date1）
 
 **示例**：
+
 ```typescript
 const date1 = new Date("2024-01-01");
 const date2 = new Date("2024-01-02");
@@ -299,16 +316,18 @@ const days = diffDays(date1, date2); // 1
 计算两个日期之间的小时数差值。
 
 ```typescript
-function diffHours(date1: Date, date2: Date): number
+function diffHours(date1: Date, date2: Date): number;
 ```
 
 **参数**：
+
 - `date1: Date` - 第一个日期
 - `date2: Date` - 第二个日期
 
 **返回**：小时数差值（date2 - date1）
 
 **示例**：
+
 ```typescript
 const date1 = new Date("2024-01-01T00:00:00");
 const date2 = new Date("2024-01-01T12:00:00");
@@ -322,15 +341,17 @@ const hours = diffHours(date1, date2); // 12
 计算从指定时间到现在的相对时间。
 
 ```typescript
-function fromNow(date: Date): string
+function fromNow(date: Date): string;
 ```
 
 **参数**：
+
 - `date: Date` - 日期对象
 
 **返回**：相对时间字符串（如 "5 分钟前"）
 
 **示例**：
+
 ```typescript
 const pastDate = new Date(Date.now() - 1000 * 60 * 5); // 5分钟前
 const relative = fromNow(pastDate); // "5 分钟前"
@@ -343,15 +364,17 @@ const relative = fromNow(pastDate); // "5 分钟前"
 计算从现在到指定时间的相对时间。
 
 ```typescript
-function toNow(date: Date): string
+function toNow(date: Date): string;
 ```
 
 **参数**：
+
 - `date: Date` - 日期对象
 
 **返回**：相对时间字符串（如 "5 分钟后"）
 
 **示例**：
+
 ```typescript
 const futureDate = new Date(Date.now() + 1000 * 60 * 5); // 5分钟后
 const relative = toNow(futureDate); // "5 分钟后"

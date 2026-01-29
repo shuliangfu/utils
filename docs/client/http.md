@@ -1,6 +1,7 @@
 # Client HTTP 客户端
 
-> 客户端 HTTP 客户端库，结合 Fetch 和 XMLHttpRequest 的优势，提供完整的 HTTP 请求功能
+> 客户端 HTTP 客户端库，结合 Fetch 和 XMLHttpRequest 的优势，提供完整的 HTTP
+> 请求功能
 
 [![JSR](https://jsr.io/badges/@dreamer/utils)](https://jsr.io/@dreamer/utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +10,8 @@
 
 ## 🎯 功能
 
-HTTP 客户端库，用于浏览器环境中的 HTTP 请求。智能结合 Fetch API 和 XMLHttpRequest 的优势，提供最佳性能和功能体验，仅支持客户端。
+HTTP 客户端库，用于浏览器环境中的 HTTP 请求。智能结合 Fetch API 和
+XMLHttpRequest 的优势，提供最佳性能和功能体验，仅支持客户端。
 
 ---
 
@@ -90,7 +92,7 @@ client.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // 发送请求
@@ -150,6 +152,7 @@ new HttpClient(options?: HttpClientOptions)
 ```
 
 **HttpClientOptions**：
+
 - `baseURL?: string` - 基础 URL
 - `timeout?: number` - 超时时间（毫秒，默认 0 表示不设置超时）
 - `headers?: HeadersInit` - 默认请求头
@@ -159,6 +162,7 @@ new HttpClient(options?: HttpClientOptions)
 - `redirect?: RequestRedirect` - 重定向模式（默认 "follow"）
 
 **示例**：
+
 ```typescript
 const client = new HttpClient({
   baseURL: "https://api.example.com",
@@ -180,6 +184,7 @@ async get(url: string, config?: RequestConfig): Promise<Response>
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.get("/users");
 const users = await response.json();
@@ -198,6 +203,7 @@ async post(
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.post("/users", {
   name: "Alice",
@@ -268,11 +274,13 @@ async upload(
 ```
 
 **参数**：
+
 - `url: string` - 请求 URL
 - `data: FormData | File` - 文件数据
 - `uploadOptions: UploadOptions` - 上传选项
 
 **UploadOptions**：
+
 - `onStart?: () => void` - 上传开始回调
 - `onProgress?: (progress: UploadProgress) => void` - 上传进度回调
 - `onComplete?: () => void` - 上传完成回调
@@ -280,11 +288,13 @@ async upload(
 - `onAbort?: () => void` - 上传取消回调
 
 **UploadProgress**：
+
 - `loaded: number` - 已上传字节数
 - `total: number` - 总字节数
 - `percent: number` - 上传百分比
 
 **示例**：
+
 ```typescript
 const formData = new FormData();
 formData.append("file", fileInput.files[0]);
@@ -312,10 +322,12 @@ async download(
 ```
 
 **参数**：
+
 - `url: string` - 请求 URL
 - `options: DownloadOptions` - 下载选项
 
 **DownloadOptions**：
+
 - `onStart?: () => void` - 下载开始回调
 - `onProgress?: (progress: DownloadProgress) => void` - 下载进度回调
 - `onComplete?: () => void` - 下载完成回调
@@ -323,6 +335,7 @@ async download(
 - `onAbort?: () => void` - 下载取消回调
 
 **DownloadProgress**：
+
 - `loaded: number` - 已下载字节数
 - `total: number` - 总字节数
 - `percent: number` - 下载百分比
@@ -330,6 +343,7 @@ async download(
 **返回**：Blob 对象
 
 **示例**：
+
 ```typescript
 const blob = await client.download("/files/document.pdf", {
   onStart: () => console.log("开始下载"),
@@ -355,6 +369,7 @@ URL.revokeObjectURL(url);
 拦截器管理器。
 
 **请求拦截器**：
+
 ```typescript
 client.interceptors.request.use(
   fulfilled: RequestInterceptor,
@@ -363,6 +378,7 @@ client.interceptors.request.use(
 ```
 
 **响应拦截器**：
+
 ```typescript
 client.interceptors.response.use(
   fulfilled: ResponseInterceptor,
@@ -371,6 +387,7 @@ client.interceptors.response.use(
 ```
 
 **示例**：
+
 ```typescript
 // 请求拦截器
 client.interceptors.request.use((config) => {
@@ -389,7 +406,7 @@ client.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 ```
 
@@ -432,6 +449,7 @@ getAll(): Record<string, string>
 ```
 
 **示例**：
+
 ```typescript
 client.cookies.set("token", "abc123", {
   expires: 7 * 24 * 60 * 60, // 7 天
@@ -503,6 +521,7 @@ set(name: string, value: string, options?: ClientCookieOptions): void
 ```
 
 **ClientCookieOptions**：
+
 - `expires?: number` - 过期时间（秒）
 - `expiresDate?: Date` - 过期日期
 - `domain?: string` - 域名

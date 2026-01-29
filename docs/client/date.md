@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **日期格式化**：
   - 自定义格式字符串（`format`）
   - 支持 YYYY、MM、DD、HH、mm、ss 等格式
@@ -57,16 +58,16 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  format,
   addDays,
   addMonths,
   addYears,
-  isBefore,
-  isAfter,
-  isSame,
   diffDays,
   diffHours,
+  format,
   fromNow,
+  isAfter,
+  isBefore,
+  isSame,
   toNow,
 } from "jsr:@dreamer/utils/client/date";
 

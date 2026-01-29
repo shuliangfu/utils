@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **数组去重**：
   - 基础去重（`unique`）
   - 按属性去重（`uniqueBy`）
@@ -58,17 +59,17 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  unique,
-  uniqueBy,
-  groupBy,
   chunk,
-  flatten,
-  flattenDeep,
-  difference,
-  intersection,
-  union,
   count,
   countBy,
+  difference,
+  flatten,
+  flattenDeep,
+  groupBy,
+  intersection,
+  union,
+  unique,
+  uniqueBy,
 } from "jsr:@dreamer/utils/client/array";
 
 // 使用方式与服务端版本完全相同

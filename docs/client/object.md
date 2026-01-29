@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **对象克隆**：
   - 深度克隆对象（`deepClone`）
   - 支持 Date、Array 等特殊对象
@@ -58,16 +59,16 @@ deno add jsr:@dreamer/utils
 ```typescript
 import {
   deepClone,
-  merge,
   deepMerge,
-  get,
-  set,
-  has,
   deletePath,
-  pick,
-  omit,
-  isEqual,
+  get,
+  has,
   isDeepEqual,
+  isEqual,
+  merge,
+  omit,
+  pick,
+  set,
 } from "jsr:@dreamer/utils/client/object";
 
 // 使用方式与服务端版本完全相同

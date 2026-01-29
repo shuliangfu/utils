@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **防抖**：
   - 在指定时间内只执行最后一次调用（`debounce`）
 - **节流**：
@@ -57,13 +58,13 @@ deno add jsr:@dreamer/utils
 ```typescript
 import {
   debounce,
-  throttle,
-  retry,
-  withTimeout,
+  delay,
   parallel,
+  retry,
   series,
   sleep,
-  delay,
+  throttle,
+  withTimeout,
 } from "jsr:@dreamer/utils/client/async";
 
 // 使用方式与服务端版本完全相同
@@ -81,7 +82,7 @@ const result = await retry(
     if (!response.ok) throw new Error("请求失败");
     return response.json();
   },
-  { maxAttempts: 3, delay: 1000 }
+  { maxAttempts: 3, delay: 1000 },
 );
 ```
 

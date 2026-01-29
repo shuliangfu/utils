@@ -53,9 +53,12 @@
 ```
 
 **注意**：
-- **共享模块**（`array`、`string`、`object`、`date`、`number`、`async`、`url`、`format`、`validator`）：客户端直接导出服务端版本（纯 JavaScript，不依赖运行时 API）
+
+- **共享模块**（`array`、`string`、`object`、`date`、`number`、`async`、`url`、`format`、`validator`）：客户端直接导出服务端版本（纯
+  JavaScript，不依赖运行时 API）
 - **服务端专用模块**（`lock`、`system`、`file`）：客户端不支持，仅服务端可用
-- **客户端专用模块**（`client/file`、`client/http`、`client/clipboard`）：独立的客户端实现（使用浏览器 File API、Fetch/XHR API 和 Clipboard API）
+- **客户端专用模块**（`client/file`、`client/http`、`client/clipboard`）：独立的客户端实现（使用浏览器
+  File API、Fetch/XHR API 和 Clipboard API）
 
 ## 特性
 
@@ -193,7 +196,8 @@
   - gunzip 解压（`gunzip`）
   - 内存压缩/解压（`compress`/`decompress`）
 
-**注意**：客户端文件操作请查看 [client/README.md](./src/client/README.md) 和 [📖 客户端文件文档](./docs/client/file.md)
+**注意**：客户端文件操作请查看 [client/README.md](./src/client/README.md) 和
+[📖 客户端文件文档](./docs/client/file.md)
 
 ### 剪贴板操作（`client/clipboard.ts`） - [📖 详细文档](./docs/client/clipboard.md)
 
@@ -233,6 +237,7 @@ deno add jsr:@dreamer/utils
   - `lock.ts` 模块：需要 Redis 客户端（如 `ioredis`）
 
 **注意**：
+
 - `system.ts` 模块需要运行时权限（执行系统命令），在浏览器环境中不可用
 - `lock.ts` 模块需要 Redis 连接，仅适用于服务端环境
 - `file.ts` 模块的压缩功能：
@@ -244,20 +249,26 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 // 按模块导入（推荐）
-import { unique, groupBy, chunk } from "jsr:@dreamer/utils/array";
-import { truncate, format, camelCase } from "jsr:@dreamer/utils/string";
-import { deepClone, merge, get } from "jsr:@dreamer/utils/object";
-import { format, addDays, diffDays } from "jsr:@dreamer/utils/date";
-import { format, clamp, round } from "jsr:@dreamer/utils/number";
-import { debounce, throttle, retry } from "jsr:@dreamer/utils/async";
-import { acquireLock, withLock, lockKey } from "jsr:@dreamer/utils/lock";
-import { getSystemStatus, getMemoryInfo, getCpuUsage, formatBytes, formatUptime } from "jsr:@dreamer/utils/system";
-import { parse, build, parseQuery } from "jsr:@dreamer/utils/url";
+import { chunk, groupBy, unique } from "jsr:@dreamer/utils/array";
+import { camelCase, format, truncate } from "jsr:@dreamer/utils/string";
+import { deepClone, get, merge } from "jsr:@dreamer/utils/object";
+import { addDays, diffDays, format } from "jsr:@dreamer/utils/date";
+import { clamp, format, round } from "jsr:@dreamer/utils/number";
+import { debounce, retry, throttle } from "jsr:@dreamer/utils/async";
+import { acquireLock, lockKey, withLock } from "jsr:@dreamer/utils/lock";
+import {
+  formatBytes,
+  formatUptime,
+  getCpuUsage,
+  getMemoryInfo,
+  getSystemStatus,
+} from "jsr:@dreamer/utils/system";
+import { build, parse, parseQuery } from "jsr:@dreamer/utils/url";
 import { formatDuration } from "jsr:@dreamer/utils/format";
-import { validate, string, number, object } from "jsr:@dreamer/utils/validator";
+import { number, object, string, validate } from "jsr:@dreamer/utils/validator";
 
 // 或从主入口导入（可选，不推荐，会增加打包体积）
-import { unique, truncate, deepClone } from "jsr:@dreamer/utils";
+import { deepClone, truncate, unique } from "jsr:@dreamer/utils";
 ```
 
 ## 📚 API 文档
@@ -265,7 +276,13 @@ import { unique, truncate, deepClone } from "jsr:@dreamer/utils";
 ### 字符串处理
 
 ```typescript
-import { truncate, format, camelCase, snakeCase, kebabCase } from "jsr:@dreamer/utils/string";
+import {
+  camelCase,
+  format,
+  kebabCase,
+  snakeCase,
+  truncate,
+} from "jsr:@dreamer/utils/string";
 
 // 字符串截断
 const text = "这是一段很长的文本";
@@ -284,7 +301,13 @@ const kebab = kebabCase("helloWorld"); // "hello-world"
 ### 数组操作
 
 ```typescript
-import { unique, groupBy, chunk, flatten, difference } from "jsr:@dreamer/utils/array";
+import {
+  chunk,
+  difference,
+  flatten,
+  groupBy,
+  unique,
+} from "jsr:@dreamer/utils/array";
 
 // 数组去重
 const arr = [1, 2, 2, 3, 3, 3];
@@ -327,7 +350,15 @@ const diff = difference(arr1, arr2); // [1, 2]
 ### 对象操作
 
 ```typescript
-import { deepClone, merge, get, set, pick, omit, isEqual } from "jsr:@dreamer/utils/object";
+import {
+  deepClone,
+  get,
+  isEqual,
+  merge,
+  omit,
+  pick,
+  set,
+} from "jsr:@dreamer/utils/object";
 
 // 深度克隆
 const obj = { a: 1, b: { c: 2 } };
@@ -346,7 +377,12 @@ set(data, "user.age", 26); // 设置值
 const has = has(data, "user.name"); // true
 
 // 对象过滤
-const user = { id: 1, name: "Alice", email: "alice@example.com", password: "***" };
+const user = {
+  id: 1,
+  name: "Alice",
+  email: "alice@example.com",
+  password: "***",
+};
 const picked = pick(user, ["id", "name", "email"]); // 只保留指定字段
 const omitted = omit(user, ["password"]); // 排除指定字段
 
@@ -360,7 +396,13 @@ const deepEqual = isDeepEqual(obj1, obj2); // true（深度比较）
 ### 日期时间处理
 
 ```typescript
-import { format, addDays, diffDays, isBefore, fromNow } from "jsr:@dreamer/utils/date";
+import {
+  addDays,
+  diffDays,
+  format,
+  fromNow,
+  isBefore,
+} from "jsr:@dreamer/utils/date";
 
 // 日期格式化
 const date = new Date("2024-01-01");
@@ -390,7 +432,13 @@ const relative2 = toNow(new Date(Date.now() + 1000 * 60 * 5)); // "5 分钟后"
 ### 数字格式化
 
 ```typescript
-import { format, formatCurrency, formatPercent, clamp, round } from "jsr:@dreamer/utils/number";
+import {
+  clamp,
+  format,
+  formatCurrency,
+  formatPercent,
+  round,
+} from "jsr:@dreamer/utils/number";
 
 // 数字格式化
 const num = 1234567.89;
@@ -411,7 +459,13 @@ const ceiled = ceil(3.7); // 4
 ### 异步工具
 
 ```typescript
-import { debounce, throttle, retry, sleep, parallel } from "jsr:@dreamer/utils/async";
+import {
+  debounce,
+  parallel,
+  retry,
+  sleep,
+  throttle,
+} from "jsr:@dreamer/utils/async";
 
 // 防抖
 const debouncedFn = debounce((value: string) => {
@@ -438,13 +492,13 @@ const result = await retry(
     if (!response.ok) throw new Error("请求失败");
     return response.json();
   },
-  { maxAttempts: 3, delay: 1000 }
+  { maxAttempts: 3, delay: 1000 },
 );
 
 // 超时控制
 const result = await withTimeout(
   fetch("/api/data"),
-  5000 // 5 秒超时
+  5000, // 5 秒超时
 );
 
 // 并发控制
@@ -454,7 +508,7 @@ const results = await parallel(
     () => fetch("/api/user/2"),
     () => fetch("/api/user/3"),
   ],
-  { concurrency: 2 } // 最多 2 个并发
+  { concurrency: 2 }, // 最多 2 个并发
 );
 
 // 延迟
@@ -464,7 +518,7 @@ await sleep(1000); // 延迟 1 秒
 ### 分布式锁
 
 ```typescript
-import { acquireLock, withLock, lockKey } from "jsr:@dreamer/utils/lock";
+import { acquireLock, lockKey, withLock } from "jsr:@dreamer/utils/lock";
 import { Redis } from "npm:ioredis";
 
 const redis = new Redis("redis://localhost:6379");
@@ -496,7 +550,7 @@ const result = await withLock(
   {
     ttl: 10, // 10秒过期
     errorMessage: "提现操作正在进行中，请稍后重试",
-  }
+  },
 );
 
 // 方式3：获取锁失败时不抛出错误
@@ -522,14 +576,14 @@ if (lock2) {
 
 ```typescript
 import {
-  getSystemStatus,
-  getMemoryInfo,
-  getCpuUsage,
-  getLoadAverage,
-  getSystemInfo,
-  getDiskUsage,
   formatBytes,
   formatUptime,
+  getCpuUsage,
+  getDiskUsage,
+  getLoadAverage,
+  getMemoryInfo,
+  getSystemInfo,
+  getSystemStatus,
 } from "jsr:@dreamer/utils/system";
 
 // 获取完整系统状态
@@ -588,9 +642,9 @@ console.log(formatBytes(1048576)); // "1.00 MB"
 import {
   FileCompressor,
   FileManager,
-  FileWatcher,
-  FileTypeDetector,
   FileStream,
+  FileTypeDetector,
+  FileWatcher,
 } from "jsr:@dreamer/utils/file";
 
 // 文件读写
@@ -671,11 +725,16 @@ const decompressed = await compressor.decompress(compressed);
 console.log(new TextDecoder().decode(decompressed)); // "Hello, World!"
 ```
 
-
 ### URL 处理
 
 ```typescript
-import { parse, build, parseQuery, buildQuery, join } from "jsr:@dreamer/utils/url";
+import {
+  build,
+  buildQuery,
+  join,
+  parse,
+  parseQuery,
+} from "jsr:@dreamer/utils/url";
 
 // URL 解析
 const url = "https://example.com/path?name=Alice&age=25";
@@ -713,7 +772,11 @@ const joined = join("https://example.com", "path", "to", "resource");
 ### 格式化工具
 
 ```typescript
-import { formatBytes, formatDuration, formatNumber } from "jsr:@dreamer/utils/format";
+import {
+  formatBytes,
+  formatDuration,
+  formatNumber,
+} from "jsr:@dreamer/utils/format";
 
 // 文件大小格式化
 const size = formatBytes(1024 * 1024 * 5); // "5 MB"
@@ -730,7 +793,15 @@ const num = formatNumber(1234567.89); // "1,234,567.89"
 ### 数据验证
 
 ```typescript
-import { validate, string, number, object, array, email, url } from "jsr:@dreamer/utils/validator";
+import {
+  array,
+  email,
+  number,
+  object,
+  string,
+  url,
+  validate,
+} from "jsr:@dreamer/utils/validator";
 
 // 基础验证
 const nameSchema = string().min(2).max(50).required();
@@ -832,7 +903,7 @@ client.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // 发送请求
@@ -876,7 +947,12 @@ const response = await client.get("/api/data", {
 ### 客户端数据验证 - [📖 详细文档](./docs/client/validator.md)
 
 ```typescript
-import { validate, string, number, object } from "jsr:@dreamer/utils/client/validator";
+import {
+  number,
+  object,
+  string,
+  validate,
+} from "jsr:@dreamer/utils/client/validator";
 
 // 客户端验证与服务端完全兼容
 const schema = object({
@@ -895,9 +971,9 @@ if (result.success) {
 ```typescript
 import {
   copyToClipboard,
-  readFromClipboard,
-  isClipboardSupported,
   isClipboardReadSupported,
+  isClipboardSupported,
+  readFromClipboard,
 } from "jsr:@dreamer/utils/client/clipboard";
 
 // 复制文本到剪贴板

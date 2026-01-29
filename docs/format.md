@@ -88,18 +88,21 @@ const percent2 = formatPercent(0.1234, 1); // "12.3%"
 function formatBytes(
   bytes: number,
   options?: { precision?: number; unit?: "B" | "KB" | "MB" | "GB" | "TB" },
-): string
+): string;
 ```
 
 **参数**：
+
 - `bytes: number` - 字节数
 - `options: object` - 选项
   - `precision?: number` - 精度（小数位数，默认 0）
-  - `unit?: "B" | "KB" | "MB" | "GB" | "TB"` - 指定单位（可选，不指定则自动选择）
+  - `unit?: "B" | "KB" | "MB" | "GB" | "TB"` -
+    指定单位（可选，不指定则自动选择）
 
 **返回**：格式化后的字符串
 
 **示例**：
+
 ```typescript
 formatBytes(1024); // "1 KB"
 formatBytes(1024 * 1024); // "1 MB"
@@ -118,10 +121,11 @@ formatBytes(1024 * 1024 * 5, { unit: "KB" }); // "5120.00 KB"
 function formatDuration(
   seconds: number,
   options?: { format?: "human" | "HH:mm:ss" },
-): string
+): string;
 ```
 
 **参数**：
+
 - `seconds: number` - 秒数
 - `options: object` - 选项
   - `format?: "human" | "HH:mm:ss"` - 格式类型（默认 "human"）
@@ -129,10 +133,12 @@ function formatDuration(
 **返回**：格式化后的字符串
 
 **格式说明**：
+
 - `human` - 人类可读格式（如 "1 小时 1 分钟 1 秒"）
 - `HH:mm:ss` - 时间格式（如 "01:01:01"）
 
 **示例**：
+
 ```typescript
 formatDuration(3661); // "1 小时 1 分钟 1 秒"
 formatDuration(3661, { format: "HH:mm:ss" }); // "01:01:01"
@@ -150,10 +156,11 @@ formatDuration(30); // "30 秒"
 function formatNumber(
   num: number,
   options?: { precision?: number; separator?: string },
-): string
+): string;
 ```
 
 **参数**：
+
 - `num: number` - 要格式化的数字
 - `options: object` - 选项
   - `precision?: number` - 精度（小数位数，默认 2）
@@ -162,6 +169,7 @@ function formatNumber(
 **返回**：格式化后的字符串
 
 **示例**：
+
 ```typescript
 formatNumber(1234567.89); // "1,234,567.89"
 formatNumber(1234567.89, { precision: 0 }); // "1,234,568"
@@ -176,16 +184,18 @@ formatNumber(1234567.89, { precision: 1, separator: " " }); // "1 234 567.9"
 格式化百分比，将小数转换为百分比字符串。
 
 ```typescript
-function formatPercent(num: number, precision?: number): string
+function formatPercent(num: number, precision?: number): string;
 ```
 
 **参数**：
+
 - `num: number` - 要格式化的数字（0-1 之间的小数）
 - `precision?: number` - 精度（小数位数，默认 2）
 
 **返回**：百分比字符串
 
 **示例**：
+
 ```typescript
 formatPercent(0.1234); // "12.34%"
 formatPercent(0.1234, 1); // "12.3%"

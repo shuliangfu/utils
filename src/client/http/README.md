@@ -1,6 +1,7 @@
 # @dreamer/http/client
 
-> 一个用于浏览器的 HTTP 客户端库，结合 Fetch 和 XMLHttpRequest 的优势，提供完整的 HTTP 请求功能
+> 一个用于浏览器的 HTTP 客户端库，结合 Fetch 和 XMLHttpRequest
+> 的优势，提供完整的 HTTP 请求功能
 
 [![JSR](https://jsr.io/badges/@dreamer/http/client)](https://jsr.io/@dreamer/http/client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../LICENSE.md)
@@ -9,7 +10,8 @@
 
 ## 🎯 功能
 
-HTTP 客户端库，用于浏览器环境中的 HTTP 请求。智能结合 Fetch API 和 XMLHttpRequest 的优势，提供最佳性能和功能体验。
+HTTP 客户端库，用于浏览器环境中的 HTTP 请求。智能结合 Fetch API 和
+XMLHttpRequest 的优势，提供最佳性能和功能体验。
 
 ## ✨ 特性
 
@@ -97,7 +99,7 @@ client.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 ```
 
@@ -114,6 +116,7 @@ new HttpClient(options?: HttpClientOptions)
 ```
 
 **参数**：
+
 - `options.baseURL`：基础 URL（可选）
 - `options.timeout`：超时时间（毫秒，默认：0 表示不设置超时）
 - `options.headers`：默认请求头（可选）
@@ -123,6 +126,7 @@ new HttpClient(options?: HttpClientOptions)
 - `options.redirect`：重定向模式（默认：`"follow"`）
 
 **示例**：
+
 ```typescript
 const client = new HttpClient({
   baseURL: "https://api.example.com",
@@ -142,6 +146,7 @@ client.get(url: string, config?: RequestConfig): Promise<Response>
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.get("/users");
 const users = await response.json();
@@ -154,6 +159,7 @@ client.post(url: string, data?: BodyInit | null, config?: RequestConfig): Promis
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.post("/users", {
   name: "John",
@@ -168,6 +174,7 @@ client.put(url: string, data?: BodyInit | null, config?: RequestConfig): Promise
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.put("/users/1", {
   name: "John Updated",
@@ -181,6 +188,7 @@ client.delete(url: string, config?: RequestConfig): Promise<Response>
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.delete("/users/1");
 ```
@@ -192,6 +200,7 @@ client.patch(url: string, data?: BodyInit | null, config?: RequestConfig): Promi
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.patch("/users/1", {
   name: "John Patched",
@@ -205,6 +214,7 @@ client.head(url: string, config?: RequestConfig): Promise<Response>
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.head("/users/1");
 console.log(response.headers.get("Content-Length"));
@@ -217,6 +227,7 @@ client.options(url: string, config?: RequestConfig): Promise<Response>
 ```
 
 **示例**：
+
 ```typescript
 const response = await client.options("/users");
 ```
@@ -228,11 +239,13 @@ client.upload(url: string, data: FormData | File, options?: UploadOptions): Prom
 ```
 
 **特性**：
+
 - 自动使用 XMLHttpRequest（支持上传进度）
 - 支持 FormData 和 File 对象
 - 自动追踪上传进度
 
 **示例**：
+
 ```typescript
 // 上传单个文件
 const fileInput = document.querySelector('input[type="file"]');
@@ -272,11 +285,13 @@ client.download(url: string, options?: DownloadOptions): Promise<Blob>
 ```
 
 **特性**：
+
 - 自动使用 XMLHttpRequest（支持下载进度）
 - 返回 Blob 对象
 - 自动追踪下载进度
 
 **示例**：
+
 ```typescript
 // 下载文件
 const blob = await client.download("/files/document.pdf", {
@@ -316,6 +331,7 @@ client.interceptors.request.use(
 ```
 
 **示例**：
+
 ```typescript
 // 添加认证 token
 const requestId = client.interceptors.request.use((config) => {
@@ -340,6 +356,7 @@ client.interceptors.response.use(
 ```
 
 **示例**：
+
 ```typescript
 // 统一错误处理
 client.interceptors.response.use(
@@ -354,7 +371,7 @@ client.interceptors.response.use(
     // 处理错误
     console.error("请求错误:", error);
     return Promise.reject(error);
-  }
+  },
 );
 ```
 
@@ -436,20 +453,21 @@ HttpClient 会根据请求需求自动选择最佳的请求方式：
    - 更准确的进度追踪和完整的事件支持
 
 **优势**：
+
 - 普通请求享受 Fetch API 的现代特性和性能
 - 需要进度时自动使用 XHR，无需手动切换
 - 统一的 API 接口，返回标准的 Response 对象
 
 ### 结合 Fetch 和 XHR 的优势
 
-| 特性 | Fetch API | XMLHttpRequest | HttpClient |
-|------|-----------|----------------|------------|
-| Promise 支持 | ✅ | ❌ | ✅ |
-| 上传进度 | ❌ | ✅ | ✅ |
-| 下载进度 | ⚠️（流式） | ✅ | ✅ |
-| 超时控制 | ⚠️（AbortController） | ✅ | ✅ |
-| 现代 API | ✅ | ❌ | ✅ |
-| 错误处理 | ✅ | ⚠️ | ✅ |
+| 特性         | Fetch API             | XMLHttpRequest | HttpClient |
+| ------------ | --------------------- | -------------- | ---------- |
+| Promise 支持 | ✅                    | ❌             | ✅         |
+| 上传进度     | ❌                    | ✅             | ✅         |
+| 下载进度     | ⚠️（流式）            | ✅             | ✅         |
+| 超时控制     | ⚠️（AbortController） | ✅             | ✅         |
+| 现代 API     | ✅                    | ❌             | ✅         |
+| 错误处理     | ✅                    | ⚠️             | ✅         |
 
 ---
 
@@ -500,7 +518,7 @@ class ApiClient {
           }
         }
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -530,7 +548,7 @@ class ApiClient {
           console.log(`上传进度: ${progress.percent}%`);
         },
         onComplete: () => console.log("头像上传完成"),
-      }
+      },
     );
     return await response.json();
   }
@@ -551,7 +569,9 @@ const users = await api.getUsers();
 
 const fileInput = document.getElementById("fileInput") as HTMLInputElement;
 const uploadBtn = document.getElementById("uploadBtn") as HTMLButtonElement;
-const progressBar = document.getElementById("progressBar") as HTMLProgressElement;
+const progressBar = document.getElementById(
+  "progressBar",
+) as HTMLProgressElement;
 
 uploadBtn.addEventListener("click", async () => {
   const file = fileInput.files?.[0];

@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **字符串截断**：
   - 截断超过长度的字符串（`truncate`）
   - 自定义省略符
@@ -57,17 +58,17 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  truncate,
-  format,
   camelCase,
-  snakeCase,
+  format,
   kebabCase,
-  pascalCase,
-  padStart,
   padEnd,
+  padStart,
+  pascalCase,
+  snakeCase,
   trim,
-  trimStart,
   trimEnd,
+  trimStart,
+  truncate,
 } from "jsr:@dreamer/utils/client/string";
 
 // 使用方式与服务端版本完全相同

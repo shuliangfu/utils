@@ -61,12 +61,12 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  FileReader,
-  FileWriter,
-  FileTypeDetector,
-  FileStream,
-  FileWatcher,
   FilePreview,
+  FileReader,
+  FileStream,
+  FileTypeDetector,
+  FileWatcher,
+  FileWriter,
 } from "jsr:@dreamer/utils/client/file";
 
 // 文件读取
@@ -135,12 +135,14 @@ readAsText(file: File, encoding?: string): Promise<string>
 ```
 
 **参数**：
+
 - `file: File` - File 对象
 - `encoding: string` - 编码格式（默认 "utf-8"）
 
 **返回**：文件内容
 
 **示例**：
+
 ```typescript
 const text = await fileReader.readAsText(file);
 ```
@@ -154,11 +156,13 @@ readAsArrayBuffer(file: File): Promise<ArrayBuffer>
 ```
 
 **参数**：
+
 - `file: File` - File 对象
 
 **返回**：ArrayBuffer
 
 **示例**：
+
 ```typescript
 const arrayBuffer = await fileReader.readAsArrayBuffer(file);
 ```
@@ -172,11 +176,13 @@ readAsDataURL(file: File): Promise<string>
 ```
 
 **参数**：
+
 - `file: File` - File 对象
 
 **返回**：数据 URL 字符串
 
 **示例**：
+
 ```typescript
 const dataURL = await fileReader.readAsDataURL(file);
 ```
@@ -190,11 +196,13 @@ readAsUint8Array(file: File): Promise<Uint8Array>
 ```
 
 **参数**：
+
 - `file: File` - File 对象
 
 **返回**：Uint8Array
 
 **示例**：
+
 ```typescript
 const uint8Array = await fileReader.readAsUint8Array(file);
 ```
@@ -218,11 +226,13 @@ async downloadText(
 ```
 
 **参数**：
+
 - `filename: string` - 文件名
 - `content: string` - 文件内容
 - `mimeType: string` - MIME 类型（默认 "text/plain"）
 
 **示例**：
+
 ```typescript
 await fileWriter.downloadText("data.txt", "Hello, World!");
 ```
@@ -240,11 +250,13 @@ async downloadBinary(
 ```
 
 **参数**：
+
 - `filename: string` - 文件名
 - `data: ArrayBuffer | Uint8Array` - 文件数据
 - `mimeType: string` - MIME 类型（默认 "application/octet-stream"）
 
 **示例**：
+
 ```typescript
 await fileWriter.downloadBinary("data.bin", binaryData);
 ```
@@ -258,10 +270,12 @@ downloadBlob(filename: string, blob: Blob): Promise<void>
 ```
 
 **参数**：
+
 - `filename: string` - 文件名
 - `blob: Blob` - Blob 对象
 
 **示例**：
+
 ```typescript
 const blob = new Blob([data], { type: "application/json" });
 await fileWriter.downloadBlob("data.json", blob);
@@ -282,20 +296,23 @@ async detect(file: File): Promise<FileTypeInfo>
 ```
 
 **参数**：
+
 - `file: File` - File 对象
 
 **返回**：文件类型信息（FileTypeInfo）
 
 **FileTypeInfo**：
+
 ```typescript
 interface FileTypeInfo {
-  mime: string;      // MIME 类型
-  ext: string;       // 文件扩展名
+  mime: string; // MIME 类型
+  ext: string; // 文件扩展名
   signature?: string; // 文件签名（Magic Number）
 }
 ```
 
 **示例**：
+
 ```typescript
 const type = await detector.detect(file);
 console.log(type); // { mime: "image/png", ext: "png", signature: "PNG" }
@@ -310,11 +327,13 @@ getMimeType(filename: string): string
 ```
 
 **参数**：
+
 - `filename: string` - 文件名或路径
 
 **返回**：MIME 类型
 
 **示例**：
+
 ```typescript
 const mime = detector.getMimeType("image.png"); // "image/png"
 ```
@@ -328,11 +347,13 @@ getExtension(filename: string): string
 ```
 
 **参数**：
+
 - `filename: string` - 文件名或路径
 
 **返回**：文件扩展名（不含点号）
 
 **示例**：
+
 ```typescript
 const ext = detector.getExtension("image.png"); // "png"
 ```
@@ -352,12 +373,14 @@ createReader(file: File, chunkSize?: number): ReadableStream<Uint8Array>
 ```
 
 **参数**：
+
 - `file: File` - File 对象
 - `chunkSize: number` - 每次读取的块大小（字节，默认 64KB）
 
 **返回**：可读流
 
 **示例**：
+
 ```typescript
 const reader = stream.createReader(file, 64 * 1024);
 for await (const chunk of reader) {
@@ -383,14 +406,17 @@ watchInput(
 ```
 
 **参数**：
+
 - `inputElement: HTMLInputElement | null` - input[type="file"] 元素
 - `options: FileWatcherOptions` - 选项
 
 **FileWatcherOptions**：
+
 - `multiple?: boolean` - 是否支持多选（默认 false）
 - `accept?: string` - 文件类型限制（accept 属性）
 
 **示例**：
+
 ```typescript
 const input = document.querySelector('input[type="file"]');
 watcher.watchInput(input, { multiple: true });
@@ -405,9 +431,11 @@ watchDrop(element: Element | null): void
 ```
 
 **参数**：
+
 - `element: Element | null` - 拖拽区域元素
 
 **示例**：
+
 ```typescript
 const dropZone = document.querySelector("#drop-zone");
 watcher.watchDrop(dropZone);
@@ -424,11 +452,13 @@ on(event: "error", listener: (error: Error) => void): void;
 ```
 
 **事件类型**：
+
 - `select` - 文件选择事件
 - `drop` - 文件拖拽事件
 - `error` - 错误事件
 
 **示例**：
+
 ```typescript
 watcher.on("select", (files) => {
   console.log("选择了文件:", files);
@@ -450,6 +480,7 @@ off(event: "error", listener: (error: Error) => void): void;
 ```
 
 **示例**：
+
 ```typescript
 const handler = (files: File[]) => {
   console.log("选择了文件:", files);
@@ -474,11 +505,13 @@ async image(file: File): Promise<string>
 ```
 
 **参数**：
+
 - `file: File` - File 对象（必须是图片类型）
 
 **返回**：数据 URL
 
 **示例**：
+
 ```typescript
 const imageURL = await preview.image(imageFile);
 const img = document.createElement("img");
@@ -494,11 +527,13 @@ async text(file: File): Promise<string>
 ```
 
 **参数**：
+
 - `file: File` - File 对象
 
 **返回**：文本内容
 
 **示例**：
+
 ```typescript
 const textContent = await preview.text(textFile);
 console.log(textContent);
@@ -513,11 +548,13 @@ pdf(file: File): Promise<string>
 ```
 
 **参数**：
+
 - `file: File` - File 对象（必须是 PDF 类型）
 
 **返回**：Object URL
 
 **示例**：
+
 ```typescript
 const pdfURL = await preview.pdf(pdfFile);
 const iframe = document.createElement("iframe");

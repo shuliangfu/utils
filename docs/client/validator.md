@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **基础类型验证**：
   - 字符串验证（`string`）
   - 数字验证（`number`）
@@ -64,7 +65,14 @@ deno add jsr:@dreamer/utils
 ## 🚀 快速开始
 
 ```typescript
-import { validate, string, number, object, email, url } from "jsr:@dreamer/utils/client/validator";
+import {
+  email,
+  number,
+  object,
+  string,
+  url,
+  validate,
+} from "jsr:@dreamer/utils/client/validator";
 
 // 使用方式与服务端版本完全相同
 const nameSchema = string().min(2).max(50).required();
@@ -99,7 +107,8 @@ if (formResult.success) {
 
 ## 📚 API 文档
 
-客户端版本的所有 API 与服务端版本完全相同，请参考 [服务端文档](../validator.md)。
+客户端版本的所有 API 与服务端版本完全相同，请参考
+[服务端文档](../validator.md)。
 
 ---
 

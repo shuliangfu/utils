@@ -1,6 +1,7 @@
 # URL 处理
 
-> URL 处理工具函数模块，提供 URL 解析、构建、查询参数处理、编码解码、合并、验证等功能
+> URL 处理工具函数模块，提供 URL
+> 解析、构建、查询参数处理、编码解码、合并、验证等功能
 
 [![JSR](https://jsr.io/badges/@dreamer/utils)](https://jsr.io/@dreamer/utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -58,14 +59,14 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
-  parse,
-  parseQuery,
   build,
   buildQuery,
-  encode,
   decode,
-  join,
+  encode,
   isValid,
+  join,
+  parse,
+  parseQuery,
 } from "jsr:@dreamer/utils/url";
 
 // URL 解析
@@ -121,29 +122,32 @@ const invalid = isValid("not-a-url"); // false
 解析 URL，返回解析后的对象。
 
 ```typescript
-function parse(url: string): ParsedURL
+function parse(url: string): ParsedURL;
 ```
 
 **参数**：
+
 - `url: string` - URL 字符串
 
 **返回**：解析后的对象（ParsedURL）
 
 **ParsedURL 接口**：
+
 ```typescript
 interface ParsedURL {
-  protocol: string;  // 协议（如 "https:"）
-  host: string;      // 主机（如 "example.com:8080"）
-  hostname: string;  // 主机名（如 "example.com"）
-  port: string;      // 端口（如 "8080"）
-  pathname: string;  // 路径（如 "/path/to/resource"）
-  search: string;    // 查询字符串（如 "?name=Alice"）
-  hash: string;      // 哈希（如 "#section"）
-  origin: string;    // 源（如 "https://example.com"）
+  protocol: string; // 协议（如 "https:"）
+  host: string; // 主机（如 "example.com:8080"）
+  hostname: string; // 主机名（如 "example.com"）
+  port: string; // 端口（如 "8080"）
+  pathname: string; // 路径（如 "/path/to/resource"）
+  search: string; // 查询字符串（如 "?name=Alice"）
+  hash: string; // 哈希（如 "#section"）
+  origin: string; // 源（如 "https://example.com"）
 }
 ```
 
 **示例**：
+
 ```typescript
 const parsed = parse("https://example.com:8080/path?name=Alice#section");
 console.log(parsed.hostname); // "example.com"
@@ -158,15 +162,17 @@ console.log(parsed.pathname); // "/path"
 解析查询字符串，返回查询参数对象。
 
 ```typescript
-function parseQuery(query: string): Record<string, string>
+function parseQuery(query: string): Record<string, string>;
 ```
 
 **参数**：
+
 - `query: string` - 查询字符串（如 "name=Alice&age=25"）
 
 **返回**：查询参数对象
 
 **示例**：
+
 ```typescript
 const params = parseQuery("name=Alice&age=25");
 // { name: "Alice", age: "25" }
@@ -179,28 +185,31 @@ const params = parseQuery("name=Alice&age=25");
 构建 URL，根据选项构建 URL 字符串。
 
 ```typescript
-function build(options: BuildURLOptions): string
+function build(options: BuildURLOptions): string;
 ```
 
 **参数**：
+
 - `options: BuildURLOptions` - URL 选项
 
 **BuildURLOptions 接口**：
+
 ```typescript
 interface BuildURLOptions {
-  protocol?: string;  // 协议（如 "https:"）
-  host?: string;      // 主机（如 "example.com:8080"）
-  hostname?: string;  // 主机名（如 "example.com"）
-  port?: string;      // 端口（如 "8080"）
-  pathname?: string;  // 路径（如 "/path"）
-  search?: string;    // 查询字符串（如 "?name=Alice"）
-  hash?: string;      // 哈希（如 "#section"）
+  protocol?: string; // 协议（如 "https:"）
+  host?: string; // 主机（如 "example.com:8080"）
+  hostname?: string; // 主机名（如 "example.com"）
+  port?: string; // 端口（如 "8080"）
+  pathname?: string; // 路径（如 "/path"）
+  search?: string; // 查询字符串（如 "?name=Alice"）
+  hash?: string; // 哈希（如 "#section"）
 }
 ```
 
 **返回**：构建后的 URL 字符串
 
 **示例**：
+
 ```typescript
 const url = build({
   protocol: "https:",
@@ -218,15 +227,17 @@ const url = build({
 构建查询字符串，将对象转换为查询字符串。
 
 ```typescript
-function buildQuery(params: Record<string, unknown>): string
+function buildQuery(params: Record<string, unknown>): string;
 ```
 
 **参数**：
+
 - `params: Record<string, unknown>` - 查询参数对象
 
 **返回**：查询字符串
 
 **示例**：
+
 ```typescript
 const query = buildQuery({ name: "Alice", age: 25 });
 // "name=Alice&age=25"
@@ -243,15 +254,17 @@ const query2 = buildQuery({ name: "Alice", age: null, email: undefined });
 URL 编码，将字符串编码为 URL 安全格式。
 
 ```typescript
-function encode(str: string): string
+function encode(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要编码的字符串
 
 **返回**：编码后的字符串
 
 **示例**：
+
 ```typescript
 const encoded = encode("Hello World"); // "Hello%20World"
 const encoded2 = encode("你好"); // "%E4%BD%A0%E5%A5%BD"
@@ -264,15 +277,17 @@ const encoded2 = encode("你好"); // "%E4%BD%A0%E5%A5%BD"
 URL 解码，将 URL 编码的字符串解码。
 
 ```typescript
-function decode(str: string): string
+function decode(str: string): string;
 ```
 
 **参数**：
+
 - `str: string` - 要解码的字符串
 
 **返回**：解码后的字符串
 
 **示例**：
+
 ```typescript
 const decoded = decode("Hello%20World"); // "Hello World"
 const decoded2 = decode("%E4%BD%A0%E5%A5%BD"); // "你好"
@@ -285,16 +300,18 @@ const decoded2 = decode("%E4%BD%A0%E5%A5%BD"); // "你好"
 合并 URL 路径，将多个路径片段合并为一个 URL。
 
 ```typescript
-function join(base: string, ...paths: string[]): string
+function join(base: string, ...paths: string[]): string;
 ```
 
 **参数**：
+
 - `base: string` - 基础 URL
 - `...paths: string[]` - 路径片段
 
 **返回**：合并后的 URL
 
 **示例**：
+
 ```typescript
 const url = join("https://example.com", "api", "users", "123");
 // "https://example.com/api/users/123"
@@ -311,15 +328,17 @@ const url2 = join("https://example.com/", "/api/", "/users/");
 验证 URL 是否有效。
 
 ```typescript
-function isValid(url: string): boolean
+function isValid(url: string): boolean;
 ```
 
 **参数**：
+
 - `url: string` - URL 字符串
 
 **返回**：是否有效
 
 **示例**：
+
 ```typescript
 isValid("https://example.com"); // true
 isValid("http://example.com"); // true

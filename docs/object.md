@@ -57,16 +57,16 @@ deno add jsr:@dreamer/utils
 ```typescript
 import {
   deepClone,
-  merge,
   deepMerge,
-  get,
-  set,
-  has,
   deletePath,
-  pick,
-  omit,
-  isEqual,
+  get,
+  has,
   isDeepEqual,
+  isEqual,
+  merge,
+  omit,
+  pick,
+  set,
 } from "jsr:@dreamer/utils/object";
 
 // 深度克隆
@@ -87,7 +87,12 @@ const hasName = has(data, "user.name"); // true
 deletePath(data, "user.age"); // 删除路径
 
 // 对象过滤
-const user = { id: 1, name: "Alice", email: "alice@example.com", password: "***" };
+const user = {
+  id: 1,
+  name: "Alice",
+  email: "alice@example.com",
+  password: "***",
+};
 const picked = pick(user, ["id", "name", "email"]); // 只保留指定字段
 const omitted = omit(user, ["password"]); // 排除指定字段
 
@@ -107,15 +112,17 @@ const deepEqual = isDeepEqual(obj1, obj2); // true（深度比较）
 深度克隆对象，创建完全独立的副本。
 
 ```typescript
-function deepClone<T>(obj: T): T
+function deepClone<T>(obj: T): T;
 ```
 
 **参数**：
+
 - `obj: T` - 要克隆的对象
 
 **返回**：克隆后的对象
 
 **示例**：
+
 ```typescript
 const obj = { a: 1, b: { c: 2 } };
 const cloned = deepClone(obj);
@@ -133,16 +140,18 @@ console.log(obj.b.c); // 2（原对象未改变）
 function merge<T extends Record<string, unknown>>(
   target: T,
   ...sources: Partial<T>[]
-): T
+): T;
 ```
 
 **参数**：
+
 - `target: T` - 目标对象
 - `...sources: Partial<T>[]` - 源对象（可多个）
 
 **返回**：合并后的对象
 
 **示例**：
+
 ```typescript
 const obj1 = { a: 1, b: { c: 2 } };
 const obj2 = { b: { d: 3 }, e: 4 };
@@ -159,16 +168,18 @@ const merged = merge(obj1, obj2); // { a: 1, b: { d: 3 }, e: 4 }
 function deepMerge<T extends Record<string, unknown>>(
   target: T,
   ...sources: Partial<T>[]
-): T
+): T;
 ```
 
 **参数**：
+
 - `target: T` - 目标对象
 - `...sources: Partial<T>[]` - 源对象（可多个）
 
 **返回**：深度合并后的对象
 
 **示例**：
+
 ```typescript
 const obj1 = { a: 1, b: { c: 2 } };
 const obj2 = { b: { d: 3 }, e: 4 };
@@ -186,10 +197,11 @@ function get<T = unknown>(
   obj: Record<string, unknown>,
   path: string,
   defaultValue?: T,
-): T | undefined
+): T | undefined;
 ```
 
 **参数**：
+
 - `obj: Record<string, unknown>` - 对象
 - `path: string` - 路径（如 "user.name"）
 - `defaultValue?: T` - 默认值（可选）
@@ -197,6 +209,7 @@ function get<T = unknown>(
 **返回**：路径值或默认值
 
 **示例**：
+
 ```typescript
 const data = { user: { name: "Alice", age: 25 } };
 const name = get(data, "user.name"); // "Alice"
@@ -214,10 +227,11 @@ function set(
   obj: Record<string, unknown>,
   path: string,
   value: unknown,
-): void
+): void;
 ```
 
 **参数**：
+
 - `obj: Record<string, unknown>` - 对象
 - `path: string` - 路径（如 "user.name"）
 - `value: unknown` - 值
@@ -225,6 +239,7 @@ function set(
 **返回**：无（直接修改原对象）
 
 **示例**：
+
 ```typescript
 const data = { user: { name: "Alice" } };
 set(data, "user.age", 25);
@@ -238,16 +253,18 @@ console.log(data.user.age); // 25
 检查对象路径是否存在。
 
 ```typescript
-function has(obj: Record<string, unknown>, path: string): boolean
+function has(obj: Record<string, unknown>, path: string): boolean;
 ```
 
 **参数**：
+
 - `obj: Record<string, unknown>` - 对象
 - `path: string` - 路径（如 "user.name"）
 
 **返回**：路径是否存在
 
 **示例**：
+
 ```typescript
 const data = { user: { name: "Alice" } };
 const hasName = has(data, "user.name"); // true
@@ -264,16 +281,18 @@ const hasEmail = has(data, "user.email"); // false
 function deletePath(
   obj: Record<string, unknown>,
   path: string,
-): boolean
+): boolean;
 ```
 
 **参数**：
+
 - `obj: Record<string, unknown>` - 对象
 - `path: string` - 路径（如 "user.name"）
 
 **返回**：是否删除成功
 
 **示例**：
+
 ```typescript
 const data = { user: { name: "Alice", age: 25 } };
 deletePath(data, "user.age");
@@ -290,18 +309,25 @@ console.log(data.user.age); // undefined
 function pick<T extends Record<string, unknown>>(
   obj: T,
   keys: (keyof T)[],
-): Partial<T>
+): Partial<T>;
 ```
 
 **参数**：
+
 - `obj: T` - 对象
 - `keys: (keyof T)[]` - 要选择的属性键数组
 
 **返回**：包含指定属性的新对象
 
 **示例**：
+
 ```typescript
-const user = { id: 1, name: "Alice", email: "alice@example.com", password: "***" };
+const user = {
+  id: 1,
+  name: "Alice",
+  email: "alice@example.com",
+  password: "***",
+};
 const picked = pick(user, ["id", "name", "email"]);
 // { id: 1, name: "Alice", email: "alice@example.com" }
 ```
@@ -316,18 +342,25 @@ const picked = pick(user, ["id", "name", "email"]);
 function omit<T extends Record<string, unknown>>(
   obj: T,
   keys: (keyof T)[],
-): Partial<T>
+): Partial<T>;
 ```
 
 **参数**：
+
 - `obj: T` - 对象
 - `keys: (keyof T)[]` - 要排除的属性键数组
 
 **返回**：排除指定属性后的新对象
 
 **示例**：
+
 ```typescript
-const user = { id: 1, name: "Alice", email: "alice@example.com", password: "***" };
+const user = {
+  id: 1,
+  name: "Alice",
+  email: "alice@example.com",
+  password: "***",
+};
 const omitted = omit(user, ["password"]);
 // { id: 1, name: "Alice", email: "alice@example.com" }
 ```
@@ -339,16 +372,18 @@ const omitted = omit(user, ["password"]);
 浅比较两个对象是否相等。
 
 ```typescript
-function isEqual(obj1: unknown, obj2: unknown): boolean
+function isEqual(obj1: unknown, obj2: unknown): boolean;
 ```
 
 **参数**：
+
 - `obj1: unknown` - 第一个对象
 - `obj2: unknown` - 第二个对象
 
 **返回**：是否相等
 
 **示例**：
+
 ```typescript
 const obj1 = { a: 1, b: 2 };
 const obj2 = { a: 1, b: 2 };
@@ -362,16 +397,18 @@ const equal = isEqual(obj1, obj2); // true
 深度比较两个对象是否相等。
 
 ```typescript
-function isDeepEqual(obj1: unknown, obj2: unknown): boolean
+function isDeepEqual(obj1: unknown, obj2: unknown): boolean;
 ```
 
 **参数**：
+
 - `obj1: unknown` - 第一个对象
 - `obj2: unknown` - 第二个对象
 
 **返回**：是否深度相等
 
 **示例**：
+
 ```typescript
 const obj1 = { a: 1, b: { c: 2 } };
 const obj2 = { a: 1, b: { c: 2 } };

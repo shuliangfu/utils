@@ -4,15 +4,15 @@
  * 提供完整的 HTTP 客户端功能（拦截器、重试、超时等）
  */
 
-import { ClientCookieManager } from "./cookies.ts"
-import { InterceptorManager } from "./interceptors.ts"
-import { defaultRetryCondition, withRetry } from "./retry.ts"
+import { ClientCookieManager } from "./cookies.ts";
+import { InterceptorManager } from "./interceptors.ts";
+import { defaultRetryCondition, withRetry } from "./retry.ts";
 import type {
   DownloadOptions,
   HttpClientOptions,
   RequestConfig,
   UploadOptions,
-} from "./types.ts"
+} from "./types.ts";
 
 /**
  * HTTP 客户端类

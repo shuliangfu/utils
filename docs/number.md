@@ -54,14 +54,14 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
+  ceil,
+  clamp,
+  floor,
   format,
   formatCurrency,
   formatPercent,
-  clamp,
   inRange,
   round,
-  floor,
-  ceil,
 } from "jsr:@dreamer/utils/number";
 
 // 数字格式化
@@ -94,14 +94,16 @@ const ceiled = ceil(3.7); // 4
 数字格式化，将数字格式化为指定格式的字符串。
 
 ```typescript
-function format(num: number, formatStr?: string): string
+function format(num: number, formatStr?: string): string;
 ```
 
 **参数**：
+
 - `num: number` - 要格式化的数字
 - `formatStr: string` - 格式字符串（默认 "0,0.00"）
 
 **格式说明**：
+
 - `0,0.00` - 千位分隔符，保留两位小数
 - `0,0` - 千位分隔符，无小数
 - `0.00` - 无千位分隔符，保留两位小数
@@ -109,6 +111,7 @@ function format(num: number, formatStr?: string): string
 **返回**：格式化后的字符串
 
 **示例**：
+
 ```typescript
 const num = 1234567.89;
 format(num, "0,0.00"); // "1,234,567.89"
@@ -123,14 +126,16 @@ format(num, "0.00"); // "1234567.89"
 货币格式化，将数字格式化为货币格式。
 
 ```typescript
-function formatCurrency(num: number, currency?: string): string
+function formatCurrency(num: number, currency?: string): string;
 ```
 
 **参数**：
+
 - `num: number` - 要格式化的数字
 - `currency: string` - 货币代码（默认 "USD"）
 
 **支持的货币**：
+
 - `USD` - 美元 ($)
 - `EUR` - 欧元 (€)
 - `GBP` - 英镑 (£)
@@ -140,6 +145,7 @@ function formatCurrency(num: number, currency?: string): string
 **返回**：格式化后的货币字符串
 
 **示例**：
+
 ```typescript
 const num = 1234567.89;
 formatCurrency(num, "USD"); // "$1,234,567.89"
@@ -154,15 +160,17 @@ formatCurrency(num, "EUR"); // "€1,234,567.89"
 百分比格式化，将小数转换为百分比字符串。
 
 ```typescript
-function formatPercent(num: number): string
+function formatPercent(num: number): string;
 ```
 
 **参数**：
+
 - `num: number` - 要格式化的数字（0-1 之间的小数）
 
 **返回**：百分比字符串（如 "12.34%"）
 
 **示例**：
+
 ```typescript
 formatPercent(0.1234); // "12.34%"
 formatPercent(0.5); // "50.00%"
@@ -176,10 +184,11 @@ formatPercent(1); // "100.00%"
 限制数字在指定范围内。
 
 ```typescript
-function clamp(num: number, min: number, max: number): number
+function clamp(num: number, min: number, max: number): number;
 ```
 
 **参数**：
+
 - `num: number` - 要限制的数字
 - `min: number` - 最小值
 - `max: number` - 最大值
@@ -187,6 +196,7 @@ function clamp(num: number, min: number, max: number): number
 **返回**：限制后的数字
 
 **示例**：
+
 ```typescript
 clamp(150, 0, 100); // 100
 clamp(50, 0, 100); // 50
@@ -200,10 +210,11 @@ clamp(-10, 0, 100); // 0
 判断数字是否在指定范围内。
 
 ```typescript
-function inRange(num: number, min: number, max: number): boolean
+function inRange(num: number, min: number, max: number): boolean;
 ```
 
 **参数**：
+
 - `num: number` - 要判断的数字
 - `min: number` - 最小值
 - `max: number` - 最大值
@@ -211,6 +222,7 @@ function inRange(num: number, min: number, max: number): boolean
 **返回**：是否在范围内
 
 **示例**：
+
 ```typescript
 inRange(50, 0, 100); // true
 inRange(150, 0, 100); // false
@@ -224,15 +236,17 @@ inRange(-10, 0, 100); // false
 四舍五入。
 
 ```typescript
-const round: typeof Math.round
+const round: typeof Math.round;
 ```
 
 **参数**：
+
 - `num: number` - 要舍入的数字
 
 **返回**：四舍五入后的整数
 
 **示例**：
+
 ```typescript
 round(3.7); // 4
 round(3.4); // 3
@@ -246,15 +260,17 @@ round(3.5); // 4
 向下取整。
 
 ```typescript
-const floor: typeof Math.floor
+const floor: typeof Math.floor;
 ```
 
 **参数**：
+
 - `num: number` - 要取整的数字
 
 **返回**：向下取整后的整数
 
 **示例**：
+
 ```typescript
 floor(3.7); // 3
 floor(3.4); // 3
@@ -268,15 +284,17 @@ floor(-3.7); // -4
 向上取整。
 
 ```typescript
-const ceil: typeof Math.ceil
+const ceil: typeof Math.ceil;
 ```
 
 **参数**：
+
 - `num: number` - 要取整的数字
 
 **返回**：向上取整后的整数
 
 **示例**：
+
 ```typescript
 ceil(3.7); // 4
 ceil(3.4); // 4

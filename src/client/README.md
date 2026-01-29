@@ -194,7 +194,13 @@ deno add jsr:@dreamer/utils
 ### 数组操作
 
 ```typescript
-import { unique, groupBy, chunk, flatten, difference } from "jsr:@dreamer/utils/client/array";
+import {
+  chunk,
+  difference,
+  flatten,
+  groupBy,
+  unique,
+} from "jsr:@dreamer/utils/client/array";
 
 // 数组去重
 const arr = [1, 2, 2, 3, 3, 3];
@@ -233,7 +239,15 @@ const diff = difference(arr1, arr2); // [1, 2]
 ### 对象操作
 
 ```typescript
-import { deepClone, merge, get, set, pick, omit, isEqual } from "jsr:@dreamer/utils/client/object";
+import {
+  deepClone,
+  get,
+  isEqual,
+  merge,
+  omit,
+  pick,
+  set,
+} from "jsr:@dreamer/utils/client/object";
 
 // 深度克隆
 const obj = { a: 1, b: { c: 2 } };
@@ -252,7 +266,12 @@ set(data, "user.age", 26); // 设置值
 const has = has(data, "user.name"); // true
 
 // 对象过滤
-const user = { id: 1, name: "Alice", email: "alice@example.com", password: "***" };
+const user = {
+  id: 1,
+  name: "Alice",
+  email: "alice@example.com",
+  password: "***",
+};
 const picked = pick(user, ["id", "name", "email"]); // 只保留指定字段
 const omitted = omit(user, ["password"]); // 排除指定字段
 
@@ -266,7 +285,13 @@ const deepEqual = isDeepEqual(obj1, obj2); // true（深度比较）
 ### 日期时间处理
 
 ```typescript
-import { format, addDays, diffDays, isBefore, fromNow } from "jsr:@dreamer/utils/client/date";
+import {
+  addDays,
+  diffDays,
+  format,
+  fromNow,
+  isBefore,
+} from "jsr:@dreamer/utils/client/date";
 
 // 日期格式化
 const date = new Date("2024-01-01");
@@ -296,7 +321,13 @@ const relative = fromNow(pastDate); // "1 小时前"
 ### 异步工具
 
 ```typescript
-import { debounce, throttle, retry, withTimeout, sleep } from "jsr:@dreamer/utils/client/async";
+import {
+  debounce,
+  retry,
+  sleep,
+  throttle,
+  withTimeout,
+} from "jsr:@dreamer/utils/client/async";
 
 // 防抖
 const debouncedSearch = debounce((query: string) => {
@@ -315,13 +346,13 @@ const result = await retry(
     if (!response.ok) throw new Error("请求失败");
     return response.json();
   },
-  { maxAttempts: 3, delay: 1000 }
+  { maxAttempts: 3, delay: 1000 },
 );
 
 // 超时控制
 const result = await withTimeout(
   fetch("/api/data"),
-  5000 // 5 秒超时
+  5000, // 5 秒超时
 );
 
 // 延迟
@@ -331,7 +362,16 @@ await sleep(1000); // 延迟 1 秒
 ### URL 处理
 
 ```typescript
-import { parse, build, parseQuery, buildQuery, encode, decode, join, isValid } from "jsr:@dreamer/utils/client/url";
+import {
+  build,
+  buildQuery,
+  decode,
+  encode,
+  isValid,
+  join,
+  parse,
+  parseQuery,
+} from "jsr:@dreamer/utils/client/url";
 
 // URL 解析
 const parsed = parse("https://example.com/path?name=Alice&age=25#section");
@@ -369,12 +409,12 @@ const valid = isValid("https://example.com"); // true
 
 ```typescript
 import {
-  FileReader,
-  FileWriter,
-  FileTypeDetector,
-  FileStream,
-  FileWatcher,
   FilePreview,
+  FileReader,
+  FileStream,
+  FileTypeDetector,
+  FileWatcher,
+  FileWriter,
 } from "jsr:@dreamer/utils/client/file";
 
 // 文件读取
@@ -429,7 +469,14 @@ const pdfURL = await preview.pdf(pdfFile);
 ### 数据验证
 
 ```typescript
-import { validate, string, number, object, email, url } from "jsr:@dreamer/utils/client/validator";
+import {
+  email,
+  number,
+  object,
+  string,
+  url,
+  validate,
+} from "jsr:@dreamer/utils/client/validator";
 
 // 基础验证
 const nameSchema = string().min(2).max(50).required();
@@ -512,7 +559,7 @@ client.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // 发送请求
@@ -594,6 +641,7 @@ const session = client.cookies.get("session");
 ### 共享模块
 
 以下模块在客户端和服务端都可以使用（客户端直接导出服务端版本）：
+
 - `array.ts` - 数组操作
 - `string.ts` - 字符串处理
 - `object.ts` - 对象操作
@@ -604,11 +652,13 @@ const session = client.cookies.get("session");
 - `format.ts` - 格式化工具
 - `validator.ts` - 数据验证
 
-这些模块都是纯 JavaScript 函数，不依赖任何运行时 API，可以在浏览器和服务端环境使用。
+这些模块都是纯 JavaScript 函数，不依赖任何运行时
+API，可以在浏览器和服务端环境使用。
 
 ### 服务端专用模块
 
 以下模块仅在服务端可用，客户端不支持：
+
 - `lock.ts` - 分布式锁（需要 Redis）
 - `system.ts` - 系统状态（需要系统 API）
 - `file.ts` - 文件系统操作（需要文件系统 API）
@@ -616,12 +666,14 @@ const session = client.cookies.get("session");
 ### 客户端专用模块
 
 以下模块仅在客户端可用：
+
 - `client/file.ts` - 浏览器文件操作（使用 File API、Blob API）
 - `client/http/` - HTTP 客户端（使用 Fetch API 和 XMLHttpRequest）
 
 ### 设计优势
 
 这样的设计可以：
+
 - **减少代码重复**：共享模块只需维护一份代码
 - **保持 API 一致性**：客户端和服务端使用相同的 API
 - **明确功能边界**：清楚区分哪些功能在哪些环境可用

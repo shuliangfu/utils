@@ -16,6 +16,7 @@
 ## ✨ 特性
 
 客户端版本与服务端版本功能完全相同，包括：
+
 - **数字格式化**：
   - 自定义格式字符串（`format`）
   - 千位分隔符
@@ -55,14 +56,14 @@ deno add jsr:@dreamer/utils
 
 ```typescript
 import {
+  ceil,
+  clamp,
+  floor,
   format,
   formatCurrency,
   formatPercent,
-  clamp,
   inRange,
   round,
-  floor,
-  ceil,
 } from "jsr:@dreamer/utils/client/number";
 
 // 使用方式与服务端版本完全相同

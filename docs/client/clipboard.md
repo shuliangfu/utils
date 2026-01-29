@@ -43,6 +43,7 @@ deno add jsr:@dreamer/utils
 - **服务端**：❌ 不支持
 
 **注意**：
+
 - Clipboard API 需要在 HTTPS 或 localhost 环境下使用
 - 剪贴板操作需要用户交互触发（如点击事件）
 - 读取剪贴板需要用户授权
@@ -58,9 +59,11 @@ deno add jsr:@dreamer/utils
 优先使用现代 Clipboard API，如果不支持则回退到 execCommand（兼容旧浏览器）。
 
 **参数**：
+
 - `text` (string): 要复制的文本
 
 **返回**：
+
 - `Promise<void>`: 成功时 resolve，失败时 reject
 
 **示例**：
@@ -99,6 +102,7 @@ button.addEventListener("click", async () => {
 使用现代 Clipboard API，需要用户授权。
 
 **返回**：
+
 - `Promise<string>`: 剪贴板中的文本内容
 
 **示例**：
@@ -138,14 +142,15 @@ button.addEventListener("click", async () => {
 检查是否支持 Clipboard API 或 execCommand（全兼容）。
 
 **返回**：
+
 - `boolean`: 是否支持剪贴板操作
 
 **示例**：
 
 ```typescript
 import {
-  isClipboardSupported,
   copyToClipboard,
+  isClipboardSupported,
 } from "jsr:@dreamer/utils/client/clipboard";
 
 if (isClipboardSupported()) {
@@ -162,6 +167,7 @@ if (isClipboardSupported()) {
 检查是否支持读取剪贴板。
 
 **返回**：
+
 - `boolean`: 是否支持读取剪贴板
 
 **示例**：
@@ -253,9 +259,9 @@ pasteButton.addEventListener("click", async () => {
 
 ```typescript
 import {
-  isClipboardSupported,
-  isClipboardReadSupported,
   copyToClipboard,
+  isClipboardReadSupported,
+  isClipboardSupported,
   readFromClipboard,
 } from "jsr:@dreamer/utils/client/clipboard";
 
@@ -293,6 +299,7 @@ if (isClipboardReadSupported()) {
 ### 1. 安全上下文要求
 
 Clipboard API 需要在安全上下文中使用：
+
 - HTTPS 协议
 - localhost
 - 127.0.0.1
@@ -321,7 +328,8 @@ button.addEventListener("click", async () => {
 
 ### 4. 移动端兼容性
 
-在移动端（特别是 iOS Safari）上，execCommand 方法可能有限制，建议使用 Clipboard API。
+在移动端（特别是 iOS Safari）上，execCommand 方法可能有限制，建议使用 Clipboard
+API。
 
 ### 5. 错误处理
 
