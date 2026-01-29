@@ -3,7 +3,8 @@
 > 一个兼容 Deno 和 Bun 的工具函数库，提供通用工具函数，按功能模块化组织
 
 [![JSR](https://jsr.io/badges/@dreamer/utils)](https://jsr.io/@dreamer/utils)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
+[![Tests](https://img.shields.io/badge/tests-150%20passed-brightgreen)](./TEST_REPORT.md)
 
 ---
 

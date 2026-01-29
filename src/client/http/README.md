@@ -3,7 +3,7 @@
 > 一个用于浏览器的 HTTP 客户端库，结合 Fetch 和 XMLHttpRequest 的优势，提供完整的 HTTP 请求功能
 
 [![JSR](https://jsr.io/badges/@dreamer/http/client)](https://jsr.io/@dreamer/http/client)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../LICENSE.md)
 
 ---
 

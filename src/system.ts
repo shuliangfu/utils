@@ -6,35 +6,7 @@
  * 提供获取系统状态参数的工具方法，包括 CPU、内存、磁盘、网络等信息。
  */
 
-import {
-  type CommandProcess,
-  createCommand,
-  IS_BUN,
-  IS_DENO,
-} from "@dreamer/runtime-adapter";
-
-/**
- * 在 Deno 环境下安全关闭命令进程的流
- * @param cmd 命令进程对象
- */
-async function closeCommandStreams(cmd: CommandProcess): Promise<void> {
-  if (IS_DENO) {
-    try {
-      if (cmd.stdout) {
-        await cmd.stdout.cancel();
-      }
-    } catch {
-      // 忽略取消错误（流可能已经关闭）
-    }
-    try {
-      if (cmd.stderr) {
-        await cmd.stderr.cancel();
-      }
-    } catch {
-      // 忽略取消错误（流可能已经关闭）
-    }
-  }
-}
+import { createCommand, IS_BUN, IS_DENO } from "@dreamer/runtime-adapter";
 
 /**
  * 内存信息
@@ -223,7 +195,6 @@ export async function getMemoryInfo(): Promise<MemoryInfo> {
                   const used = total - free;
                   const usagePercent = total > 0 ? (used / total) * 100 : 0;
 
-                  await closeCommandStreams(cmd);
                   return {
                     total,
                     available: free,
@@ -248,7 +219,6 @@ export async function getMemoryInfo(): Promise<MemoryInfo> {
                     const available = parseInt(parts[6], 10) || free;
                     const usagePercent = total > 0 ? (used / total) * 100 : 0;
 
-                    await closeCommandStreams(cmd);
                     return {
                       total,
                       available,
@@ -260,9 +230,8 @@ export async function getMemoryInfo(): Promise<MemoryInfo> {
                 }
               }
             }
-            await closeCommandStreams(cmd);
           } catch {
-            await closeCommandStreams(cmd);
+            // 命令执行失败，静默处理
           }
         }
       } catch {
@@ -423,7 +392,6 @@ export async function getLoadAverage(): Promise<LoadAverage | undefined> {
                 /load average:\s*([\d.]+),\s*([\d.]+),\s*([\d.]+)/,
               );
               if (match) {
-                await closeCommandStreams(cmd);
                 return {
                   load1: parseFloat(match[1]),
                   load5: parseFloat(match[2]),
@@ -431,9 +399,8 @@ export async function getLoadAverage(): Promise<LoadAverage | undefined> {
                 };
               }
             }
-            await closeCommandStreams(cmd);
           } catch {
-            await closeCommandStreams(cmd);
+            // 命令执行失败，静默处理
           }
         }
       } catch (error) {
@@ -556,9 +523,7 @@ export async function getSystemInfo(): Promise<SystemInfo> {
               }
             }
           }
-          await closeCommandStreams(cmd);
         } catch {
-          await closeCommandStreams(cmd);
           // 获取失败，保持默认值 0
           uptime = 0;
         }
@@ -700,7 +665,6 @@ export async function getDiskUsage(
         if (!result.success) {
           const error = new TextDecoder().decode(result.stderr);
           console.warn("获取磁盘使用信息失败:", error);
-          await closeCommandStreams(cmd);
           return {
             total: 0,
             used: 0,
@@ -722,7 +686,6 @@ export async function getDiskUsage(
             const used = total - free;
             const usagePercent = total > 0 ? (used / total) * 100 : 0;
 
-            await closeCommandStreams(cmd);
             return {
               total,
               used,
@@ -749,7 +712,6 @@ export async function getDiskUsage(
               const available = (parseInt(parts[3], 10) || 0) * multiplier;
               const usagePercent = total > 0 ? (used / total) * 100 : 0;
 
-              await closeCommandStreams(cmd);
               return {
                 total,
                 used,
@@ -759,9 +721,8 @@ export async function getDiskUsage(
             }
           }
         }
-        await closeCommandStreams(cmd);
       } catch {
-        await closeCommandStreams(cmd);
+        // 命令执行失败，静默处理
       }
     } catch (error) {
       console.warn("获取磁盘使用信息失败:", error);

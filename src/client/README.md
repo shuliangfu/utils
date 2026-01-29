@@ -3,7 +3,7 @@
 > 一个用于浏览器的工具函数库，提供浏览器环境下的工具函数和辅助方法
 
 [![JSR](https://jsr.io/badges/@dreamer/utils/client)](https://jsr.io/@dreamer/utils/client)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE.md)
 
 ---
 
