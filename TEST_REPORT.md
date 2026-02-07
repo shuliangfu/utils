@@ -1,487 +1,483 @@
-# @dreamer/utils 测试报告
+# @dreamer/utils Test Report
 
-> 测试报告生成时间：2026-01-13
+> Report generated: 2026-01-13
 
-## 📊 测试概览
+## 📊 Test Overview
 
-- **测试框架**：@dreamer/test
-- **测试环境**：Deno 2.6+ / Bun 1.3.5
-- **总测试用例数**：150
-- **通过测试数**：150
-- **失败测试数**：0
-- **测试通过率**：100%
+- **Test Framework**: @dreamer/test
+- **Test Environment**: Deno 2.6+ / Bun 1.3.5
+- **Total Tests**: 150
+- **Passed**: 150
+- **Failed**: 0
+- **Pass Rate**: 100%
 
-## ✅ 测试结果汇总
+## ✅ Test Results Summary
 
-| 模块         | 测试文件         | 测试用例数 | 通过    | 失败  | 状态   |
-| ------------ | ---------------- | ---------- | ------- | ----- | ------ |
-| 数组操作     | `array.test.ts`  | 14         | 14      | 0     | ✅     |
-| 字符串处理   | `string.test.ts` | 22         | 22      | 0     | ✅     |
-| 对象操作     | `object.test.ts` | 14         | 14      | 0     | ✅     |
-| 日期时间处理 | `date.test.ts`   | 11         | 11      | 0     | ✅     |
-| 数字格式化   | `number.test.ts` | 8          | 8       | 0     | ✅     |
-| 异步工具     | `async.test.ts`  | 11         | 11      | 0     | ✅     |
-| URL 处理     | `url.test.ts`    | 12         | 12      | 0     | ✅     |
-| 格式化工具   | `format.test.ts` | 8          | 8       | 0     | ✅     |
-| 文件操作     | `file.test.ts`   | 32         | 32      | 0     | ✅     |
-| 系统状态     | `system.test.ts` | 8          | 8       | 0     | ✅     |
-| 分布式锁     | `lock.test.ts`   | 10         | 10      | 0     | ✅     |
-| **总计**     | **11 个文件**    | **150**    | **150** | **0** | **✅** |
+| Module | Test File | Tests | Passed | Failed | Status |
+|--------|-----------|-------|--------|-------|--------|
+| Array operations | `array.test.ts` | 14 | 14 | 0 | ✅ |
+| String handling | `string.test.ts` | 22 | 22 | 0 | ✅ |
+| Object operations | `object.test.ts` | 14 | 14 | 0 | ✅ |
+| Date/time handling | `date.test.ts` | 11 | 11 | 0 | ✅ |
+| Number formatting | `number.test.ts` | 8 | 8 | 0 | ✅ |
+| Async utilities | `async.test.ts` | 11 | 11 | 0 | ✅ |
+| URL handling | `url.test.ts` | 12 | 12 | 0 | ✅ |
+| Format utilities | `format.test.ts` | 8 | 8 | 0 | ✅ |
+| File operations | `file.test.ts` | 32 | 32 | 0 | ✅ |
+| System status | `system.test.ts` | 8 | 8 | 0 | ✅ |
+| Distributed lock | `lock.test.ts` | 10 | 10 | 0 | ✅ |
+| **Total** | **11 files** | **150** | **150** | **0** | **✅** |
 
-## 📋 详细测试覆盖
+## 📋 Detailed Test Coverage
 
-### 1. 数组操作（`array.test.ts`）- 14 个测试
+### 1. Array Operations (`array.test.ts`) - 14 tests
 
 #### unique / uniqueBy
 
-- ✅ 应该去除重复元素
-- ✅ 应该保持顺序
-- ✅ 应该按属性去重
+- ✅ Should remove duplicate elements
+- ✅ Should preserve order
+- ✅ Should deduplicate by property
 
 #### groupBy
 
-- ✅ 应该按字符串键分组
-- ✅ 应该按函数分组
+- ✅ Should group by string key
+- ✅ Should group by function
 
 #### chunk
 
-- ✅ 应该将数组分块
-- ✅ 应该处理空数组
+- ✅ Should chunk array
+- ✅ Should handle empty array
 
 #### flatten / flattenDeep
 
-- ✅ 应该扁平化一层
-- ✅ 应该深度扁平化
+- ✅ Should flatten one level
+- ✅ Should flatten deeply
 
 #### difference / intersection / union
 
-- ✅ 应该返回差集
-- ✅ 应该返回交集
-- ✅ 应该返回并集
+- ✅ Should return difference
+- ✅ Should return intersection
+- ✅ Should return union
 
 #### count / countBy
 
-- ✅ 应该统计元素出现次数
-- ✅ 应该按属性统计
+- ✅ Should count element occurrences
+- ✅ Should count by property
 
-### 2. 字符串处理（`string.test.ts`）- 22 个测试
+### 2. String Handling (`string.test.ts`) - 22 tests
 
 #### truncate
 
-- ✅ 应该截断超过长度的字符串
-- ✅ 应该保持短字符串不变
-- ✅ 应该使用自定义省略符
+- ✅ Should truncate strings exceeding length
+- ✅ Should keep short strings unchanged
+- ✅ Should use custom ellipsis
 
 #### format
 
-- ✅ 应该替换占位符
-- ✅ 应该处理多个占位符
-- ✅ 应该处理不存在的键
+- ✅ Should replace placeholders
+- ✅ Should handle multiple placeholders
+- ✅ Should handle non-existent keys
 
-#### 命名转换（camelCase / snakeCase / kebabCase / pascalCase）
+#### Naming conversion (camelCase / snakeCase / kebabCase / pascalCase)
 
-- ✅ camelCase：应该转换短横线命名
-- ✅ camelCase：应该转换下划线命名
-- ✅ camelCase：应该转换空格分隔
-- ✅ snakeCase：应该转换驼峰命名
-- ✅ snakeCase：应该转换短横线命名
-- ✅ kebabCase：应该转换驼峰命名
-- ✅ kebabCase：应该转换下划线命名
-- ✅ pascalCase：应该转换短横线命名
-- ✅ pascalCase：应该转换下划线命名
+- ✅ camelCase: Should convert kebab-case
+- ✅ camelCase: Should convert snake_case
+- ✅ camelCase: Should convert space-separated
+- ✅ snakeCase: Should convert camelCase
+- ✅ snakeCase: Should convert kebab-case
+- ✅ kebabCase: Should convert camelCase
+- ✅ kebabCase: Should convert snake_case
+- ✅ pascalCase: Should convert kebab-case
+- ✅ pascalCase: Should convert snake_case
 
-#### 填充（padStart / padEnd）
+#### Padding (padStart / padEnd)
 
-- ✅ padStart：应该左侧填充
-- ✅ padStart：应该使用默认空格填充
-- ✅ padEnd：应该右侧填充
-- ✅ padEnd：应该使用默认空格填充
+- ✅ padStart: Should pad left
+- ✅ padStart: Should use default space padding
+- ✅ padEnd: Should pad right
+- ✅ padEnd: Should use default space padding
 
-#### 清理（trim / trimStart / trimEnd）
+#### Trimming (trim / trimStart / trimEnd)
 
-- ✅ trim：应该去除首尾空白
-- ✅ trimStart：应该去除左侧空白
-- ✅ trimEnd：应该去除右侧空白
+- ✅ trim: Should remove leading/trailing whitespace
+- ✅ trimStart: Should remove leading whitespace
+- ✅ trimEnd: Should remove trailing whitespace
 
-### 3. 对象操作（`object.test.ts`）- 14 个测试
+### 3. Object Operations (`object.test.ts`) - 14 tests
 
 #### deepClone
 
-- ✅ 应该深度克隆对象
-- ✅ 应该克隆数组
-- ✅ 应该克隆日期
+- ✅ Should deep clone object
+- ✅ Should clone array
+- ✅ Should clone Date
 
 #### merge / deepMerge
 
-- ✅ 应该浅合并对象
-- ✅ 应该深度合并对象
+- ✅ Should shallow merge objects
+- ✅ Should deep merge objects
 
-#### 路径操作（get / set / has / deletePath）
+#### Path operations (get / set / has / deletePath)
 
-- ✅ get：应该获取路径值
-- ✅ get：应该返回默认值
-- ✅ set：应该设置路径值
-- ✅ has：应该检查路径是否存在
-- ✅ deletePath：应该删除路径值
+- ✅ get: Should get path value
+- ✅ get: Should return default value
+- ✅ set: Should set path value
+- ✅ has: Should check if path exists
+- ✅ deletePath: Should delete path value
 
-#### 过滤（pick / omit）
+#### Filtering (pick / omit)
 
-- ✅ pick：应该选择指定属性
-- ✅ omit：应该排除指定属性
+- ✅ pick: Should pick specified properties
+- ✅ omit: Should omit specified properties
 
-#### 比较（isEqual / isDeepEqual）
+#### Comparison (isEqual / isDeepEqual)
 
-- ✅ 应该浅比较对象
-- ✅ 应该深度比较对象
+- ✅ Should shallow compare objects
+- ✅ Should deep compare objects
 
-### 4. 日期时间处理（`date.test.ts`）- 11 个测试
+### 4. Date/Time Handling (`date.test.ts`) - 11 tests
 
 #### format
 
-- ✅ 应该格式化日期
+- ✅ Should format date
 
-#### 日期计算（addDays / addMonths / addYears）
+#### Date arithmetic (addDays / addMonths / addYears)
 
-- ✅ 应该添加天数
-- ✅ 应该添加月数
-- ✅ 应该添加年数
+- ✅ Should add days
+- ✅ Should add months
+- ✅ Should add years
 
-#### 日期比较（isBefore / isAfter / isSame）
+#### Date comparison (isBefore / isAfter / isSame)
 
-- ✅ 应该判断日期是否在之前
-- ✅ 应该判断日期是否在之后
-- ✅ 应该判断日期是否相同
+- ✅ Should check if date is before
+- ✅ Should check if date is after
+- ✅ Should check if dates are same
 
-#### 日期差值（diffDays / diffHours）
+#### Date diff (diffDays / diffHours)
 
-- ✅ 应该计算天数差
-- ✅ 应该计算小时数差
+- ✅ Should compute day difference
+- ✅ Should compute hour difference
 
-#### 相对时间（fromNow / toNow）
+#### Relative time (fromNow / toNow)
 
-- ✅ 应该返回相对时间（fromNow）
-- ✅ 应该返回相对时间（toNow）
+- ✅ Should return relative time (fromNow)
+- ✅ Should return relative time (toNow)
 
-### 5. 数字格式化（`number.test.ts`）- 8 个测试
+### 5. Number Formatting (`number.test.ts`) - 8 tests
 
 #### format / formatCurrency / formatPercent
 
-- ✅ 应该格式化数字
-- ✅ 应该格式化货币
-- ✅ 应该格式化百分比
+- ✅ Should format number
+- ✅ Should format currency
+- ✅ Should format percent
 
 #### clamp / inRange
 
-- ✅ 应该限制数字在范围内
-- ✅ 应该判断数字是否在范围内
+- ✅ Should clamp number to range
+- ✅ Should check if number is in range
 
-#### 舍入（round / floor / ceil）
+#### Rounding (round / floor / ceil)
 
-- ✅ 应该四舍五入
-- ✅ 应该向下取整
-- ✅ 应该向上取整
+- ✅ Should round
+- ✅ Should floor
+- ✅ Should ceil
 
-### 6. 异步工具（`async.test.ts`）- 11 个测试
+### 6. Async Utilities (`async.test.ts`) - 11 tests
 
 #### debounce / throttle
 
-- ✅ 应该防抖函数
-- ✅ 应该节流函数
+- ✅ Should debounce function
+- ✅ Should throttle function
 
 #### retry
 
-- ✅ 应该重试失败的操作
-- ✅ 应该在达到最大尝试次数后抛出错误
+- ✅ Should retry failed operation
+- ✅ Should throw after max attempts
 
 #### withTimeout
 
-- ✅ 应该在超时后抛出错误
-- ✅ 应该在超时前完成
+- ✅ Should throw on timeout
+- ✅ Should complete before timeout
 
 #### parallel
 
-- ✅ 应该并发执行任务
-- ✅ 应该限制并发数
+- ✅ Should run tasks in parallel
+- ✅ Should limit concurrency
 
 #### series
 
-- ✅ 应该顺序执行任务
+- ✅ Should run tasks in series
 
 #### sleep / delay
 
-- ✅ 应该延迟指定时间
-- ✅ 应该是 sleep 的别名
+- ✅ Should delay specified time
+- ✅ Should be alias of sleep
 
-### 7. URL 处理（`url.test.ts`）- 12 个测试
+### 7. URL Handling (`url.test.ts`) - 12 tests
 
 #### parse
 
-- ✅ 应该解析 URL
-- ✅ 应该在无效 URL 时抛出错误
+- ✅ Should parse URL
+- ✅ Should throw on invalid URL
 
 #### parseQuery
 
-- ✅ 应该解析查询字符串
+- ✅ Should parse query string
 
 #### build
 
-- ✅ 应该构建 URL
+- ✅ Should build URL
 
 #### buildQuery
 
-- ✅ 应该构建查询字符串
-- ✅ 应该忽略 null 和 undefined
+- ✅ Should build query string
+- ✅ Should ignore null and undefined
 
 #### encode / decode
 
-- ✅ 应该编码字符串
-- ✅ 应该解码字符串
+- ✅ Should encode string
+- ✅ Should decode string
 
 #### join
 
-- ✅ 应该合并 URL 路径
-- ✅ 应该处理多余的斜杠
+- ✅ Should join URL paths
+- ✅ Should handle extra slashes
 
 #### isValid
 
-- ✅ 应该验证有效 URL
-- ✅ 应该验证无效 URL
+- ✅ Should validate valid URL
+- ✅ Should validate invalid URL
 
-### 8. 格式化工具（`format.test.ts`）- 8 个测试
+### 8. Format Utilities (`format.test.ts`) - 8 tests
 
 #### formatBytes
 
-- ✅ 应该格式化字节数
-- ✅ 应该使用指定单位
-- ✅ 应该使用指定精度
+- ✅ Should format bytes
+- ✅ Should use specified unit
+- ✅ Should use specified precision
 
 #### formatDuration
 
-- ✅ 应该格式化时长（人类可读）
-- ✅ 应该格式化时长（HH:mm:ss）
+- ✅ Should format duration (human-readable)
+- ✅ Should format duration (HH:mm:ss)
 
 #### formatNumber
 
-- ✅ 应该格式化数字
-- ✅ 应该使用指定分隔符
+- ✅ Should format number
+- ✅ Should use specified separator
 
 #### formatPercent
 
-- ✅ 应该格式化百分比
+- ✅ Should format percent
 
-### 9. 文件操作（`file.test.ts`）- 32 个测试
+### 9. File Operations (`file.test.ts`) - 32 tests
 
-#### FileManager - 9 个测试
+#### FileManager - 9 tests
 
-- ✅ readText/writeText：应该写入和读取文本文件
-- ✅ readBinary/writeBinary：应该写入和读取二进制文件
-- ✅ appendText：应该追加写入文本文件
-- ✅ appendText：应该向不存在的文件追加内容（创建新文件）
-- ✅ copy：应该复制文件
-- ✅ move：应该移动文件（重命名）
-- ✅ exists：应该检查文件是否存在
-- ✅ stat：应该获取文件信息
-- ✅ delete：应该删除文件
+- ✅ readText/writeText: Should write and read text file
+- ✅ readBinary/writeBinary: Should write and read binary file
+- ✅ appendText: Should append to text file
+- ✅ appendText: Should append to non-existent file (create new)
+- ✅ copy: Should copy file
+- ✅ move: Should move file (rename)
+- ✅ exists: Should check if file exists
+- ✅ stat: Should get file info
+- ✅ delete: Should delete file
 
-#### FileWatcher - 3 个测试
+#### FileWatcher - 3 tests
 
-- ✅ 应该监听文件变化事件
-- ✅ 应该支持移除事件监听器
-- ✅ 应该启动和停止监控
+- ✅ Should watch file change events
+- ✅ Should support removing listeners
+- ✅ Should start and stop watching
 
-#### FileTypeDetector - 5 个测试
+#### FileTypeDetector - 5 tests
 
-- ✅ 应该获取文件扩展名
-- ✅ 应该根据扩展名获取 MIME 类型
-- ✅ 应该检测 PNG 文件类型
-- ✅ 应该检测 JPEG 文件类型
-- ✅ 应该根据扩展名检测未知签名文件
+- ✅ Should get file extension
+- ✅ Should get MIME type by extension
+- ✅ Should detect PNG file type
+- ✅ Should detect JPEG file type
+- ✅ Should detect unknown signature file by extension
 
-#### FileStream - 2 个测试
+#### FileStream - 2 tests
 
-- ✅ 应该创建文件读取流
-- ✅ 应该创建文件写入流
+- ✅ Should create file read stream
+- ✅ Should create file write stream
 
-#### FileCompressor - 13 个测试
+#### FileCompressor - 13 tests
 
-**gzip/gunzip（文件操作）**
+**gzip/gunzip (file operations)**
 
-- ✅ 应该压缩和解压文件
-- ✅ 应该支持自定义压缩级别
+- ✅ Should compress and decompress file
+- ✅ Should support custom compression level
 
-**compress/decompress（内存操作）**
+**compress/decompress (in-memory)**
 
-- ✅ 应该压缩和解压数据（内存操作）
-- ✅ 应该支持自定义压缩级别（内存操作）
-- ✅ 应该处理空数据
-- ✅ 应该处理二进制数据
+- ✅ Should compress and decompress data (in-memory)
+- ✅ Should support custom compression level (in-memory)
+- ✅ Should handle empty data
+- ✅ Should handle binary data
 
-**错误处理**
+**Error handling**
 
-- ✅ 应该在源文件不存在时抛出错误（gzip）
-- ✅ 应该在压缩文件不存在时抛出错误（gunzip）
-- ✅ 应该在解压无效数据时抛出错误或返回错误结果
+- ✅ Should throw when source file not exists (gzip)
+- ✅ Should throw when compressed file not exists (gunzip)
+- ✅ Should throw or return error on invalid data decompress
 
-**压缩级别**
+**Compression levels**
 
-- ✅ 应该支持所有压缩级别（1-9）
-- ✅ 应该使用默认压缩级别（6）
+- ✅ Should support all compression levels (1-9)
+- ✅ Should use default compression level (6)
 
-**文件压缩完整性**
+**Integrity**
 
-- ✅ 应该压缩和解压大文件（约 100KB）
-- ✅ 应该压缩和解压包含特殊字符的文件（中文、日文、韩文、emoji、换行符等）
+- ✅ Should compress and decompress large file (~100KB)
+- ✅ Should compress and decompress file with special chars (CJK, emoji, newlines, etc.)
 
-### 10. 系统状态（`system.test.ts`）- 8 个测试
+### 10. System Status (`system.test.ts`) - 8 tests
 
-- ✅ 应该获取内存信息
-- ✅ 应该获取 CPU 使用率
-- ✅ 应该获取系统负载（如果可用）
-- ✅ 应该获取系统信息
-- ✅ 应该获取磁盘使用信息
-- ✅ 应该获取完整系统状态
-- ✅ 应该格式化字节数
-- ✅ 应该格式化运行时间
+- ✅ Should get memory info
+- ✅ Should get CPU usage
+- ✅ Should get system load (if available)
+- ✅ Should get system info
+- ✅ Should get disk usage
+- ✅ Should get full system status
+- ✅ Should format bytes
+- ✅ Should format uptime
 
-**注意**：部分系统状态测试需要 Deno 的 `--allow-sys` 和 `--allow-run`
-权限，测试会捕获权限错误并验证错误处理逻辑。
+**Note**: Some system status tests require Deno `--allow-sys` and `--allow-run` permissions. Tests catch permission errors and verify error handling.
 
-### 11. 分布式锁（`lock.test.ts`）- 10 个测试
+### 11. Distributed Lock (`lock.test.ts`) - 10 tests
 
 #### lockKey
 
-- ✅ 应该生成格式化的锁键名
+- ✅ Should generate formatted lock key name
 
 #### acquireLock
 
-- ✅ 应该成功获取锁
-- ✅ 应该失败获取已存在的锁
-- ✅ 应该在获取锁失败时抛出错误（默认）
-- ✅ 应该使用自定义错误消息
+- ✅ Should acquire lock successfully
+- ✅ Should fail to acquire existing lock
+- ✅ Should throw on acquire failure (default)
+- ✅ Should use custom error message
 
 #### DistributedLock
 
-- ✅ 应该能够释放锁
+- ✅ Should release lock
 
 #### withLock
 
-- ✅ 应该自动获取和释放锁
-- ✅ 应该返回函数执行结果
-- ✅ 应该在函数抛出错误时也释放锁
-- ✅ 应该在获取锁失败时抛出错误
+- ✅ Should auto acquire and release lock
+- ✅ Should return function result
+- ✅ Should release lock on function error
+- ✅ Should throw on acquire failure
 
-## 🔍 测试覆盖分析
+## 🔍 Test Coverage Analysis
 
-### 功能覆盖
+### Feature Coverage
 
-| 功能模块     | 测试覆盖 | 说明                                        |
-| ------------ | -------- | ------------------------------------------- |
-| 数组操作     | ✅ 100%  | 覆盖所有主要数组操作方法                    |
-| 字符串处理   | ✅ 100%  | 覆盖字符串转换、格式化、清理等功能          |
-| 对象操作     | ✅ 100%  | 覆盖克隆、合并、路径操作、过滤、比较等      |
-| 日期时间处理 | ✅ 100%  | 覆盖格式化、计算、比较、差值、相对时间      |
-| 数字格式化   | ✅ 100%  | 覆盖格式化、范围、舍入等功能                |
-| 异步工具     | ✅ 100%  | 覆盖防抖、节流、重试、超时、并发控制        |
-| URL 处理     | ✅ 100%  | 覆盖解析、构建、编码、验证等功能            |
-| 格式化工具   | ✅ 100%  | 覆盖字节、时长、数字、百分比格式化          |
-| 文件操作     | ✅ 100%  | 覆盖读写、监控、类型检测、流处理、压缩/解压 |
-| 系统状态     | ✅ 100%  | 覆盖内存、CPU、负载、磁盘、系统信息         |
-| 分布式锁     | ✅ 100%  | 覆盖锁获取、释放、自动管理等                |
+| Module | Coverage | Description |
+|--------|----------|-------------|
+| Array operations | ✅ 100% | All main array methods |
+| String handling | ✅ 100% | Conversion, formatting, trimming |
+| Object operations | ✅ 100% | Clone, merge, path ops, filter, compare |
+| Date/time handling | ✅ 100% | Format, arithmetic, compare, diff, relative |
+| Number formatting | ✅ 100% | Format, range, rounding |
+| Async utilities | ✅ 100% | Debounce, throttle, retry, timeout, concurrency |
+| URL handling | ✅ 100% | Parse, build, encode, validate |
+| Format utilities | ✅ 100% | Bytes, duration, number, percent |
+| File operations | ✅ 100% | Read/write, watch, type detect, stream, compress |
+| System status | ✅ 100% | Memory, CPU, load, disk, system info |
+| Distributed lock | ✅ 100% | Acquire, release, auto management |
 
-### 边界情况覆盖
+### Edge Case Coverage
 
-- ✅ 空数据/空数组/空对象处理
-- ✅ 无效输入错误处理
-- ✅ 文件不存在错误处理
-- ✅ 压缩/解压错误处理
-- ✅ 特殊字符处理（中文、日文、韩文、emoji）
-- ✅ 大文件处理（100KB+）
-- ✅ 二进制数据处理
+- ✅ Empty data/array/object handling
+- ✅ Invalid input error handling
+- ✅ File not found error handling
+- ✅ Compress/decompress error handling
+- ✅ Special chars (CJK, emoji)
+- ✅ Large file handling (100KB+)
+- ✅ Binary data handling
 
-### 跨运行时兼容性
+### Cross-Runtime Compatibility
 
-- ✅ **Deno 2.6+**：所有测试通过
-- ✅ **Bun 1.3.5**：所有测试通过（使用 pako 库）
+- ✅ **Deno 2.6+**: All tests pass
+- ✅ **Bun 1.3.5**: All tests pass (uses pako)
 
-## 🚀 运行测试
+## 🚀 Running Tests
 
 ### Deno
 
 ```bash
-# 运行所有测试
+# Run all tests
 deno test --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-run
 
-# 运行特定测试文件
+# Run specific test file
 deno test tests/file.test.ts --allow-read --allow-write --allow-env
 ```
 
 ### Bun
 
 ```bash
-# 运行所有测试
+# Run all tests
 bun test
 
-# 运行特定测试文件
+# Run specific test file
 bun test tests/file.test.ts
 ```
 
-## 📝 测试环境
+## 📝 Test Environment
 
-- **Deno 版本**：2.5+
-- **Bun 版本**：1.0+
-- **测试框架**：@dreamer/test@^1.0.0-beta.8
-- **压缩库**：pako@2.1.0（npm）
+- **Deno**: 2.5+
+- **Bun**: 1.0+
+- **Test Framework**: @dreamer/test@^1.0.0-beta.8
+- **Compression**: pako@2.1.0 (npm)
 
-## ✨ 新增功能测试
+## ✨ FileCompressor Tests
 
-### 文件压缩/解压功能（FileCompressor）
+File compression/decompression has **13 test cases**, all passed:
 
-本次新增的文件压缩/解压功能包含 **13 个测试用例**，全部通过：
+1. **File compress/decompress** (2 tests)
+   - Basic file compress and decompress
+   - Custom compression level
 
-1. **文件压缩/解压**（2 个测试）
-   - 基本文件压缩和解压
-   - 自定义压缩级别支持
+2. **In-memory compress/decompress** (4 tests)
+   - Basic in-memory compress and decompress
+   - Custom compression level
+   - Empty data handling
+   - Binary data handling
 
-2. **内存压缩/解压**（4 个测试）
-   - 基本内存压缩和解压
-   - 自定义压缩级别
-   - 空数据处理
-   - 二进制数据处理
+3. **Error handling** (3 tests)
+   - Source file not exists
+   - Compressed file not exists
+   - Invalid data decompress
 
-3. **错误处理**（3 个测试）
-   - 源文件不存在错误
-   - 压缩文件不存在错误
-   - 无效数据解压错误
+4. **Compression levels** (2 tests)
+   - All levels (1-9) support
+   - Default level (6)
 
-4. **压缩级别**（2 个测试）
-   - 所有压缩级别（1-9）支持
-   - 默认压缩级别（6）
+5. **Integrity** (2 tests)
+   - Large file compress/decompress
+   - Special char file compress/decompress
 
-5. **完整性测试**（2 个测试）
-   - 大文件压缩/解压
-   - 特殊字符文件压缩/解压
+## 🎯 Test Quality
 
-## 🎯 测试质量
+- **Coverage**: 100% (all modules tested)
+- **Edge cases**: Comprehensive
+- **Error handling**: Full coverage
+- **Cross-runtime**: Deno and Bun pass
+- **Performance**: Large file and concurrency tests included
 
-- **测试覆盖率**：100%（所有功能模块都有对应测试）
-- **边界情况**：全面覆盖
-- **错误处理**：完整测试
-- **跨运行时**：Deno 和 Bun 都通过
-- **性能测试**：包含大文件和并发测试
+## 📌 Notes
 
-## 📌 注意事项
+1. **System status tests**: Some require Deno `--allow-sys`, `--allow-run`. Tests handle permission errors correctly.
+2. **File watcher tests**: May take longer (debounce delay).
+3. **Compression**: Uses `npm:pako@2.1.0`, supported in Deno and Bun.
 
-1. **系统状态测试**：部分测试需要 Deno
-   的系统权限（`--allow-sys`、`--allow-run`），测试会正确处理权限错误
-2. **文件监控测试**：文件监控测试可能需要较长时间（防抖延迟）
-3. **压缩功能**：使用 `npm:pako@2.1.0`，Deno 和 Bun 都支持
+## ✅ Conclusion
 
-## ✅ 结论
-
-所有 **150 个测试用例**全部通过，测试覆盖率达到
-**100%**。库的所有功能模块都经过充分测试，包括新增的文件压缩/解压功能。代码质量高，可以放心使用。
+All **150 test cases** passed with **100%** coverage. All modules are thoroughly tested, including FileCompressor. Ready for production use.
 
 ---
 
-**测试报告生成时间**：2026-01-13 **测试框架版本**：@dreamer/test@^1.0.0-beta.8
-**压缩库版本**：pako@2.1.0
+**Report Generated**: 2026-01-13
+**Test Framework**: @dreamer/test@^1.0.0-beta.8
+**Compression**: pako@2.1.0
