@@ -1,22 +1,25 @@
 # @dreamer/utils
 
-> Utility function library compatible with Deno and Bun. Common utilities organized by module.
+> Utility function library compatible with Deno and Bun. Common utilities
+> organized by module.
 
 English | [中文 (Chinese)](./README-zh.md)
 
 [![JSR](https://jsr.io/badges/@dreamer/utils)](https://jsr.io/@dreamer/utils)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
-[![Tests](https://img.shields.io/badge/tests-150%20passed-brightgreen)](./TEST_REPORT.md)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+[![Tests](https://img.shields.io/badge/tests-244%20passed-brightgreen)](./docs/en-US/TEST_REPORT.md)
 
 ---
 
 ## 🎯 Features
 
-Utility library with common utilities and helpers. Supports server (Deno/Bun) and client (browser).
+Utility library with common utilities and helpers. Supports server (Deno/Bun)
+and client (browser).
 
 ## File Organization
 
-Utilities are organized by module. Each module is a separate file for tree-shaking:
+Utilities are organized by module. Each module is a separate file for
+tree-shaking:
 
 ```
 @dreamer/utils/
@@ -56,9 +59,12 @@ Utilities are organized by module. Each module is a separate file for tree-shaki
 
 **Notes**:
 
-- **Shared modules** (`array`, `string`, `object`, `date`, `number`, `async`, `url`, `format`, `validator`): Client re-exports server version (pure JS, no runtime API)
+- **Shared modules** (`array`, `string`, `object`, `date`, `number`, `async`,
+  `url`, `format`, `validator`): Client re-exports server version (pure JS, no
+  runtime API)
 - **Server-only** (`lock`, `system`, `file`): Not available on client
-- **Client-only** (`client/file`, `client/http`, `client/clipboard`): Browser-specific (File API, Fetch/XHR, Clipboard API)
+- **Client-only** (`client/file`, `client/http`, `client/clipboard`):
+  Browser-specific (File API, Fetch/XHR, Clipboard API)
 
 ## Characteristics
 
@@ -168,14 +174,16 @@ Utilities are organized by module. Each module is a separate file for tree-shaki
 
 ### File (`file.ts` - server) - [📖 Docs](./docs/file.md)
 
-- FileManager read/write: `readText`, `readBinary`, `writeText`, `writeBinary`, `appendText`
+- FileManager read/write: `readText`, `readBinary`, `writeText`, `writeBinary`,
+  `appendText`
 - FileManager ops: `copy`, `move`, `delete`, `exists`, `stat`
 - FileWatcher: watch changes, recursive, debounce
 - FileTypeDetector: MIME, extension, magic number
 - FileStream: stream read/write for large files
 - FileCompressor: `gzip`, `gunzip`, `compress`/`decompress`
 
-**Note**: Client file ops see [client/README.md](./src/client/README.md) and [📖 Client file docs](./docs/client/file.md)
+**Note**: Client file ops see [client/README.md](./src/client/README.md) and
+[📖 Client file docs](./docs/client/file.md)
 
 ### Clipboard (`client/clipboard.ts`) - [📖 Docs](./docs/client/clipboard.md)
 
@@ -215,7 +223,8 @@ deno add jsr:@dreamer/utils
 
 **Notes**:
 
-- `system.ts` needs runtime permissions (system commands), not available in browser
+- `system.ts` needs runtime permissions (system commands), not available in
+  browser
 - `lock.ts` needs Redis, server only
 - `file.ts` compression: Deno and Bun use `npm:pako@2.1.0`
 
@@ -996,6 +1005,17 @@ src/
 
 ---
 
+## Changelog
+
+**[1.0.0]** - 2026-02-20
+
+- **Added**: First stable release; array, string, object, date, number, async,
+  URL, format, validator, file, lock, system; client HTTP, clipboard, file;
+  interceptors, retry, cookies, upload/download progress.
+- Full history: [CHANGELOG](./docs/en-US/CHANGELOG.md)
+
+---
+
 ## 🤝 Contributing
 
 Issues and PRs welcome!
@@ -1004,7 +1024,7 @@ Issues and PRs welcome!
 
 ## 📄 License
 
-MIT License - see [LICENSE.md](./LICENSE.md)
+Apache License 2.0 - see [LICENSE](./LICENSE)
 
 ---
 

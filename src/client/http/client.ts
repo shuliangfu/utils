@@ -228,28 +228,7 @@ export class HttpClient {
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
       }
-
-      // 如果是超时错误，检查是否需要重试
-      if (config.retry !== false && config.retryOptions) {
-        return await withRetry(
-          () => this.requestWithFetch(url, config),
-          {
-            ...config.retryOptions,
-            retryCondition: (err) => {
-              if (
-                err instanceof Error &&
-                (err.name === "AbortError" || err.message.includes("timeout"))
-              ) {
-                return true;
-              }
-              return config.retryOptions?.retryCondition
-                ? config.retryOptions.retryCondition(err)
-                : defaultRetryCondition(err);
-            },
-          },
-        );
-      }
-
+      // 重试由 request() 层的 withRetry 统一处理，此处仅抛出
       throw error;
     }
   }
@@ -546,16 +525,35 @@ export class HttpClient {
     // 构建 URL
     const url = this.buildURL(interceptedConfig.url || "");
 
-    // 判断使用 Fetch 还是 XHR
-    if (this.shouldUseXHR(interceptedConfig)) {
-      // 使用 XHR（支持上传/下载进度）
-      return await this.requestWithXHR(url, interceptedConfig);
-    } else {
-      // 使用 Fetch（更现代，性能更好）
+    // 单次请求（不重试），供 withRetry 或直接调用
+    const doRequest = async (): Promise<Response> => {
+      if (this.shouldUseXHR(interceptedConfig)) {
+        return await this.requestWithXHR(url, interceptedConfig);
+      }
       const response = await this.requestWithFetch(url, interceptedConfig);
-      // 执行响应拦截器
       return await this.interceptors.response.executeResponse(response);
+    };
+
+    // 需要重试时在 request 层包一层 withRetry，避免在 requestWithFetch 的 catch 里再调 withRetry 导致无限嵌套
+    if (interceptedConfig.retry !== false && interceptedConfig.retryOptions) {
+      return await withRetry(doRequest, {
+        ...interceptedConfig.retryOptions,
+        retryCondition: (err) => {
+          if (
+            err instanceof Error &&
+            (err.name === "AbortError" || err.message.includes("timeout"))
+          ) {
+            return true;
+          }
+          const opts = interceptedConfig.retryOptions;
+          return opts?.retryCondition
+            ? opts.retryCondition(err)
+            : defaultRetryCondition(err);
+        },
+      });
     }
+
+    return await doRequest();
   }
 
   /**

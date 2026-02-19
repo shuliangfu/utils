@@ -66,4 +66,28 @@ describe("Validator", () => {
       expect(result2.success).toBeFalsy();
     });
   });
+
+  describe("options.messages", () => {
+    it("不传 options 时使用默认英文消息", () => {
+      const result = validate("", string().required());
+      expect(result.success).toBeFalsy();
+      expect(result.errors[0].message).toBe("This field is required");
+    });
+
+    it("传入 options.messages 时可自定义错误消息", () => {
+      const result = validate("", string().required(), {
+        messages: { required: "此字段为必填项" },
+      });
+      expect(result.success).toBeFalsy();
+      expect(result.errors[0].message).toBe("此字段为必填项");
+    });
+
+    it("可只覆盖部分规则的消息", () => {
+      const result = validate("ab", string().min(5), {
+        messages: { min: "最少 5 个字符" },
+      });
+      expect(result.success).toBeFalsy();
+      expect(result.errors[0].message).toBe("最少 5 个字符");
+    });
+  });
 });
