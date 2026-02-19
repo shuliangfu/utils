@@ -1007,11 +1007,10 @@ src/
 
 ## Changelog
 
-**[1.0.0]** - 2026-02-20
+**[1.0.1]** - 2026-02-20
 
-- **Added**: First stable release; array, string, object, date, number, async,
-  URL, format, validator, file, lock, system; client HTTP, clipboard, file;
-  interceptors, retry, cookies, upload/download progress.
+- **Fixed**: HTTP client retry infinite nesting; upload/download progress tests.
+- **Changed**: Test report 244 tests (14 files), HTTP/retry/Validator sections.
 - Full history: [CHANGELOG](./docs/en-US/CHANGELOG.md)
 
 ---
