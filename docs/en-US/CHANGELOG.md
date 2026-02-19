@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [1.0.0] - 2026-02-20
+## [1.0.1] - 2026-02-20
+
+### Fixed
+
+- **HTTP client retry**: Moved retry logic from `requestWithFetch` catch to
+  `request()` level to prevent infinite nesting of `withRetry` when fetch always
+  throws (retry tests no longer hang or OOM).
+- **HTTP tests**: Upload/download progress tests now receive progress events
+  (Mock XHR dispatches progress; upload test waits for listener registration).
+  Retry tests moved to `http-retry.test.ts` and pass with `retryDelay: 0`.
+
+### Changed
+
+- **Test report**: Updated to 244 tests (14 files), added HTTP client, HTTP
+  retry, Validator sections; en-US and zh-CN TEST_REPORT in sync.
+
+---
+
+## [1.0.0] - 2026-02-19
 
 ### Added
 
