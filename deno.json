@@ -1,7 +1,7 @@
 {
   "name": "@dreamer/utils",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "exports": {
     "./array": "./src/array.ts",
     "./string": "./src/string.ts",
@@ -32,7 +32,8 @@
     "include": [
       "src/**/*.ts",
       "docs/**/*.md",
-      "LICENSE.md",
+      "LICENSE",
+      "NOTICE",
       "README.md",
       "TEST_REPORT.md"
     ],
@@ -57,8 +58,8 @@
     }
   },
   "imports": {
-    "@dreamer/test": "jsr:@dreamer/test@^1.0.0",
-    "@dreamer/runtime-adapter": "jsr:@dreamer/runtime-adapter@^1.0.0",
+    "@dreamer/test": "jsr:@dreamer/test@^1.0.12",
+    "@dreamer/runtime-adapter": "jsr:@dreamer/runtime-adapter@^1.0.15",
     "pako": "npm:pako@2.1.0"
   },
   "nodeModulesDir": "auto",

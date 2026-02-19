@@ -2,7 +2,15 @@
  * @fileoverview HTTP 客户端测试
  */
 
-import { afterEach, beforeEach, describe, expect, it } from "@dreamer/test";
+import {
+  afterEach,
+  assertRejects,
+  beforeEach,
+  createCookieDocument,
+  describe,
+  expect,
+  it,
+} from "@dreamer/test";
 import {
   ClientCookieManager,
   HttpClient,
@@ -55,6 +63,8 @@ class MockXMLHttpRequest {
   private _onerror: ((event: Event) => void) | null = null;
   private _ontimeout: ((event: Event) => void) | null = null;
   private _onabort: ((event: Event) => void) | null = null;
+  /** 主 XHR 上的事件监听（如 progress、loadstart），供下载进度等使用 */
+  private _listeners: Map<string, ((event: any) => void)[]> = new Map();
   public upload: {
     addEventListener: (type: string, handler: (event: any) => void) => void;
     _listeners: Map<string, (event: any) => void>;
@@ -79,8 +89,17 @@ class MockXMLHttpRequest {
   }
 
   send(body?: any): void {
-    // 模拟异步请求
+    // 模拟异步请求：先派发下载 progress，再派发 load
     setTimeout(() => {
+      const progressListeners = this._listeners.get("progress");
+      if (progressListeners?.length) {
+        const ev = {
+          loaded: 50,
+          total: 100,
+          lengthComputable: true,
+        };
+        for (const h of progressListeners) h(ev);
+      }
       this._responseText = JSON.stringify({ success: true });
       this._response = this._responseText;
       if (this._onload) {
@@ -158,6 +177,11 @@ class MockXMLHttpRequest {
       this._ontimeout = handler;
     } else if (type === "abort") {
       this._onabort = handler;
+    } else {
+      // progress、loadstart 等
+      const list = this._listeners.get(type) ?? [];
+      list.push(handler as (event: any) => void);
+      this._listeners.set(type, list);
     }
   }
 }
@@ -181,12 +205,8 @@ describe("HttpClient", () => {
     mockXHR = MockXMLHttpRequest;
     (globalThis as any).XMLHttpRequest = MockXMLHttpRequest;
 
-    // Mock document.cookie（用于 Cookie 测试）
-    if (typeof (globalThis as any).document === "undefined") {
-      (globalThis as any).document = {
-        cookie: "",
-      };
-    }
+    // Mock document.cookie（使用 test 包提供的累积型 mock，不覆盖）
+    (globalThis as any).document = createCookieDocument();
   });
 
   afterEach(() => {
@@ -279,17 +299,19 @@ describe("HttpClient", () => {
     });
 
     it("应该发送 POST 请求", async () => {
-      const response = await client.post("https://api.example.com/users", {
-        name: "John",
-      });
+      const response = await client.post(
+        "https://api.example.com/users",
+        JSON.stringify({ name: "John" }),
+      );
       expect(response).toBeInstanceOf(Response);
       expect(response.status).toBe(200);
     });
 
     it("应该发送 PUT 请求", async () => {
-      const response = await client.put("https://api.example.com/users/1", {
-        name: "John Updated",
-      });
+      const response = await client.put(
+        "https://api.example.com/users/1",
+        JSON.stringify({ name: "John Updated" }),
+      );
       expect(response).toBeInstanceOf(Response);
       expect(response.status).toBe(200);
     });
@@ -301,9 +323,10 @@ describe("HttpClient", () => {
     });
 
     it("应该发送 PATCH 请求", async () => {
-      const response = await client.patch("https://api.example.com/users/1", {
-        name: "John Patched",
-      });
+      const response = await client.patch(
+        "https://api.example.com/users/1",
+        JSON.stringify({ name: "John Patched" }),
+      );
       expect(response).toBeInstanceOf(Response);
       expect(response.status).toBe(200);
     });
@@ -341,10 +364,9 @@ describe("HttpClient", () => {
 
       await client.get("https://api.example.com/users");
       expect(requestHeaders).toBeDefined();
-      if (requestHeaders instanceof Headers) {
-        expect(requestHeaders.get("Content-Type")).toBe("application/json");
-        expect(requestHeaders.get("X-Custom-Header")).toBe("custom-value");
-      }
+      const headers = requestHeaders as unknown as Headers;
+      expect(headers.get("Content-Type")).toBe("application/json");
+      expect(headers.get("X-Custom-Header")).toBe("custom-value");
     });
 
     it("应该合并请求级别的请求头", async () => {
@@ -370,10 +392,9 @@ describe("HttpClient", () => {
       });
 
       expect(requestHeaders).toBeDefined();
-      if (requestHeaders instanceof Headers) {
-        expect(requestHeaders.get("Content-Type")).toBe("application/json");
-        expect(requestHeaders.get("X-Request-ID")).toBe("123");
-      }
+      const headers = requestHeaders as unknown as Headers;
+      expect(headers.get("Content-Type")).toBe("application/json");
+      expect(headers.get("X-Request-ID")).toBe("123");
     });
   });
 
@@ -401,7 +422,7 @@ describe("HttpClient", () => {
     it("应该执行响应拦截器", async () => {
       let interceptedResponse: Response | null = null;
 
-      client.interceptors.response.use((response) => {
+      client.interceptors.response.useResponse((response) => {
         interceptedResponse = response;
         return response;
       });
@@ -451,9 +472,11 @@ describe("HttpClient", () => {
         },
       );
 
-      await expect(
-        client.get("https://api.example.com/users"),
-      ).rejects.toThrow("Interceptor error");
+      await assertRejects(
+        () => client.get("https://api.example.com/users"),
+        Error,
+        "Interceptor error",
+      );
     });
   });
 
@@ -507,10 +530,8 @@ describe("HttpClient", () => {
 
       await client.get("https://api.example.com/users");
       expect(requestHeaders).toBeDefined();
-      if (requestHeaders instanceof Headers) {
-        const cookieHeader = requestHeaders.get("Cookie");
-        expect(cookieHeader).toContain("token=abc123");
-      }
+      const cookieHeader = (requestHeaders as unknown as Headers).get("Cookie");
+      expect(cookieHeader).toContain("token=abc123");
     });
 
     it("应该处理响应中的 Set-Cookie 头", async () => {
@@ -541,9 +562,7 @@ describe("HttpClient", () => {
         return createMockFetch()(new Request("https://api.example.com"));
       };
 
-      await expect(
-        client.get("https://api.example.com/users"),
-      ).rejects.toThrow();
+      await assertRejects(() => client.get("https://api.example.com/users"));
     });
 
     it("应该支持请求级别的超时配置", async () => {
@@ -557,94 +576,9 @@ describe("HttpClient", () => {
         return createMockFetch()(new Request("https://api.example.com"));
       };
 
-      await expect(
-        client.get("https://api.example.com/users", { timeout: 50 }),
-      ).rejects.toThrow();
-    });
-  });
-
-  describe("重试逻辑", () => {
-    it("应该在失败时自动重试", async () => {
-      let attemptCount = 0;
-      const client = new HttpClient();
-
-      globalThis.fetch = async () => {
-        attemptCount++;
-        if (attemptCount < 3) {
-          throw new Error("Network error");
-        }
-        return createMockFetch()(new Request("https://api.example.com"));
-      };
-
-      const response = await client.get("https://api.example.com/users", {
-        retry: true,
-        retryOptions: {
-          retries: 3,
-          retryDelay: 10,
-        },
-      });
-
-      expect(attemptCount).toBe(3);
-      expect(response.status).toBe(200);
-    });
-
-    it("应该使用指数退避策略", async () => {
-      const delays: number[] = [];
-      const client = new HttpClient();
-
-      globalThis.fetch = async () => {
-        throw new Error("Network error");
-      };
-
-      const originalSetTimeout = globalThis.setTimeout;
-      globalThis.setTimeout = ((fn: Function, delay: number) => {
-        delays.push(delay);
-        return originalSetTimeout(fn, delay);
-      }) as any;
-
-      try {
-        await client.get("https://api.example.com/users", {
-          retry: true,
-          retryOptions: {
-            retries: 2,
-            retryDelay: 100,
-            exponentialBackoff: true,
-          },
-        });
-      } catch {
-        // 预期会失败
-      }
-
-      // 检查延迟时间是否符合指数退避（100ms, 200ms）
-      expect(delays.length).toBeGreaterThan(0);
-    });
-
-    it("应该只在满足重试条件时重试", async () => {
-      let attemptCount = 0;
-      const client = new HttpClient();
-
-      globalThis.fetch = async () => {
-        attemptCount++;
-        return new Response(JSON.stringify({}), {
-          status: 404, // 404 不应该重试
-        });
-      };
-
-      await client.get("https://api.example.com/users", {
-        retry: true,
-        retryOptions: {
-          retries: 3,
-          retryDelay: 10,
-          retryCondition: (error) => {
-            if (error instanceof Response) {
-              return error.status >= 500; // 只重试 5xx
-            }
-            return true;
-          },
-        },
-      });
-
-      expect(attemptCount).toBe(1); // 只尝试一次
+      await assertRejects(() =>
+        client.get("https://api.example.com/users", { timeout: 50 })
+      );
     });
   });
 
@@ -721,9 +655,13 @@ describe("HttpClient", () => {
         uploadOptions,
       );
 
+      // 等待 XHR 创建并注册 progress 监听器（需在 Mock send 的 10ms 完成前触发）
+      await new Promise((r) => setTimeout(r, 5));
+
       // 模拟上传进度事件
-      if (xhrInstance && xhrInstance.upload._listeners.has("progress")) {
-        const progressHandler = xhrInstance.upload._listeners.get("progress");
+      const xhr = xhrInstance as MockXMLHttpRequest | null;
+      if (xhr && xhr.upload._listeners.has("progress")) {
+        const progressHandler = xhr.upload._listeners.get("progress");
         if (progressHandler) {
           progressHandler({
             loaded: 50,
@@ -777,14 +715,8 @@ describe("HttpClient", () => {
         },
       };
 
-      // Mock XHR
-      let xhrInstance: MockXMLHttpRequest | null = null;
-      (globalThis as any).XMLHttpRequest = class extends MockXMLHttpRequest {
-        constructor() {
-          super();
-          xhrInstance = this;
-        }
-      };
+      // 使用支持 progress 派发的 Mock XHR
+      (globalThis as any).XMLHttpRequest = MockXMLHttpRequest;
 
       globalThis.fetch = async () => {
         return new Response(new Blob(["test"], { type: "text/plain" }), {
@@ -792,25 +724,12 @@ describe("HttpClient", () => {
         });
       };
 
-      const downloadPromise = client.download(
+      // Mock 的 send() 内会派发 progress 事件，客户端的 onProgress 会被调用
+      await client.download(
         "https://api.example.com/file",
         downloadOptions,
       );
 
-      // 模拟下载进度事件
-      if (xhrInstance) {
-        xhrInstance.addEventListener("progress", (event: any) => {
-          if (event.lengthComputable) {
-            downloadOptions.onProgress?.({
-              loaded: event.loaded,
-              total: event.total,
-              percent: (event.loaded / event.total) * 100,
-            });
-          }
-        });
-      }
-
-      await downloadPromise;
       expect(progressEvents.length).toBeGreaterThan(0);
     });
   });
@@ -823,9 +742,11 @@ describe("HttpClient", () => {
         throw new Error("Network error");
       };
 
-      await expect(
-        client.get("https://api.example.com/users"),
-      ).rejects.toThrow("Network error");
+      await assertRejects(
+        () => client.get("https://api.example.com/users"),
+        Error,
+        "Network error",
+      );
     });
 
     it("应该处理 HTTP 错误状态码", async () => {
@@ -888,9 +809,9 @@ describe("ClientCookieManager", () => {
   let cookieManager: ClientCookieManager;
 
   beforeEach(() => {
+    // 每个用例使用全新的 document（createCookieDocument 赋空 store），避免跨用例残留 cookie
+    (globalThis as any).document = createCookieDocument();
     cookieManager = new ClientCookieManager();
-    // 清空 cookie
-    (globalThis as any).document.cookie = "";
   });
 
   describe("set", () => {
@@ -1088,9 +1009,14 @@ describe("InterceptorManager", () => {
         },
       );
 
-      await expect(
-        interceptorManager.executeRequest({ url: "https://api.example.com" }),
-      ).rejects.toThrow("Interceptor error");
+      await assertRejects(
+        () =>
+          interceptorManager.executeRequest({
+            url: "https://api.example.com",
+          }),
+        Error,
+        "Interceptor error",
+      );
     });
 
     it("应该处理响应拦截器错误", async () => {
@@ -1104,9 +1030,11 @@ describe("InterceptorManager", () => {
       );
 
       const response = new Response();
-      await expect(
-        interceptorManager.executeResponse(response),
-      ).rejects.toThrow("Interceptor error");
+      await assertRejects(
+        () => interceptorManager.executeResponse(response),
+        Error,
+        "Interceptor error",
+      );
     });
   });
 

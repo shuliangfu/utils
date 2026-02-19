@@ -80,9 +80,11 @@ export class ClientCookieManager {
       if (cookieName === name) {
         const value = valueParts.join("=");
         try {
-          return decodeURIComponent(value);
+          const decoded = decodeURIComponent(value);
+          // 空值视为已删除（如 remove 后）
+          return decoded === "" ? undefined : decoded;
         } catch {
-          return value;
+          return value === "" ? undefined : value;
         }
       }
     }
@@ -129,9 +131,11 @@ export class ClientCookieManager {
       if (name) {
         const value = valueParts.join("=");
         try {
-          cookies[name] = decodeURIComponent(value);
+          const decoded = decodeURIComponent(value);
+          // 跳过空值（已删除的 cookie）
+          if (decoded !== "") cookies[name] = decoded;
         } catch {
-          cookies[name] = value;
+          if (value !== "") cookies[name] = value;
         }
       }
     });

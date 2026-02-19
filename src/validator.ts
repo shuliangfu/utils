@@ -63,15 +63,32 @@ export interface ValidationResult<T = unknown> {
 }
 
 /**
+ * 验证选项，用于自定义错误消息等
+ * 不传或 messages 不传时使用内置默认英文消息
+ */
+export interface ValidateOptions {
+  /**
+   * 按规则名覆盖错误消息
+   * 规则名示例: required, min, max, pattern, email, integer, type, transform 等
+   */
+  messages?: Record<string, string>;
+}
+
+/**
  * 验证器接口
  */
 export interface Validator<T = unknown> {
-  /** 验证值 */
-  validate(value: unknown, data?: Record<string, unknown>): ValidationResult<T>;
+  /** 验证值；可选传入 options 以覆盖错误消息 */
+  validate(
+    value: unknown,
+    data?: Record<string, unknown>,
+    options?: ValidateOptions,
+  ): ValidationResult<T>;
   /** 异步验证 */
   validateAsync?(
     value: unknown,
     data?: Record<string, unknown>,
+    options?: ValidateOptions,
   ): Promise<ValidationResult<T>>;
 }
 
@@ -81,7 +98,7 @@ export interface Validator<T = unknown> {
 export class StringValidator implements Validator<string> {
   private rules: Array<{
     name: string;
-    validate: (value: string) => boolean | string;
+    validate: (value: string, options?: ValidateOptions) => boolean | string;
   }> = [];
   private _required: boolean = false;
   private defaultValue?: string;
@@ -96,9 +113,9 @@ export class StringValidator implements Validator<string> {
     // 添加规则：必填字段不能为空字符串
     this.rules.push({
       name: "required",
-      validate: (value) => {
+      validate: (value, options) => {
         if (value.trim().length === 0) {
-          return this.getMessage("required", "此字段为必填项");
+          return this.getMessage("required", "This field is required", options);
         }
         return true;
       },
@@ -128,12 +145,12 @@ export class StringValidator implements Validator<string> {
   min(length: number): this {
     this.rules.push({
       name: "min",
-      validate: (value) => {
+      validate: (value, options) => {
         if (value.length < length) {
           return this.getMessage(
             "min",
-            `字符串长度必须至少 ${length} 个字符`,
-            length,
+            `String length must be at least ${length} characters`,
+            options,
           );
         }
         return true;
@@ -148,12 +165,12 @@ export class StringValidator implements Validator<string> {
   max(length: number): this {
     this.rules.push({
       name: "max",
-      validate: (value) => {
+      validate: (value, options) => {
         if (value.length > length) {
           return this.getMessage(
             "max",
-            `字符串长度不能超过 ${length} 个字符`,
-            length,
+            `String length must not exceed ${length} characters`,
+            options,
           );
         }
         return true;
@@ -168,9 +185,9 @@ export class StringValidator implements Validator<string> {
   pattern(regex: RegExp): this {
     this.rules.push({
       name: "pattern",
-      validate: (value) => {
+      validate: (value, options) => {
         if (!regex.test(value)) {
-          return this.getMessage("pattern", "字符串格式不正确");
+          return this.getMessage("pattern", "Invalid string format", options);
         }
         return true;
       },
@@ -184,11 +201,11 @@ export class StringValidator implements Validator<string> {
   email(): this {
     this.rules.push({
       name: "email",
-      validate: (value) => {
+      validate: (value, options) => {
         const emailRegex =
           /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
         if (!emailRegex.test(value)) {
-          return this.getMessage("email", "邮箱格式不正确");
+          return this.getMessage("email", "Invalid email format", options);
         }
         return true;
       },
@@ -224,26 +241,27 @@ export class StringValidator implements Validator<string> {
   }
 
   /**
-   * 获取错误消息
+   * 获取错误消息：优先 options.messages[rule]，其次 schema 上 .message(rule, msg)，最后默认英文
    */
   private getMessage(
     rule: string,
     defaultMessage: string,
-    ..._args: unknown[]
+    options?: ValidateOptions,
   ): string {
+    const fromOptions = options?.messages?.[rule];
+    if (fromOptions !== undefined) return fromOptions;
     const customMessage = this.customMessages.get(rule);
-    if (customMessage) {
-      return customMessage;
-    }
+    if (customMessage) return customMessage;
     return defaultMessage;
   }
 
   /**
-   * 验证值
+   * 验证值；可传入 options.messages 覆盖错误消息，不传则使用默认英文
    */
   validate(
     value: unknown,
     _data?: Record<string, unknown>,
+    options?: ValidateOptions,
   ): ValidationResult<string> {
     const errors: ValidationError[] = [];
 
@@ -254,7 +272,11 @@ export class StringValidator implements Validator<string> {
       } else if (this._required) {
         errors.push({
           path: "",
-          message: this.getMessage("required", "此字段为必填项"),
+          message: this.getMessage(
+            "required",
+            "This field is required",
+            options,
+          ),
           value,
           rule: "required",
         });
@@ -269,11 +291,13 @@ export class StringValidator implements Validator<string> {
       try {
         value = this.transformFn(value);
       } catch (error) {
+        const msg = options?.messages?.transform ??
+          `Transform failed: ${
+            error instanceof Error ? error.message : String(error)
+          }`;
         errors.push({
           path: "",
-          message: `类型转换失败: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          message: msg,
           value,
           rule: "transform",
         });
@@ -285,7 +309,7 @@ export class StringValidator implements Validator<string> {
     if (typeof value !== "string") {
       errors.push({
         path: "",
-        message: "必须是字符串类型",
+        message: this.getMessage("type", "Must be a string", options),
         value,
         rule: "type",
       });
@@ -294,13 +318,16 @@ export class StringValidator implements Validator<string> {
 
     const stringValue = value as string;
 
-    // 执行验证规则
+    // 执行验证规则，传入 options 以便规则内可解析自定义消息
     for (const rule of this.rules) {
-      const result = rule.validate(stringValue);
+      const result = rule.validate(stringValue, options);
       if (result !== true) {
+        const msg = typeof result === "string"
+          ? result
+          : this.getMessage("custom", "Validation failed", options);
         errors.push({
           path: "",
-          message: typeof result === "string" ? result : "验证失败",
+          message: msg,
           value: stringValue,
           rule: rule.name,
         });
@@ -318,7 +345,7 @@ export class StringValidator implements Validator<string> {
 export class NumberValidator implements Validator<number> {
   private rules: Array<{
     name: string;
-    validate: (value: number) => boolean | string;
+    validate: (value: number, options?: ValidateOptions) => boolean | string;
   }> = [];
   private _required: boolean = false;
   private defaultValue?: number;
@@ -355,9 +382,9 @@ export class NumberValidator implements Validator<number> {
   min(value: number): this {
     this.rules.push({
       name: "min",
-      validate: (num) => {
+      validate: (num, options) => {
         if (num < value) {
-          return this.getMessage("min", `数字必须至少 ${value}`, value);
+          return this.getMessage("min", `Must be at least ${value}`, options);
         }
         return true;
       },
@@ -371,9 +398,9 @@ export class NumberValidator implements Validator<number> {
   max(value: number): this {
     this.rules.push({
       name: "max",
-      validate: (num) => {
+      validate: (num, options) => {
         if (num > value) {
-          return this.getMessage("max", `数字不能超过 ${value}`, value);
+          return this.getMessage("max", `Must not exceed ${value}`, options);
         }
         return true;
       },
@@ -387,9 +414,9 @@ export class NumberValidator implements Validator<number> {
   integer(): this {
     this.rules.push({
       name: "integer",
-      validate: (num) => {
+      validate: (num, options) => {
         if (!Number.isInteger(num)) {
-          return this.getMessage("integer", "必须是整数");
+          return this.getMessage("integer", "Must be an integer", options);
         }
         return true;
       },
@@ -425,26 +452,27 @@ export class NumberValidator implements Validator<number> {
   }
 
   /**
-   * 获取错误消息
+   * 获取错误消息：优先 options.messages[rule]，其次 schema 上 .message(rule, msg)，最后默认英文
    */
   private getMessage(
     rule: string,
     defaultMessage: string,
-    ..._args: unknown[]
+    options?: ValidateOptions,
   ): string {
+    const fromOptions = options?.messages?.[rule];
+    if (fromOptions !== undefined) return fromOptions;
     const customMessage = this.customMessages.get(rule);
-    if (customMessage) {
-      return customMessage;
-    }
+    if (customMessage) return customMessage;
     return defaultMessage;
   }
 
   /**
-   * 验证值
+   * 验证值；可传入 options.messages 覆盖错误消息，不传则使用默认英文
    */
   validate(
     value: unknown,
     _data?: Record<string, unknown>,
+    options?: ValidateOptions,
   ): ValidationResult<number> {
     const errors: ValidationError[] = [];
 
@@ -455,7 +483,11 @@ export class NumberValidator implements Validator<number> {
       } else if (this._required) {
         errors.push({
           path: "",
-          message: this.getMessage("required", "此字段为必填项"),
+          message: this.getMessage(
+            "required",
+            "This field is required",
+            options,
+          ),
           value,
           rule: "required",
         });
@@ -470,11 +502,13 @@ export class NumberValidator implements Validator<number> {
       try {
         value = this.transformFn(value);
       } catch (error) {
+        const msg = options?.messages?.transform ??
+          `Transform failed: ${
+            error instanceof Error ? error.message : String(error)
+          }`;
         errors.push({
           path: "",
-          message: `类型转换失败: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          message: msg,
           value,
           rule: "transform",
         });
@@ -486,7 +520,7 @@ export class NumberValidator implements Validator<number> {
     if (typeof value !== "number" || isNaN(value)) {
       errors.push({
         path: "",
-        message: "必须是数字类型",
+        message: this.getMessage("type", "Must be a number", options),
         value,
         rule: "type",
       });
@@ -497,11 +531,13 @@ export class NumberValidator implements Validator<number> {
 
     // 执行验证规则
     for (const rule of this.rules) {
-      const result = rule.validate(numberValue);
+      const result = rule.validate(numberValue, options);
       if (result !== true) {
         errors.push({
           path: "",
-          message: typeof result === "string" ? result : "验证失败",
+          message: typeof result === "string"
+            ? result
+            : this.getMessage("custom", "Validation failed", options),
           value: numberValue,
           rule: rule.name,
         });
@@ -554,13 +590,15 @@ export class BooleanValidator implements Validator<boolean> {
   }
 
   /**
-   * 验证值
+   * 验证值；可传入 options.messages 覆盖错误消息，不传则使用默认英文
    */
   validate(
     value: unknown,
     _data?: Record<string, unknown>,
+    options?: ValidateOptions,
   ): ValidationResult<boolean> {
     const errors: ValidationError[] = [];
+    const msg = (rule: string, def: string) => options?.messages?.[rule] ?? def;
 
     // 处理默认值
     if (value === undefined || value === null) {
@@ -569,7 +607,7 @@ export class BooleanValidator implements Validator<boolean> {
       } else if (this._required) {
         errors.push({
           path: "",
-          message: "此字段为必填项",
+          message: msg("required", "This field is required"),
           value,
           rule: "required",
         });
@@ -586,9 +624,12 @@ export class BooleanValidator implements Validator<boolean> {
       } catch (error) {
         errors.push({
           path: "",
-          message: `类型转换失败: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          message: msg(
+            "transform",
+            `Transform failed: ${
+              error instanceof Error ? error.message : String(error)
+            }`,
+          ),
           value,
           rule: "transform",
         });
@@ -600,7 +641,7 @@ export class BooleanValidator implements Validator<boolean> {
     if (typeof value !== "boolean") {
       errors.push({
         path: "",
-        message: "必须是布尔类型",
+        message: msg("type", "Must be a boolean"),
         value,
         rule: "type",
       });
@@ -634,7 +675,7 @@ export class UrlValidator extends StringValidator {
         new URL(value);
         return true;
       } catch {
-        return "无效的 URL 格式";
+        return "Invalid URL format";
       }
     });
   }
@@ -677,20 +718,22 @@ export class ObjectValidator<
   }
 
   /**
-   * 验证值
+   * 验证值；可传入 options.messages 覆盖错误消息，不传则使用默认英文
    */
   validate(
     value: unknown,
     _data?: Record<string, unknown>,
+    options?: ValidateOptions,
   ): ValidationResult<T> {
     const errors: ValidationError[] = [];
+    const msg = (rule: string, def: string) => options?.messages?.[rule] ?? def;
 
     // 处理 undefined/null
     if (value === undefined || value === null) {
       if (this._required) {
         errors.push({
           path: "",
-          message: "此字段为必填项",
+          message: msg("required", "This field is required"),
           value,
           rule: "required",
         });
@@ -704,7 +747,7 @@ export class ObjectValidator<
     if (typeof value !== "object" || Array.isArray(value) || value === null) {
       errors.push({
         path: "",
-        message: "必须是对象类型",
+        message: msg("type", "Must be an object"),
         value,
         rule: "type",
       });
@@ -715,10 +758,10 @@ export class ObjectValidator<
     const result: Record<string, unknown> = {};
     let hasError = false;
 
-    // 验证每个字段
+    // 验证每个字段，将 options 向下传递
     for (const [key, validator] of Object.entries(this.schema)) {
       const fieldValue = obj[key];
-      const fieldResult = validator.validate(fieldValue, obj);
+      const fieldResult = validator.validate(fieldValue, obj, options);
 
       if (fieldResult.success) {
         if (fieldResult.data !== undefined) {
@@ -792,20 +835,22 @@ export class ArrayValidator<T = unknown> implements Validator<T[]> {
   }
 
   /**
-   * 验证值
+   * 验证值；可传入 options.messages 覆盖错误消息，不传则使用默认英文
    */
   validate(
     value: unknown,
     _data?: Record<string, unknown>,
+    options?: ValidateOptions,
   ): ValidationResult<T[]> {
     const errors: ValidationError[] = [];
+    const msg = (rule: string, def: string) => options?.messages?.[rule] ?? def;
 
     // 处理 undefined/null
     if (value === undefined || value === null) {
       if (this._required) {
         errors.push({
           path: "",
-          message: "此字段为必填项",
+          message: msg("required", "This field is required"),
           value,
           rule: "required",
         });
@@ -819,7 +864,7 @@ export class ArrayValidator<T = unknown> implements Validator<T[]> {
     if (!Array.isArray(value)) {
       errors.push({
         path: "",
-        message: "必须是数组类型",
+        message: msg("type", "Must be an array"),
         value,
         rule: "type",
       });
@@ -832,7 +877,10 @@ export class ArrayValidator<T = unknown> implements Validator<T[]> {
     if (this.minLength !== undefined && arr.length < this.minLength) {
       errors.push({
         path: "",
-        message: `数组长度必须至少 ${this.minLength} 个元素`,
+        message: msg(
+          "min",
+          `Array length must be at least ${this.minLength} elements`,
+        ),
         value: arr,
         rule: "min",
       });
@@ -842,19 +890,22 @@ export class ArrayValidator<T = unknown> implements Validator<T[]> {
     if (this.maxLength !== undefined && arr.length > this.maxLength) {
       errors.push({
         path: "",
-        message: `数组长度不能超过 ${this.maxLength} 个元素`,
+        message: msg(
+          "max",
+          `Array length must not exceed ${this.maxLength} elements`,
+        ),
         value: arr,
         rule: "max",
       });
       return { success: false, errors };
     }
 
-    // 验证每个元素
+    // 验证每个元素，将 options 向下传递
     const result: T[] = [];
     let hasError = false;
 
     for (let i = 0; i < arr.length; i++) {
-      const itemResult = this.itemValidator.validate(arr[i], {});
+      const itemResult = this.itemValidator.validate(arr[i], {}, options);
       if (itemResult.success) {
         if (itemResult.data !== undefined) {
           result.push(itemResult.data);
@@ -941,13 +992,15 @@ export function array<T = unknown>(
  *
  * @param value 要验证的值
  * @param validator 验证器
+ * @param options 可选：messages 为规则名到错误文案的映射，不传则使用内置默认英文消息
  * @returns 验证结果
  */
 export function validate<T = unknown>(
   value: unknown,
   validator: Validator<T>,
+  options?: ValidateOptions,
 ): ValidationResult<T> {
-  return validator.validate(value);
+  return validator.validate(value, undefined, options);
 }
 
 /**
@@ -955,16 +1008,18 @@ export function validate<T = unknown>(
  *
  * @param value 要验证的值
  * @param validator 验证器（必须支持异步验证）
+ * @param options 可选：同 validate 的 options
  * @returns 验证结果
  */
 export async function validateAsync<T = unknown>(
   value: unknown,
   validator: Validator<T>,
+  options?: ValidateOptions,
 ): Promise<ValidationResult<T>> {
   if (validator.validateAsync) {
-    return await validator.validateAsync(value);
+    return await validator.validateAsync(value, undefined, options);
   }
-  return validator.validate(value);
+  return validator.validate(value, undefined, options);
 }
 
 /**
@@ -972,13 +1027,13 @@ export async function validateAsync<T = unknown>(
  *
  * @param value 要验证的值
  * @param validator 验证器
+ * @param options 可选：同 validate 的 options
  * @returns 验证结果（包含所有错误）
  */
 export function validateAll<T = unknown>(
   value: unknown,
   validator: Validator<T>,
+  options?: ValidateOptions,
 ): ValidationResult<T> {
-  // 对于对象和数组，需要特殊处理以收集所有错误
-  // 这里先实现基础版本，后续可以优化
-  return validator.validate(value);
+  return validator.validate(value, undefined, options);
 }
