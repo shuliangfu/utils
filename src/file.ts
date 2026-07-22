@@ -286,7 +286,7 @@ export interface FileWatcherOptions {
 export class FileWatcher {
   private options: Required<FileWatcherOptions>;
   private watcher: RuntimeFileWatcher | null = null;
-  private debounceTimer: number | null = null;
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
   private listeners: Map<string, Set<(event: FileChangeEvent) => void>> =
     new Map();
   private isRunning = false;
@@ -439,7 +439,7 @@ export class FileWatcher {
       }
 
       this.debounceTimer = null;
-    }, this.options.debounce) as unknown as number;
+    }, this.options.debounce);
   }
 
   /**

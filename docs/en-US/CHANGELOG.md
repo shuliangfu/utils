@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.1.0] - 2026-07-22
+
+### Added
+
+- **Node.js compatibility**: `system.ts` now runs on Node via `IS_NODE` branches
+  backed by `node:os` / `node:process` — `getMemoryInfo`, `getCpuUsage`,
+  `getLoadAverage`, `getSystemInfo`, and `getDiskUsage` return real metrics on
+  Node 22+ (`os.loadavg()` returns `[0,0,0]` on Windows without throwing).
+- **Node.js test infra**: Added `package.json`, `tsconfig.json`, `.npmrc`, and a
+  3-platform Node CI job (Linux/macOS/Windows, Node 22) driven by
+  `tsx --test --test-force-exit tests/*.test.ts`; the same `tests/*.test.ts`
+  suite is shared across Deno/Bun/Node.
+
+### Changed
+
+- **Dependencies**: `@dreamer/test` ^1.2.3, `@dreamer/runtime-adapter` ^1.2.2.
+- **CI**: Deno bumped to v2.9.
+- **Timer types**: `setTimeout` return types normalized to
+  `ReturnType<typeof setTimeout>` in `async.ts`, `file.ts`, and
+  `client/http/client.ts` (Node returns a `Timeout` object, not a number);
+  removed unsafe `as unknown as number` casts.
+- **Publish**: `jsr publish` no longer uses `--no-check` (stricter release
+  gate).
+
+---
+
 ## [1.0.1] - 2026-02-20
 
 ### Fixed

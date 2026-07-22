@@ -7,6 +7,30 @@
 
 ---
 
+## [1.1.0] - 2026-07-22
+
+### 新增
+
+- **Node.js 兼容**：`system.ts` 通过 `IS_NODE` 分支接入 `node:os` /
+  `node:process`，`getMemoryInfo`、`getCpuUsage`、`getLoadAverage`、
+  `getSystemInfo`、`getDiskUsage` 在 Node 22+ 上返回真实指标 （`os.loadavg()` 在
+  Windows 返回 `[0,0,0]`，不抛错）。
+- **Node.js 测试基建**：新增 `package.json`、`tsconfig.json`、`.npmrc`，以及
+  三平台 Node CI 任务（Linux/macOS/Windows，Node 22），由
+  `tsx --test --test-force-exit tests/*.test.ts` 驱动；Deno/Bun/Node 共享同一套
+  `tests/*.test.ts`。
+
+### 变更
+
+- **依赖**：`@dreamer/test` ^1.2.3、`@dreamer/runtime-adapter` ^1.2.2。
+- **CI**：Deno 升至 v2.9。
+- **计时器类型**：`async.ts`、`file.ts`、`client/http/client.ts` 中 `setTimeout`
+  返回类型统一为 `ReturnType<typeof setTimeout>` （Node 返回 `Timeout` 对象而非
+  number），移除不安全的 `as unknown as number` 断言。
+- **发布**：`jsr publish` 不再使用 `--no-check`（更严格的发布门禁）。
+
+---
+
 ## [1.0.1] - 2026-02-20
 
 ### 修复

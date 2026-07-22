@@ -6,7 +6,24 @@
  * 提供获取系统状态参数的工具方法，包括 CPU、内存、磁盘、网络等信息。
  */
 
-import { createCommand, IS_BUN, IS_DENO } from "@dreamer/runtime-adapter";
+import {
+  createCommand,
+  IS_BUN,
+  IS_DENO,
+  IS_NODE,
+} from "@dreamer/runtime-adapter";
+// node:os / node:process 在 Deno / Bun / Node 三端均原生支持（runtime-adapter 已沿用此模式）
+// 【Why】system.ts 的 IS_NODE 分支需要 os 内存/CPU/负载/系统信息与 process.cpuUsage/platform/arch
+// 【Invariant】这些 API 在 Node 22+ 稳定可用；os.loadavg() 在 Windows 返回 [0,0,0] 不抛错
+import {
+  freemem as nodeFreemem,
+  hostname as nodeHostname,
+  loadavg as nodeLoadavg,
+  release as nodeRelease,
+  totalmem as nodeTotalmem,
+  uptime as nodeUptime,
+} from "node:os";
+import process from "node:process";
 
 /**
  * 内存信息
@@ -248,6 +265,22 @@ export async function getMemoryInfo(): Promise<MemoryInfo> {
       };
     }
 
+    // Node 环境
+    if (IS_NODE) {
+      const total = nodeTotalmem();
+      const free = nodeFreemem();
+      const used = total - free;
+      const usagePercent = total > 0 ? (used / total) * 100 : 0;
+
+      return {
+        total,
+        available: free,
+        used,
+        free,
+        usagePercent: Math.round(usagePercent * 100) / 100,
+      };
+    }
+
     // 其他环境
     return {
       total: 0,
@@ -316,6 +349,27 @@ export async function getCpuUsage(
         usagePercent: 0,
         userPercent: 0,
         systemPercent: 0,
+      };
+    }
+
+    // Node 环境
+    if (IS_NODE) {
+      // process.cpuUsage() 返回 {user, system}，单位微秒，与 Deno.cpuUsage 语义一致
+      const start = process.cpuUsage();
+      await new Promise((resolve) => setTimeout(resolve, interval));
+      const end = process.cpuUsage(start);
+
+      const total = end.user + end.system;
+      const usagePercent = total > 0 ? (total / (interval * 10000)) * 100 : 0;
+      const userPercent = total > 0 ? (end.user / (interval * 10000)) * 100 : 0;
+      const systemPercent = total > 0
+        ? (end.system / (interval * 10000)) * 100
+        : 0;
+
+      return {
+        usagePercent: Math.min(100, Math.round(usagePercent * 100) / 100),
+        userPercent: Math.min(100, Math.round(userPercent * 100) / 100),
+        systemPercent: Math.min(100, Math.round(systemPercent * 100) / 100),
       };
     }
 
@@ -405,6 +459,20 @@ export async function getLoadAverage(): Promise<LoadAverage | undefined> {
         }
       } catch (error) {
         console.warn("Bun 环境获取系统负载失败:", error);
+      }
+      return undefined;
+    }
+
+    // Node 环境
+    if (IS_NODE) {
+      // os.loadavg() 在 Windows 上返回 [0, 0, 0]，不会抛错
+      const load = nodeLoadavg();
+      if (load && load.length >= 3) {
+        return {
+          load1: load[0],
+          load5: load[1],
+          load15: load[2],
+        };
       }
       return undefined;
     }
@@ -567,6 +635,44 @@ export async function getSystemInfo(): Promise<SystemInfo> {
       }
     }
 
+    // Node 环境
+    if (IS_NODE) {
+      const plat = process.platform;
+      os = plat === "darwin"
+        ? "darwin"
+        : plat === "linux"
+        ? "linux"
+        : plat === "win32"
+        ? "windows"
+        : "unknown";
+
+      arch = (process.arch as string) === "x64" ||
+          (process.arch as string) === "x86_64"
+        ? "x86_64"
+        : (process.arch as string) === "arm64" ||
+            (process.arch as string) === "aarch64"
+        ? "aarch64"
+        : "unknown";
+
+      try {
+        osRelease = nodeRelease();
+      } catch {
+        osRelease = "unknown";
+      }
+
+      try {
+        hostname = nodeHostname();
+      } catch {
+        hostname = "unknown";
+      }
+
+      try {
+        uptime = nodeUptime();
+      } catch {
+        uptime = 0;
+      }
+    }
+
     return {
       os,
       osRelease,
@@ -615,6 +721,10 @@ export async function getDiskUsage(
       osType = (globalThis as any).Deno.build.os;
     } else if (IS_BUN) {
       osType = (globalThis as any).process?.platform || "unknown";
+      if (osType === "win32") osType = "windows";
+    } else if (IS_NODE) {
+      // Node 用 process.platform（"darwin"|"linux"|"win32"），归一化为 windows
+      osType = process.platform;
       if (osType === "win32") osType = "windows";
     } else {
       return {

@@ -1,14 +1,15 @@
 # @dreamer/utils Test Report
 
-> Report generated: 2026-02-20
+> Report generated: 2026-07-22
 
 ## 📊 Test Overview
 
-- **Test Framework**: @dreamer/test
-- **Test Environment**: Deno 2.6+ / Bun 1.3.5
-- **Total Tests**: 244
-- **Passed**: 244
-- **Failed**: 0
+- **Test Framework**: @dreamer/test@^1.2.3
+- **Test Environment**: Deno 2.9+ / Bun 1.3+ / Node.js 22+ (Node via
+  `tsx --test --test-force-exit tests/*.test.ts`)
+- **Total Tests**: 244 (Deno) / 225 (Bun) / 225 (Node)
+- **Passed**: 244 / 225 / 225
+- **Failed**: 0 / 0 / 0
 - **Pass Rate**: 100%
 
 ## ✅ Test Results Summary

@@ -17,7 +17,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   fn: T,
   delay: number,
 ): (...args: Parameters<T>) => void {
-  let timeoutId: number | undefined;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   return function (this: unknown, ...args: Parameters<T>) {
     if (timeoutId !== undefined) {
@@ -25,7 +25,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     }
     timeoutId = setTimeout(() => {
       fn.apply(this, args);
-    }, delay) as unknown as number;
+    }, delay);
   };
 }
 

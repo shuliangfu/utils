@@ -201,7 +201,7 @@ export class HttpClient {
 
     // 使用 AbortController 实现超时
     let abortController: AbortController | null = null;
-    let timeoutId: number | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     if (timeout > 0) {
       abortController = new AbortController();
